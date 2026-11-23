@@ -186,7 +186,7 @@ jobs:
           FIREBASE_FUNCTIONS_URL=https://localmind-ci.invalid
           ENV
 
-      - name: Build and run Android unit tests
+      - name: Build ARM64 production debug APK
         working-directory: android
         shell: bash
         run: |
@@ -194,14 +194,27 @@ jobs:
           chmod +x ./gradlew
           ./gradlew --no-daemon --stacktrace --build-cache --parallel --console=plain --max-workers=4 \
             -PreactNativeArchitectures=arm64-v8a \
-            testProdDebugUnitTest assembleProdDebug 2>&1 | tee android-build.log
+            assembleProdDebug 2>&1 | tee android-build.log
+
+      - name: Run Android unit tests
+        working-directory: android
+        shell: bash
+        run: |
+          set -o pipefail
+          ./gradlew --no-daemon --stacktrace --build-cache --parallel --console=plain --max-workers=4 \
+            -PreactNativeArchitectures=arm64-v8a \
+            testProdDebugUnitTest 2>&1 | tee -a android-build.log
 
       - name: Verify APK signature, ABI and native payload
+        if: always()
         shell: bash
         run: |
           set -euo pipefail
           APK="android/app/build/outputs/apk/prod/debug/app-prod-debug.apk"
-          test -s "$APK"
+          if [ ! -s "$APK" ]; then
+            echo "::error::APK was not produced; inspect android-build.log."
+            exit 1
+          fi
           APKSIGNER="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n 1)"
           test -n "$APKSIGNER"
           "$APKSIGNER" verify --verbose --print-certs "$APK"
@@ -235,10 +248,10 @@ jobs:
             echo ""
             echo "- Branch: $GITHUB_REF_NAME"
             echo "- Commit: $GITHUB_SHA"
-            if [ -s android/app/build/outputs/apk/prod/release/app-prod-release.apk ]; then
+            if [ -s android/app/build/outputs/apk/prod/debug/app-prod-debug.apk ]; then
               echo "- APK: built (prodDebug; CI debug signing)"
-              echo "- Size: $(du -h android/app/build/outputs/apk/prod/release/app-prod-release.apk | cut -f1)"
-              echo "- SHA-256: $(sha256sum android/app/build/outputs/apk/prod/release/app-prod-release.apk | cut -d' ' -f1)"
+              echo "- Size: $(du -h android/app/build/outputs/apk/prod/debug/app-prod-debug.apk | cut -f1)"
+              echo "- SHA-256: $(sha256sum android/app/build/outputs/apk/prod/debug/app-prod-debug.apk | cut -d' ' -f1)"
             else
               echo "- APK: not produced; inspect the build log artifact"
             fi
