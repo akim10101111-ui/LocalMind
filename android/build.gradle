@@ -9,6 +9,8 @@ buildscript {
     }
     repositories {
         google()
+        // Prefer Google's public Maven Central mirror to avoid transient Central HTTP 429 responses in CI.
+        maven { url "https://maven-central.storage-download.googleapis.com/maven2/" }
         mavenCentral()
     }
     dependencies {
@@ -38,6 +40,12 @@ def onnxruntimeVersion = {
 }()
 
 allprojects {
+    repositories {
+        google()
+        // Mirror Maven Central for Android app and test dependencies; retain Central as fallback.
+        maven { url "https://maven-central.storage-download.googleapis.com/maven2/" }
+        mavenCentral()
+    }
     configurations.all {
         resolutionStrategy {
             // onnxruntime-react-native floats this at latest.integration; ship the AAR it was released with.
