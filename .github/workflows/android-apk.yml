@@ -1,0 +1,245 @@
+name: LocalMind Android APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: localmind-android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-android:
+    name: Build and verify ARM64 APK
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    env:
+      CI: "true"
+      NODE_OPTIONS: "--max-old-space-size=6144"
+      ORG_GRADLE_PROJECT_rnllamaBuildFromSource: "true"
+      RNLLAMA_SKIP_POSTINSTALL: "1"
+      CMAKE_BUILD_PARALLEL_LEVEL: "4"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Expand uploaded LocalMind source archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ ! -f package.json ] || [ ! -f android/gradlew ]; then
+            ZIP_PATH="$(find . -maxdepth 1 -type f -name 'LocalMind-source*.zip' -print -quit)"
+            if [ -z "$ZIP_PATH" ]; then
+              echo "::error::No LocalMind source tree or LocalMind-source*.zip archive found."
+              exit 1
+            fi
+            rm -rf .localmind-extract
+            mkdir -p .localmind-extract
+            unzip -q "$ZIP_PATH" -d .localmind-extract
+            SOURCE_DIR="$(find .localmind-extract -mindepth 1 -maxdepth 3 -type f -name package.json -print -quit | xargs -r dirname)"
+            if [ -z "$SOURCE_DIR" ] || [ ! -f "$SOURCE_DIR/android/gradlew" ]; then
+              echo "::error::The uploaded archive does not contain a complete React Native Android project."
+              find .localmind-extract -maxdepth 3 -type f | head -80
+              exit 1
+            fi
+            rsync -a --exclude='.git' "$SOURCE_DIR/" ./
+            rm -rf .localmind-extract
+            rm -f "$ZIP_PATH"
+          fi
+          test -f package.json
+          test -f yarn.lock
+          test -f android/gradlew
+
+      - name: Optimize Android build for phone APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          app_gradle = Path("android/app/build.gradle")
+          app_text = app_gradle.read_text()
+          old_abi = 'abiFilters "arm64-v8a", "x86_64"'
+          if old_abi in app_text:
+              app_text = app_text.replace(old_abi, 'abiFilters "arm64-v8a"')
+          elif 'abiFilters "arm64-v8a"' not in app_text:
+              raise SystemExit("Could not safely locate Android ABI filters in app/build.gradle")
+          app_gradle.write_text(app_text)
+
+          gradle_props = Path("android/gradle.properties")
+          props = gradle_props.read_text()
+          props = props.replace(
+              "org.gradle.jvmargs=-Xmx2048m -XX:MaxMetaspaceSize=512m",
+              "org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m -Dfile.encoding=UTF-8"
+          )
+          props = props.replace("# org.gradle.parallel=true", "org.gradle.parallel=true")
+          props = props.replace(
+              "reactNativeArchitectures=arm64-v8a,x86_64",
+              "reactNativeArchitectures=arm64-v8a"
+          )
+          if "org.gradle.caching=true" not in props:
+              props += "\n# Reuse Gradle outputs between CI and local builds.\norg.gradle.caching=true\n"
+          if "org.gradle.workers.max=" not in props:
+              props += "org.gradle.workers.max=4\n"
+          gradle_props.write_text(props)
+          PY
+          grep -nE 'abiFilters|org.gradle.jvmargs|org.gradle.parallel|org.gradle.caching|reactNativeArchitectures|org.gradle.workers.max' android/app/build.gradle android/gradle.properties
+
+      - name: Commit expanded source and ARM64 build configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: expand LocalMind source and optimize ARM64 Android build"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          else
+            echo "Source tree is already expanded and optimized."
+          fi
+
+      - name: Free runner disk space
+        run: |
+          df -h /
+          sudo rm -rf /usr/share/dotnet /opt/ghc
+          df -h /
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+          cache-dependency-path: yarn.lock
+
+      - name: Install Yarn Classic
+        run: npm install --global yarn@1.22.22
+
+      - name: Install JavaScript dependencies
+        run: yarn install --frozen-lockfile --network-timeout 600000
+
+      - name: Restore enriched Markdown native assets
+        run: INIT_CWD="$GITHUB_WORKSPACE" node node_modules/react-native-enriched-markdown/postinstall.mjs
+
+      - name: Verify font and localization assets
+        run: |
+          node scripts/validate-l10n.js
+          node scripts/verify-fonts.js
+
+      - name: Derive llama.rn native variant allowlist
+        shell: bash
+        run: |
+          set -euo pipefail
+          VARIANTS="$(node scripts/verify-android-payload.js --print-variants)"
+          echo "Native variants: $VARIANTS"
+          echo "ORG_GRADLE_PROJECT_rnllamaVariants=$VARIANTS" >> "$GITHUB_ENV"
+
+      - name: Cache llama.rn CMake build tree
+        uses: actions/cache@v4
+        with:
+          path: node_modules/llama.rn/android/.cxx
+          key: ${{ runner.os }}-localmind-arm64-cxx-${{ hashFiles('yarn.lock', 'patches/**', 'scripts/android-payload-manifest.json') }}
+          restore-keys: |
+            ${{ runner.os }}-localmind-arm64-cxx-
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Set up Hexagon SDK for Qualcomm NPU
+        uses: ./.github/actions/setup-hexagon-sdk
+
+      - name: Set up C/C++ compiler cache
+        uses: ./.github/actions/setup-ccache
+
+      - name: Create CI-only Firebase configuration
+        shell: bash
+        run: |
+          mkdir -p android/app
+          cat > android/app/google-services.json <<'JSON'
+          {
+            "project_info": {
+              "project_number": "000000000000",
+              "project_id": "localmind-ci",
+              "storage_bucket": "localmind-ci.appspot.com"
+            },
+            "client": [{
+              "client_info": {
+                "mobilesdk_app_id": "1:000000000000:android:0000000000000000",
+                "android_client_info": { "package_name": "com.pocketpalai" }
+              },
+              "api_key": [{ "current_key": "localmind-ci-dummy-key" }]
+            }]
+          }
+          JSON
+          cat > .env <<'ENV'
+          FIREBASE_FUNCTIONS_URL=https://localmind-ci.invalid
+          ENV
+
+      - name: Build and run Android unit tests
+        working-directory: android
+        shell: bash
+        run: |
+          set -o pipefail
+          chmod +x ./gradlew
+          ./gradlew --no-daemon --stacktrace --build-cache --parallel --console=plain --max-workers=4 \
+            -PreactNativeArchitectures=arm64-v8a \
+            testProdReleaseUnitTest assembleProdRelease 2>&1 | tee android-build.log
+
+      - name: Verify APK signature, ABI and native payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK="android/app/build/outputs/apk/prod/release/app-prod-release.apk"
+          test -s "$APK"
+          APKSIGNER="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n 1)"
+          test -n "$APKSIGNER"
+          "$APKSIGNER" verify --verbose --print-certs "$APK"
+          if unzip -Z1 "$APK" | grep -q '^lib/x86_64/'; then
+            echo "::error::x86_64 libraries found in an ARM64-only phone APK."
+            exit 1
+          fi
+          node scripts/verify-android-payload.js --apk "$APK" --report android-payload-report.txt
+          sha256sum "$APK"
+          ls -lh "$APK"
+
+      - name: Upload APK and build diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: LocalMind-Android-ARM64
+          path: |
+            android/app/build/outputs/apk/prod/release/app-prod-release.apk
+            android/android-build.log
+            android-payload-report.txt
+            android/app/build/reports/tests/testProdReleaseUnitTest/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Write build summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## LocalMind Android build"
+            echo ""
+            echo "- Branch: `$GITHUB_REF_NAME`"
+            echo "- Commit: `$GITHUB_SHA`"
+            if [ -s android/app/build/outputs/apk/prod/release/app-prod-release.apk ]; then
+              echo "- APK: built"
+              echo "- Size: $(du -h android/app/build/outputs/apk/prod/release/app-prod-release.apk | cut -f1)"
+              echo "- SHA-256: $(sha256sum android/app/build/outputs/apk/prod/release/app-prod-release.apk | cut -d' ' -f1)"
+            else
+              echo "- APK: not produced; inspect the build log artifact"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
