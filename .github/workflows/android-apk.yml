@@ -219,10 +219,10 @@ jobs:
         with:
           name: LocalMind-Android-ARM64
           path: |
-            android/app/build/outputs/apk/prod/release/app-prod-release.apk
+            android/app/build/outputs/apk/prod/debug/app-prod-debug.apk
             android/android-build.log
             android-payload-report.txt
-            android/app/build/reports/tests/testProdReleaseUnitTest/
+            android/app/build/reports/tests/testProdDebugUnitTest/
           if-no-files-found: warn
           retention-days: 30
 
@@ -236,7 +236,7 @@ jobs:
             echo "- Branch: $GITHUB_REF_NAME"
             echo "- Commit: $GITHUB_SHA"
             if [ -s android/app/build/outputs/apk/prod/release/app-prod-release.apk ]; then
-              echo "- APK: built"
+              echo "- APK: built (prodDebug; CI debug signing)"
               echo "- Size: $(du -h android/app/build/outputs/apk/prod/release/app-prod-release.apk | cut -f1)"
               echo "- SHA-256: $(sha256sum android/app/build/outputs/apk/prod/release/app-prod-release.apk | cut -d' ' -f1)"
             else
