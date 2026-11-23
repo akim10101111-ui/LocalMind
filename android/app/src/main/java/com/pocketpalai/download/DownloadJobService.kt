@@ -70,7 +70,10 @@ class DownloadJobService : JobService() {
         val kind = stopKind(params.stopReason)
         Log.d(TAG, "Job ${params.jobId} stopped: $kind (reason ${params.stopReason})")
         running.remove(params.jobId)?.let {
-            it.signal.stop(user = kind == StopKind.USER)
+            // A platform USER stop interrupts the background job; it is not the
+            // in-app Cancel action (which marks the database row CANCELLED first).
+            // Preserve the partial file and resume instead of showing a false failure.
+            it.signal.stop(user = false)
             it.job?.cancel()
         }
         return reschedules(kind)
@@ -92,6 +95,8 @@ class DownloadJobService : JobService() {
             else -> StopKind.SYSTEM
         }
 
-        fun reschedules(kind: StopKind): Boolean = kind == StopKind.SYSTEM
+        // Only an explicit app cancellation is terminal. Other scheduler stops
+        // retain the partial .part file and can be resumed by JobScheduler.
+        fun reschedules(kind: StopKind): Boolean = kind != StopKind.APP
     }
 }

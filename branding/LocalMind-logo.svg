@@ -1,15 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300" fill="none">
-  <defs>
-    <linearGradient id="localmindHalo" x1="99" y1="126" x2="201" y2="126" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#F2B6FF"/>
-      <stop offset="0.24" stop-color="#FF4BCB"/>
-      <stop offset="0.52" stop-color="#FF246F"/>
-      <stop offset="0.76" stop-color="#FF493D"/>
-      <stop offset="1" stop-color="#FFB681"/>
-    </linearGradient>
-  </defs>
-  <path d="M109 167.5C101.4 156.8 97.7 143.5 97.7 130.4C97.7 97.5 120.3 73.5 150.2 73.5C180.1 73.5 202.3 97.5 202.3 130.4C202.3 143.7 198.7 156.4 191 167.5" stroke="url(#localmindHalo)" stroke-width="9.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="132.2" cy="141.4" r="8.8" fill="#FFFFFF"/>
-  <circle cx="164.1" cy="141.4" r="8.8" fill="#FFFFFF"/>
-  <path d="M119.2 181.2C126.8 173.4 168.5 173.2 177.1 181.4C184.2 188.1 174 196.1 159.7 198.1L148.1 207.6V197.9C135.4 198.3 123.9 195.5 118.4 190.6C114.6 187.3 115.3 184.8 119.2 181.2Z" fill="#FFFFFF"/>
+<defs>
+<linearGradient id="lmHalo" x1="48" y1="150" x2="252" y2="150" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#E51BFF"/><stop offset="0.27" stop-color="#F51CCB"/><stop offset="0.55" stop-color="#FF315F"/><stop offset="0.8" stop-color="#FF6A32"/><stop offset="1" stop-color="#FFB13D"/></linearGradient>
+<linearGradient id="lmShell" x1="82" y1="86" x2="213" y2="269" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFFFFF"/><stop offset="0.58" stop-color="#F8F7FF"/><stop offset="1" stop-color="#DED5FF"/></linearGradient>
+<linearGradient id="lmShellEdge" x1="85" y1="92" x2="200" y2="263" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#BDAEFF"/></linearGradient>
+</defs>
+<path d="M73 174C58 159 48 138 48 116C48 91 58 69 76 55C95 40 119 34 150 34C181 34 205 40 224 55C242 69 252 91 252 116C252 138 242 159 227 174" stroke="url(#lmHalo)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M52 149C52 111 83 91 120 91H180C217 91 248 111 248 149V204C248 239 219 251 181 251H154L139 260C135 264 127 261 129 255L131 251H111C78 251 52 232 52 204V149Z" fill="url(#lmShell)" stroke="url(#lmShellEdge)" stroke-width="2.2" stroke-linejoin="round"/>
+<path d="M69 148C69 117 94 100 124 100H178C207 100 231 119 231 149" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" opacity="0.95"/>
+<path d="M86 155C86 133 103 116 126 116H174C197 116 214 133 214 155V203C214 225 197 241 174 241H126C103 241 86 225 86 203V155Z" fill="#080811"/>
+<circle cx="126.5" cy="180" r="15.7" fill="#FFFFFF"/><circle cx="175.5" cy="180" r="15.7" fill="#FFFFFF"/>
+<path d="M109 254C120 255 133 255 145 253" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" opacity="0.72"/>
 </svg>

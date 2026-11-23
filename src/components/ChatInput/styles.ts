@@ -78,7 +78,7 @@ export const createStyles = ({
     },
     input: {
       ...theme.fonts.inputTextStyle,
-      color: theme.colors.inverseOnSurface,
+      color: theme.colors.onSurface,
       flex: 1,
       maxHeight: 150,
       paddingVertical: 0,
@@ -91,12 +91,14 @@ export const createStyles = ({
       flexDirection: 'column',
       borderRadius: 12,
       overflow: 'hidden',
+      backgroundColor: theme.colors.surface,
     },
     textInputArea: {
       flex: 1,
       paddingHorizontal: 24,
       paddingTop: 20,
       paddingBottom: 8,
+      backgroundColor: theme.colors.surface,
     },
     controlBar: {
       flexDirection: 'row',
@@ -105,6 +107,7 @@ export const createStyles = ({
       paddingHorizontal: 24,
       paddingVertical: 10,
       minHeight: 36,
+      backgroundColor: theme.colors.surface,
     },
     leftControls: {
       flexDirection: 'row',
@@ -149,12 +152,12 @@ export const createStyles = ({
     },
     palNameWrapper: {
       ...fontStyles.regular,
-      color: theme.colors.inverseOnSurface,
+      color: theme.colors.onSurface,
       fontSize: 12,
     },
     palName: {
       fontSize: 12,
-      color: theme.colors.inverseOnSurface,
+      color: theme.colors.onSurface,
       ...fontStyles.semibold,
     },
     // New compact pal name styles for control bar
@@ -162,12 +165,12 @@ export const createStyles = ({
       flexShrink: 1,
       fontSize: 10,
       ...fontStyles.regular,
-      color: theme.colors.inverseOnSurface,
+      color: theme.colors.onSurface,
     },
     palNameValueCompact: {
       fontSize: 10,
       ...fontStyles.semibold,
-      color: theme.colors.inverseOnSurface,
+      color: theme.colors.onSurface,
     },
     // Image preview styles
     imagePreviewContainer: {

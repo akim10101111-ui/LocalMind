@@ -418,7 +418,8 @@ export const ChatInput = observer(
       outputRange: ['0deg', '180deg'],
     });
 
-    const onSurfaceColor = currentActivePal?.color?.[0] || theme.colors.text;
+    // Preset colors are not theme-aware; keep composer text accessible in both themes.
+    const onSurfaceColor = theme.colors.onSurface;
     const onSurfaceColorVariant = onSurfaceColor + '55'; // for disabled state or placeholder text
     // // Plus button state
     const isPlusButtonEnabled = !isStreaming && isVisionEnabled;

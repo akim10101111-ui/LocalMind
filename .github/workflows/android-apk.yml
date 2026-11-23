@@ -128,8 +128,9 @@ jobs:
       - name: Restore enriched Markdown native assets
         run: INIT_CWD="$GITHUB_WORKSPACE" node node_modules/react-native-enriched-markdown/postinstall.mjs
 
-      - name: Verify font and localization assets
+      - name: Generate LocalMind launcher icons and verify assets
         run: |
+          node scripts/generate-app-icons.js
           node scripts/validate-l10n.js
           node scripts/verify-fonts.js
 
@@ -229,7 +230,6 @@ jobs:
             android/app/build/outputs/apk/prod/debug/app-prod-debug.apk
             android/android-build.log
             android-payload-report.txt
-            android/app/build/reports/tests/testProdDebugUnitTest/
           if-no-files-found: warn
           retention-days: 30
 

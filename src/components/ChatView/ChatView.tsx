@@ -1161,9 +1161,9 @@ export const ChatView = observer(
     }, []);
 
     // ============ COMPUTED VALUES ============
-    const inputBackgroundColor = activePal?.color?.[1]
-      ? activePal.color?.[1]
-      : theme.colors.surface;
+    // The composer must follow the app theme. Legacy assistant presets can
+    // carry fixed light colors; using them here caused a white composer in dark mode.
+    const inputBackgroundColor = theme.colors.surface;
 
     // Soft cap: warn the user before the 5th HTML preview in this session.
     // Memory pressure on budget Android becomes a hazard above 5 WebViews;

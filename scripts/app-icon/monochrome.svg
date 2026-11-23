@@ -1,15 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-28 -28 168 168">
-  <defs>
-    <clipPath id="pal-clip">
-      <path d="M0.643678 112C51.0157 100.937 105.422 48.4766 112 0L115.7994 -28H-28V118.2909Z"/>
-    </clipPath>
-  </defs>
-  <g clip-path="url(#pal-clip)">
-    <g id="pal">
-      <path id="silhouette" d="M25.1408 68.3751C16.2327 53.406 21.1461 34.0497 36.1152 25.1416C51.0843 16.2335 70.4406 21.1469 79.3487 36.116L95.4783 63.2199L41.2704 95.479L25.1408 68.3751ZM34.7873 55.7058A2.57471 2.57471 0 0 1 39.2124 53.0724L47.4418 66.9009A2.57471 2.57471 0 0 1 43.0167 69.5343ZM59.6789 40.8931A2.57471 2.57471 0 0 1 64.104 38.2597L72.3334 52.0882A2.57471 2.57471 0 0 1 67.9083 54.7216ZM53.9791 62.7819L61.1699 58.5027L61.9928 59.8855C63.1745 61.8712 62.5228 64.4389 60.5371 65.6206C58.5514 66.8023 55.9837 66.1505 54.802 64.1648L53.9791 62.7819Z" fill="#FFFFFF" fill-rule="evenodd"/>
-    </g>
-  </g>
-  <g id="pocket-gap" transform="translate(5 5)">
-    <path id="pocket-edge" d="M-33 119.389L0.643678 112C51.0157 100.937 105.422 48.4766 112 0L116.4779 -33" fill="none" stroke="#FFFFFF" stroke-width="5.7931" stroke-linecap="round"/>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-28 -28 168 168"><g transform="scale(0.3733333333)">
+<path id="halo" d="M73 174C58 159 48 138 48 116C48 91 58 69 76 55C95 40 119 34 150 34C181 34 205 40 224 55C242 69 252 91 252 116C252 138 242 159 227 174" fill="none" stroke="#FFFFFF" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="shell" d="M52 149C52 111 83 91 120 91H180C217 91 248 111 248 149V204C248 239 219 251 181 251H154L139 260C135 264 127 261 129 255L131 251H111C78 251 52 232 52 204V149Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="2.2" stroke-linejoin="round"/>
+</g></svg>
