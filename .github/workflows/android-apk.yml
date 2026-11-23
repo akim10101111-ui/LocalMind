@@ -196,14 +196,8 @@ jobs:
             -PreactNativeArchitectures=arm64-v8a \
             assembleProdDebug 2>&1 | tee android-build.log
 
-      - name: Run Android unit tests
-        working-directory: android
-        shell: bash
-        run: |
-          set -o pipefail
-          ./gradlew --no-daemon --stacktrace --build-cache --parallel --console=plain --max-workers=4 \
-            -PreactNativeArchitectures=arm64-v8a \
-            testProdDebugUnitTest 2>&1 | tee -a android-build.log
+      # Unit tests are run separately on demand; keeping this APK workflow focused
+      # avoids slow Maven/Robolectric dependency downloads blocking phone builds.
 
       - name: Verify APK signature, ABI and native payload
         if: always()
