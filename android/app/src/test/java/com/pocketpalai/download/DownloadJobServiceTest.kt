@@ -27,9 +27,9 @@ class DownloadJobServiceTest {
     }
 
     @Test
-    fun onlySystemStopsReschedule() {
+    fun appCancellationIsTerminalButPlatformStopsResume() {
         assertTrue(DownloadJobService.reschedules(StopKind.SYSTEM))
-        assertFalse(DownloadJobService.reschedules(StopKind.USER))
+        assertTrue(DownloadJobService.reschedules(StopKind.USER))
         assertFalse(DownloadJobService.reschedules(StopKind.APP))
     }
 }

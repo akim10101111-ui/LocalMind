@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="-28 -28 168 168"><g transform="scale(0.3733333333)">
-<path id="halo-base" d="M73 174C58 159 48 138 48 116C48 91 58 69 76 55C95 40 119 34 150 34C181 34 205 40 224 55C242 69 252 91 252 116C252 138 242 159 227 174" fill="none" stroke="#E51BFF" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
-<path id="halo-red" d="M150 34C181 34 205 40 224 55C242 69 252 91 252 116C252 138 242 159 227 174" fill="none" stroke="#FF365D" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
-<path id="halo-orange" d="M218 70C240 88 252 112 248 139C245 154 237 166 227 174" fill="none" stroke="#FF9A32" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
-<path id="shell" d="M52 149C52 111 83 91 120 91H180C217 91 248 111 248 149V204C248 239 219 251 181 251H154L139 260C135 264 127 261 129 255L131 251H111C78 251 52 232 52 204V149Z" fill="#F8F7FF" stroke="#BDAEFF" stroke-width="2.2" stroke-linejoin="round"/>
+<path id="halo-base" d="M73 174C58 159 48 138 48 116C48 91 58 69 76 55C95 40 119 34 150 34C181 34 205 40 224 55C242 69 252 91 252 116C252 138 242 159 227 174" fill="none" stroke="#E51BFF" stroke-width="18" stroke-linecap="round"/>
+<path id="halo-red" d="M150 34C181 34 205 40 224 55C242 69 252 91 252 116C252 138 242 159 227 174" fill="none" stroke="#FF365D" stroke-width="18" stroke-linecap="round"/>
+<path id="halo-orange" d="M218 70C240 88 252 112 248 139C245 154 237 166 227 174" fill="none" stroke="#FF9A32" stroke-width="18" stroke-linecap="round"/>
+<path id="shell" d="M52 149C52 111 83 91 120 91H180C217 91 248 111 248 149V204C248 239 219 251 181 251H154L139 260C135 264 127 261 129 255L131 251H111C78 251 52 232 52 204V149Z" fill="#F8F7FF" stroke="#BDAEFF" stroke-width="2.2"/>
 <path id="shell-highlight" d="M69 148C69 117 94 100 124 100H178C207 100 231 119 231 149" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round"/>
 <path id="face" d="M86 155C86 133 103 116 126 116H174C197 116 214 133 214 155V203C214 225 197 241 174 241H126C103 241 86 225 86 203V155Z" fill="#080811"/>
 <path id="eye-left" d="M142.2 180C142.2 188.7 135.2 195.7 126.5 195.7C117.8 195.7 110.8 188.7 110.8 180C110.8 171.3 117.8 164.3 126.5 164.3C135.2 164.3 142.2 171.3 142.2 180Z" fill="#FFFFFF"/>

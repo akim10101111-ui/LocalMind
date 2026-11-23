@@ -86,36 +86,7 @@ export const createStyles = (theme: Theme, insets: EdgeInsets) =>
       borderWidth: 1,
       borderColor: theme.colors.surfaceVariant,
     },
-    orText: {
-      ...theme.fonts.bodyMedium,
-      color: theme.colors.onSurfaceVariant,
-      textAlign: 'center',
-      marginVertical: theme.spacing.default,
-      opacity: 0.7,
-    },
-    feedbackButtonContent: {
-      flexDirection: 'row-reverse',
-    },
-    feedbackForm: {
-      padding: theme.spacing.default,
-    },
-    field: {
-      marginBottom: theme.spacing.default,
-    },
-    label: {
-      ...theme.fonts.labelMedium,
-      color: theme.colors.onSurface,
-      marginBottom: theme.spacing.default / 2,
-    },
-    segmentedButtons: {
-      marginTop: theme.spacing.default / 2,
-    },
-    submitButton: {
-      marginTop: theme.spacing.default,
-    },
-    secondaryButtons: {
-      flexDirection: 'row',
-    },
+
     legalRow: {
       flexDirection: 'row',
       flexWrap: 'wrap',
