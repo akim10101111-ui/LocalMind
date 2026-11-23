@@ -194,7 +194,7 @@ jobs:
           chmod +x ./gradlew
           ./gradlew --no-daemon --stacktrace --build-cache --parallel --console=plain --max-workers=4 \
             -PreactNativeArchitectures=arm64-v8a \
-            testProdReleaseUnitTest assembleProdRelease 2>&1 | tee android-build.log
+            testProdDebugUnitTest assembleProdRelease 2>&1 | tee android-build.log
 
       - name: Verify APK signature, ABI and native payload
         shell: bash
