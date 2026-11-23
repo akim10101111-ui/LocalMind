@@ -1,0 +1,24 @@
+Your AI. On your device.
+
+LocalMind lets you run compatible open language models directly on your Android phone. Download a model, load it on your hardware, and chat without sending your prompts to a hosted AI service.
+
+WHAT YOU CAN DO
+
+- Download and manage GGUF models from Hugging Face or import compatible files
+- Chat locally and keep your conversation history on the device
+- Adjust generation parameters and context size
+- Use optional on-device speech recognition and text-to-speech
+- Analyse images with supported vision models
+- Use built-in tools such as calculation, date/time and HTML rendering
+- Benchmark model speed and memory on your phone
+- Expose the currently loaded model through an optional, API-key-protected local HTTP server
+
+LOCAL BY DEFAULT
+
+Local model inference and saved conversations stay on your device. Internet access is used for actions that need it, such as downloading models, searching Hugging Face, configured web search, or connecting to a remote model endpoint.
+
+HARDWARE MATTERS
+
+Model size, quantization, context length and available memory all affect performance. Start with a smaller quantized model and use the built-in benchmark to find what works well on your phone.
+
+LocalMind is open source. Review the source code and build the app yourself if you want to inspect how it works.
