@@ -139,50 +139,6 @@
         }
       ],
       "requiredAssetElfMachine": 164
-    },
-    {
-      "abi": "x86_64",
-      "requiredLibs": [
-        "librnllama.so",
-        "librnllama_jni.so",
-        "librnllama_x86_64.so",
-        "librnllama_jni_x86_64.so"
-      ],
-      "requiredAssets": [],
-      "requiredSymbols": [
-        {
-          "lib": "librnllama.so",
-          "kind": "patch-marker",
-          "mustExport": [
-            "rnllama_patch_abort_v3"
-          ],
-          "why": "The llama.rn patch in patches/ is not in this library: patch-package must apply it at install and llama.rn must be built from source (ORG_GRADLE_PROJECT_rnllamaBuildFromSource=true)."
-        },
-        {
-          "lib": "librnllama_jni.so",
-          "kind": "patch-marker",
-          "mustExport": [
-            "rnllama_jsi_patch_ownership_v3"
-          ],
-          "why": "The llama.rn patch in patches/ is not in this library: patch-package must apply it at install and llama.rn must be built from source (ORG_GRADLE_PROJECT_rnllamaBuildFromSource=true)."
-        },
-        {
-          "lib": "librnllama_x86_64.so",
-          "kind": "patch-marker",
-          "mustExport": [
-            "rnllama_patch_abort_v3"
-          ],
-          "why": "The llama.rn patch in patches/ is not in this library: patch-package must apply it at install and llama.rn must be built from source (ORG_GRADLE_PROJECT_rnllamaBuildFromSource=true)."
-        },
-        {
-          "lib": "librnllama_jni_x86_64.so",
-          "kind": "patch-marker",
-          "mustExport": [
-            "rnllama_jsi_patch_ownership_v3"
-          ],
-          "why": "The llama.rn patch in patches/ is not in this library: patch-package must apply it at install and llama.rn must be built from source (ORG_GRADLE_PROJECT_rnllamaBuildFromSource=true)."
-        }
-      ]
     }
   ]
 }
