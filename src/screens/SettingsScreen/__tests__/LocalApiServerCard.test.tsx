@@ -5,6 +5,17 @@ import {runInAction} from 'mobx';
 import {render} from '../../../../jest/test-utils';
 import {mockLocalApiServerStore as store} from '../../../../__mocks__/stores/localApiServerStore';
 
+jest.mock('../../../store', () => {
+  const apiStore =
+    require('../../../../__mocks__/stores/localApiServerStore');
+  const models = require('../../../../__mocks__/stores/modelStore');
+  return {
+    isValidLocalApiPort: apiStore.isValidLocalApiPort,
+    localApiServerStore: apiStore.mockLocalApiServerStore,
+    modelStore: models.mockModelStore,
+  };
+});
+
 import {LocalApiServerCard} from '../LocalApiServerCard';
 
 
