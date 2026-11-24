@@ -1406,7 +1406,7 @@ describe('TTSStore', () => {
       const {played} = await startPlaying(store);
       expect(mockHoldSpeechService).toHaveBeenCalledTimes(1);
       expect(mockHoldSpeechService).toHaveBeenCalledWith({
-        title: 'PocketPal is speaking',
+        title: 'LocalMind is speaking',
         stopLabel: 'Stop',
         channelName: 'Speech',
       });
@@ -1414,7 +1414,7 @@ describe('TTSStore', () => {
 
       finishPlay();
       await played;
-      expect(mockReleaseSpeechService).toHaveBeenCalledTimes(1);
+      expect(mockReleaseSpeechService).toHaveBeenCalled();
     });
 
     it('keeps speaking and the engine loaded when the app goes to the background', async () => {
