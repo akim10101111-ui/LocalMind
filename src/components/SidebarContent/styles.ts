@@ -62,7 +62,7 @@ export const createStyles = (theme: MD3Theme) =>
     brandMark: {
       width: 48,
       height: 48,
-      borderRadius: 14,
+      borderRadius: 16,
       backgroundColor: '#08080D',
       alignItems: 'center',
       justifyContent: 'center',
@@ -82,11 +82,11 @@ export const createStyles = (theme: MD3Theme) =>
       marginTop: 2,
     },
     newChatButton: {
-      minHeight: 48,
+      minHeight: 50,
       marginHorizontal: 16,
       marginBottom: 10,
       paddingHorizontal: 16,
-      borderRadius: 14,
+      borderRadius: 16,
       backgroundColor: theme.colors.primary,
       flexDirection: 'row',
       alignItems: 'center',
