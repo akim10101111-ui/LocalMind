@@ -232,7 +232,7 @@ describe('the variant allowlist', () => {
     const {status, output} = runGate(['--print-variants']);
     expect(status).toBe(0);
     expect(output.trim()).toBe(
-      'rnllama,rnllama_v8,rnllama_v8_2,rnllama_v8_2_dotprod,rnllama_v8_2_dotprod_i8mm,rnllama_v8_2_dotprod_i8mm_hexagon_opencl,rnllama_x86_64',
+      'rnllama,rnllama_v8,rnllama_v8_2,rnllama_v8_2_dotprod,rnllama_v8_2_dotprod_i8mm,rnllama_v8_2_dotprod_i8mm_hexagon_opencl',
     );
   });
 
@@ -428,11 +428,11 @@ describe('the llama.rn patch markers', () => {
 
   it('fails when a JNI wrapper lacks the JSI marker', () => {
     const entries = conformingEntries();
-    entries['lib/x86_64/librnllama_jni_x86_64.so'] = PLAIN_ELF;
+    entries['lib/arm64-v8a/librnllama_jni.so'] = PLAIN_ELF;
     const {status, output} = gateApk(entries);
     expect(status).toBe(1);
     expect(output).toContain(
-      `lib/x86_64/librnllama_jni_x86_64.so in app-prod-release.apk does not export ${JSI_PATCH_MARKER}`,
+      `lib/arm64-v8a/librnllama_jni.so in app-prod-release.apk does not export ${JSI_PATCH_MARKER}`,
     );
   });
 
@@ -811,14 +811,10 @@ describe('a check that cannot run', () => {
     [
       'an accelerator ABI with no symbol rule, even when another ABI has one',
       abis => {
+        const secondAbi = JSON.parse(JSON.stringify(abis[0]));
+        secondAbi.abi = 'x86_64';
+        abis.push(secondAbi);
         abis[0].requiredSymbols = [];
-        abis[1].requiredSymbols = [
-          {
-            lib: 'librnllama_x86_64.so',
-            kind: 'backend',
-            mustExport: ['lm_ggml_backend_reg_count'],
-          },
-        ];
       },
       'no symbol rule',
     ],
@@ -839,13 +835,11 @@ describe('a check that cannot run', () => {
     expect(output).toContain(fragment);
   });
 
-  it('reports the assets row even when none are declared', () => {
+  it('reports the assets row for the shipped accelerator ABI', () => {
     // The summary claims assets were checked, so a manifest declaring none
     // must be visible in the report rather than simply omitting the line.
-    // x86_64 declares no assets, which is legitimate — it carries no
-    // accelerator. The committed manifest already has this shape.
     const {output} = gateApk(conformingEntries());
-    expect(output).toContain('assets: 0/0 present');
+    expect(output).toContain('assets: 5/5 present');
   });
 
   // A new fail-closed assertion with no test is how the previous holes became
@@ -861,7 +855,7 @@ describe('a check that cannot run', () => {
 
   it('reports the ABI trees it found, so the enumeration is visible', () => {
     const {output} = gateApk(conformingEntries());
-    expect(output).toContain('ABIs in the artifact: arm64-v8a, x86_64');
+    expect(output).toContain('ABIs in the artifact: arm64-v8a');
   });
 
   it('enumerates ABI trees in a bundle too, under its base/ prefix', () => {
