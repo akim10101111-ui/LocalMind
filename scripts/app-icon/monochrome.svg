@@ -1,4 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-28 -28 168 168"><g transform="scale(0.3733333333)">
-<path id="halo" d="M73 174C58 159 48 138 48 116C48 91 58 69 76 55C95 40 119 34 150 34C181 34 205 40 224 55C242 69 252 91 252 116C252 138 242 159 227 174" fill="none" stroke="#FFFFFF" stroke-width="18" stroke-linecap="round"/>
-<path id="shell" d="M52 149C52 111 83 91 120 91H180C217 91 248 111 248 149V204C248 239 219 251 181 251H154L139 260C135 264 127 261 129 255L131 251H111C78 251 52 232 52 204V149Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="2.2"/>
-</g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-28 -28 168 168"><g transform="scale(0.3733333333)"><path id="orbit-a" d="M150 48C206 48 252 94 252 150C252 206 206 252 150 252C94 252 48 206 48 150C48 94 94 48 150 48Z" fill="none" stroke="#FFFFFF" stroke-width="13"/>
+<path id="orbit-b" d="M73 91C109 55 191 55 227 91C263 127 263 173 227 209C191 245 109 245 73 209C37 173 37 127 73 91Z" fill="none" stroke="#FFFFFF" stroke-width="11"/>
+<path id="link-left" d="M150 150L91 112" fill="none" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round"/>
+<path id="link-right" d="M150 150L209 112" fill="none" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round"/>
+<path id="link-bottom" d="M150 150L150 218" fill="none" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round"/>
+<path id="node-left" d="M108 112C108 121.389 100.389 129 91 129C81.611 129 74 121.389 74 112C74 102.611 81.611 95 91 95C100.389 95 108 102.611 108 112Z" fill="#FFFFFF"/>
+<path id="node-right" d="M226 112C226 121.389 218.389 129 209 129C199.611 129 192 121.389 192 112C192 102.611 199.611 95 209 95C218.389 95 226 102.611 226 112Z" fill="#FFFFFF"/>
+<path id="node-bottom" d="M167 218C167 227.389 159.389 235 150 235C140.611 235 133 227.389 133 218C133 208.611 140.611 201 150 201C159.389 201 167 208.611 167 218Z" fill="#FFFFFF"/>
+<path id="core" d="M181 150C181 167.121 167.121 181 150 181C132.879 181 119 167.121 119 150C119 132.879 132.879 119 150 119C167.121 119 181 132.879 181 150Z" fill="#FFFFFF"/></g></svg>
