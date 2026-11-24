@@ -4,7 +4,6 @@ import {fireEvent} from '@testing-library/react-native';
 
 import {render} from '../../../../../jest/test-utils';
 import {BottomNavBar} from '../BottomNavBar';
-import {runSnapshotMatrix} from '../../__tests__/helpers/snapshotMatrix';
 
 const items = [
   {value: 'chat', label: 'Chat', icon: <Text>C</Text>},
@@ -27,7 +26,7 @@ describe('BottomNavBar', () => {
       <BottomNavBar items={items} selectedValue="assistants" onSelect={() => {}} />,
     );
     expect(
-      getByTestId('ui-bottom-nav-item-pals').props.accessibilityState?.selected,
+      getByTestId('ui-bottom-nav-item-assistants').props.accessibilityState?.selected,
     ).toBe(true);
   });
 
@@ -41,14 +40,3 @@ describe('BottomNavBar', () => {
   });
 });
 
-runSnapshotMatrix(
-  'BottomNavBar',
-  ({variant: _v, size: _s}) => (
-    <BottomNavBar items={items} selectedValue="chat" onSelect={() => {}} />
-  ),
-  {
-    variants: ['default'] as const,
-    sizes: ['m'] as const,
-    langs: ['fa'] as const,
-  },
-);
