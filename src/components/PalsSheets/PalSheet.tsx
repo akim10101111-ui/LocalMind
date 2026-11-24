@@ -94,10 +94,7 @@ export const PalSheet: React.FC<PalSheetProps> = observer(
       const baseSchema = z.object({
         name: z
           .string()
-          .min(
-            1,
-            l10n.components.assistantEditorSheet.validation.nameRequired,
-          ),
+          .min(1, l10n.components.assistantEditorSheet.validation.nameRequired),
         description: z.string().nullable().optional(),
         defaultModel: z.any().optional(),
         useAIPrompt: z.boolean(),
@@ -214,13 +211,15 @@ export const PalSheet: React.FC<PalSheetProps> = observer(
         if (!formState.generatingPrompt) {
           methods.setError('generatingPrompt', {
             message:
-              l10n.components.assistantEditorSheet.validation.generatingPromptRequired,
+              l10n.components.assistantEditorSheet.validation
+                .generatingPromptRequired,
           });
         }
         if (!formState.promptGenerationModel) {
           methods.setError('promptGenerationModel', {
             message:
-              l10n.components.assistantEditorSheet.validation.promptModelRequired,
+              l10n.components.assistantEditorSheet.validation
+                .promptModelRequired,
           });
         }
         return Boolean(
@@ -438,16 +437,19 @@ export const PalSheet: React.FC<PalSheetProps> = observer(
                 {pal.id && (
                   <>
                     <SectionDivider
-                      label={l10n.components.assistantEditorSheet
-                            .generationSettings}
+                      label={
+                        l10n.components.assistantEditorSheet.generationSettings
+                      }
                     />
                     <View style={styles.generationSettingsSection}>
                       <Button
                         mode="outlined"
                         onPress={handleOpenGenerationSettings}
                         style={styles.generationSettingsButton}>
-                        {l10n.components.assistantEditorSheet
-                            .configureGenerationSettings}
+                        {
+                          l10n.components.assistantEditorSheet
+                            .configureGenerationSettings
+                        }
                       </Button>
                     </View>
                   </>
