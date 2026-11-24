@@ -818,7 +818,7 @@ describe('DownloadManager', () => {
     expect(RNFS.downloadFile).toHaveBeenCalledWith(
       expect.objectContaining({
         headers: expect.objectContaining({
-          'User-Agent': 'PocketPal/1.0.0 (ai.pocketpal)',
+          'User-Agent': 'LocalMind/1.0.0 (compatible; local inference app)',
         }),
       }),
     );
