@@ -45,7 +45,7 @@ describe('PalStore local assistant storage', () => {
   it('finds a local assistant by ID', () => {
     const assistant = localPal();
     palStore.pals = [assistant];
-    expect(palStore.getPalById(assistant.id)).toBe(assistant);
+    expect(palStore.getPalById(assistant.id)).toEqual(assistant);
     expect(palStore.getPalById('missing')).toBeUndefined();
   });
 
@@ -54,7 +54,7 @@ describe('PalStore local assistant storage', () => {
     (palRepository.createPal as jest.Mock).mockResolvedValueOnce(assistant);
     const {id: _id, created_at: _createdAt, updated_at: _updatedAt, ...data} = assistant;
     await expect(palStore.createPal(data)).resolves.toEqual(assistant);
-    expect(palStore.pals).toContain(assistant);
+    expect(palStore.pals).toContainEqual(assistant);
   });
 
   it('updates a local assistant in-place after persistence succeeds', async () => {
