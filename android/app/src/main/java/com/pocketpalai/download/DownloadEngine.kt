@@ -233,9 +233,14 @@ class DownloadEngine(
                     val range = CONTENT_RANGE.find(response.header("Content-Range").orEmpty())
                         ?: return Attempt.Restart
                     val start = range.groupValues[1].toLong()
+                    val end = range.groupValues[2].toLong()
                     val total = range.groupValues[3].toLongOrNull() ?: 0
+                    val bodyLength = response.body?.contentLength() ?: -1
                     val responseEtag = strongEtag(response)
                     val valid = start == offset &&
+                        end >= start &&
+                        (total == 0L || end < total) &&
+                        (bodyLength < 0 || bodyLength == end - start + 1) &&
                         (totalBytes <= 0 || total == totalBytes) &&
                         (etag == null || responseEtag == null || responseEtag == etag)
                     if (!valid) return Attempt.Restart
@@ -286,19 +291,35 @@ class DownloadEngine(
             var lastProgressAt = now()
             val buffer = ByteArray(BUFFER_SIZE)
             while (true) {
+                if (signal.stopped) return Attempt.Finished(End.Stopped)
                 val read = input.read(buffer)
                 if (read < 0) break
                 storage { out.write(buffer, 0, read) }
                 written += read
                 bytesWritten += read
                 lastByteAt = now()
-                if (signal.stopped) return Attempt.Finished(End.Stopped)
                 if (lastByteAt - lastProgressAt >= progressIntervalMs) {
                     lastProgressAt = lastByteAt
                     storage { out.flush() }
                     if (dao.writeProgress(row.id, written, totalBytes) == 0) return Attempt.Finished(End.Stopped)
                     onProgress(written, totalBytes)
                 }
+            }
+
+            // Some model CDNs close a response cleanly before the advertised
+            // Content-Length / Content-Range is reached. EOF is not success in
+            // that case: preserve the .part file and request the missing range.
+            // Previously this path committed a short file and marked the
+            // download failed, forcing users to start over.
+            if ((totalBytes > 0 && written < totalBytes) ||
+                (totalBytes > 0 && written > totalBytes)
+            ) {
+                storage { out.flush() }
+                if (written > totalBytes) {
+                    return Attempt.Finished(End.Failed(SIZE_MISMATCH_ERROR))
+                }
+                Log.w(TAG, "Short response for ${row.id}: $written/$totalBytes bytes; resuming")
+                return Attempt.Transient
             }
             return Attempt.Finished(End.Completed)
         }
