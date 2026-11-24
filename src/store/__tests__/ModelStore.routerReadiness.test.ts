@@ -6,6 +6,10 @@ import {streamChatCompletion} from '../../api/openai';
 import type {ServerType} from '../../utils/serverTypes';
 import {RemoteModelRequestWithdrawnError} from '../../utils/errors';
 
+jest.mock('../../services/deviceRules/rules', () => ({
+  fetchRules: jest.fn().mockResolvedValue(null),
+}));
+
 jest.mock('../ServerStore', () => ({
   serverStore: {
     getApiKey: jest.fn().mockResolvedValue(undefined),
