@@ -114,7 +114,6 @@ export function isValidGGUFFile(filename: string): boolean {
   return lowerFilename.endsWith('.gguf') && !isShardedGGUFFile(filename);
 }
 
-
 /**
  * Resolve a Hugging Face repository into the complete model shape used by
  * the model-details sheet. Model metadata and the recursive file tree are
