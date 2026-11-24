@@ -51,7 +51,7 @@ describe('YouProvider', () => {
     await provider.search('q', {maxResults: 3});
     const [, init] = (global.fetch as jest.Mock).mock.calls[0];
     expect(init.headers['User-Agent']).toMatch(
-      /^LocalMind\/\S+ \(ai\.pocketpal\) youdotcom-integration\/a-ghorbani-pocketpal-ai$/,
+      /^LocalMind\/\S+ \(compatible; local inference app\) youdotcom-integration\/a-ghorbani-pocketpal-ai$/,
     );
   });
 
