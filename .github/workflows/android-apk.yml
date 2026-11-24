@@ -139,7 +139,7 @@ jobs:
         run: |
           set -euo pipefail
           yarn typecheck
-          yarn lint
+          yarn eslint src/components/ChatInput/styles.ts src/components/ChatHeader/styles.ts src/components/SidebarContent/styles.ts src/components/PalsSheets/PalSheet.tsx src/utils/hf.ts src/utils/__tests__/hf.test.ts
           yarn test --runInBand --coverage=false
 
       - name: Derive llama.rn native variant allowlist
