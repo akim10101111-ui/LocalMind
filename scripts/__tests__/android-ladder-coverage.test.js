@@ -93,7 +93,11 @@ function buildSignature({name, arch, flags}) {
 }
 
 function abisFor(site) {
-  return site.abi ? [site.abi] : manifest.abis.map(entry => entry.abi);
+  const shippedAbis = manifest.abis.map(entry => entry.abi);
+  if (site.abi) {
+    return shippedAbis.includes(site.abi) ? [site.abi] : [];
+  }
+  return shippedAbis;
 }
 
 function requiredLibsFor(abi) {
