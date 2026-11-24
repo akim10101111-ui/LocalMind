@@ -10,9 +10,7 @@ const mockFetchModelInfo = fetchModelInfo as jest.MockedFunction<
   typeof fetchModelInfo
 >;
 const mockFetchModelFilesDetails =
-  fetchModelFilesDetails as jest.MockedFunction<
-    typeof fetchModelFilesDetails
-  >;
+  fetchModelFilesDetails as jest.MockedFunction<typeof fetchModelFilesDetails>;
 
 describe('resolveHFRepo', () => {
   beforeEach(() => {
