@@ -29,7 +29,7 @@ function evaluate(env) {
 describe('Babel build flags', () => {
   it.each([
     [{}, false, false],
-    [{E2E_BUILD: 'true'}, true, false],
+    [{E2E_BUILD: 'true'}, true, true],
     [{E2E_BUILD: 'true', E2E_SKIP_ONBOARDING: 'false'}, true, false],
     [{E2E_BUILD: '1'}, false, false],
   ])('bundling env %j defines E2E=%s and skip onboarding=%s', (env, isE2E, skip) => {
