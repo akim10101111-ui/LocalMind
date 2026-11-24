@@ -1,12 +1,9 @@
 import React from 'react';
 
-import Clipboard from '@react-native-clipboard/clipboard';
 import {runInAction} from 'mobx';
-import {Keyboard} from 'react-native';
 
-import {render, fireEvent, act} from '../../../../jest/test-utils';
+import {render} from '../../../../jest/test-utils';
 import {mockLocalApiServerStore as store} from '../../../../__mocks__/stores/localApiServerStore';
-import {mockModelStore} from '../../../../__mocks__/stores/modelStore';
 
 import {LocalApiServerCard} from '../LocalApiServerCard';
 
@@ -39,3 +36,27 @@ jest.mock('../../../components/Sheet/Sheet', () => {
 
 const setState = (state: Partial<typeof store>) =>
   runInAction(() => Object.assign(store, state));
+
+describe('LocalApiServerCard', () => {
+  beforeEach(() => {
+    setState({
+      enabled: false,
+      status: 'stopped',
+      lastError: undefined,
+      port: 8080,
+      lanEnabled: false,
+      hasApiKey: false,
+      lanAddress: undefined,
+      baseUrl: undefined,
+      servedModelId: undefined,
+    });
+    jest.clearAllMocks();
+  });
+
+  it('renders the local API server settings and editable port', () => {
+    const {getByTestId} = render(<LocalApiServerCard />);
+    expect(getByTestId('local-api-server-card')).toBeTruthy();
+    expect(getByTestId('local-api-server-port-input')).toBeTruthy();
+    expect(getByTestId('local-api-server-switch')).toBeTruthy();
+  });
+});
