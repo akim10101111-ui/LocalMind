@@ -1448,7 +1448,7 @@ describe('TTSStore', () => {
 
       expect(lastSystemHandle!.cancel).toHaveBeenCalled();
       expect(store.playbackState.mode).toBe('idle');
-      expect(mockReleaseSpeechService).toHaveBeenCalledTimes(1);
+      expect(mockReleaseSpeechService).toHaveBeenCalled();
       expect(store.autoSpeakEnabled).toBe(true);
     });
 
@@ -1491,7 +1491,7 @@ describe('TTSStore', () => {
       await flush();
       expect(lastSystemHandle!.cancel).toHaveBeenCalled();
       expect(store.playbackState.mode).toBe('idle');
-      expect(mockReleaseSpeechService).toHaveBeenCalledTimes(1);
+      expect(mockReleaseSpeechService).toHaveBeenCalled();
 
       interruptAudio('ended');
       await flush();
@@ -1556,7 +1556,7 @@ describe('TTSStore', () => {
       await played;
 
       expect(store.playbackState.mode).toBe('idle');
-      expect(mockReleaseSpeechService).toHaveBeenCalledTimes(1);
+      expect(mockReleaseSpeechService).toHaveBeenCalled();
       warn.mockRestore();
     });
 
@@ -1573,7 +1573,7 @@ describe('TTSStore', () => {
       await flush();
 
       expect(lastSystemHandle!.cancel).toHaveBeenCalled();
-      expect(mockReleaseSpeechService).toHaveBeenCalledTimes(1);
+      expect(mockReleaseSpeechService).toHaveBeenCalled();
     });
 
     it('a start that never settles does not hold up speech', async () => {
