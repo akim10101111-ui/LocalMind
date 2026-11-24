@@ -507,23 +507,24 @@ class DownloadEngineTest {
     }
 
     @Test
-    fun shortBodyAtCleanEofFailsAndDeletesPart() {
-        insert(totalBytes = content.size.toLong())
+    fun shortBodyAtCleanEofResumesFromLastReceivedByte() {
+        insert(totalBytes = content.size.toLong(), etag = E1)
         writePart(100)
-        serve({
-            MockResponse()
-                .setResponseCode(206)
-                .setHeader("Content-Range", "bytes 100-${content.size - 1}/${content.size}")
-                .setChunkedBody(Buffer().write(content.copyOfRange(100, content.size - 10)), 4096)
-        })
+        serve(
+            {
+                MockResponse()
+                    .setResponseCode(206)
+                    .setHeader("ETag", E1)
+                    .setHeader("Content-Range", "bytes 100-${content.size - 1}/${content.size}")
+                    .setChunkedBody(Buffer().write(content.copyOfRange(100, content.size - 10)), 4096)
+            },
+            { partial(content.size - 10).setHeader("ETag", E1) },
+        )
 
-        run()
+        assertEquals(Outcome.DONE, run())
 
-        assertEquals(DownloadStatus.FAILED, row().status)
-        assertEquals(DownloadEngine.SIZE_MISMATCH_ERROR, row().error)
-        assertEquals(0L, row().downloadedBytes)
-        assertFalse(part.exists())
-        assertFalse(destination.exists())
+        assertEquals("bytes=${content.size - 10}-", requests.last().getHeader("Range"))
+        assertCompleted()
     }
 
     @Test
