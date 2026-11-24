@@ -15,10 +15,11 @@ export const createStyles = ({
     container: {
       height: headerHeight,
       paddingTop: insets.top,
+      paddingHorizontal: 14,
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      gap: 10,
+      gap: 12,
     },
     leftSection: {
       flexDirection: 'row',
