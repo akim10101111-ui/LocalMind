@@ -354,10 +354,10 @@ export const PalSheet: React.FC<PalSheetProps> = observer(
                   }}
                   name="name"
                   label={
-                    l10n.components.assistantProfileSheet?.palName || 'Assistant name'
+                    l10n.components.assistantProfileSheet.assistantName || 'Assistant name'
                   }
                   placeholder={
-                    l10n.components.assistantProfileSheet?.palNamePlaceholder ||
+                    l10n.components.assistantProfileSheet.assistantNamePlaceholder ||
                     'Enter pal name'
                   }
                   required
