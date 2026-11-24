@@ -134,6 +134,14 @@ jobs:
           node scripts/validate-l10n.js
           node scripts/verify-fonts.js
 
+      - name: Run TypeScript, ESLint and Jest checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          yarn typecheck
+          yarn lint
+          yarn test --runInBand --coverage=false
+
       - name: Derive llama.rn native variant allowlist
         shell: bash
         run: |
