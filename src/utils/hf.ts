@@ -4,6 +4,7 @@
  */
 
 import {urls} from '../config';
+import {fetchModelFilesDetails, fetchModelInfo} from '../api/hf';
 import type {HuggingFaceModel, ModelFile} from './types';
 
 // Regex pattern for detecting sharded GGUF files
@@ -111,4 +112,48 @@ export function isShardedGGUFFile(filename: string): boolean {
 export function isValidGGUFFile(filename: string): boolean {
   const lowerFilename = filename.toLowerCase();
   return lowerFilename.endsWith('.gguf') && !isShardedGGUFFile(filename);
+}
+
+
+/**
+ * Resolve a Hugging Face repository into the complete model shape used by
+ * the model-details sheet. Model metadata and the recursive file tree are
+ * fetched in parallel; file entries are normalized through the same GGUF
+ * filtering and URL builder used by search results.
+ */
+export async function resolveHFRepo(
+  repoId: string,
+  authToken?: string | null,
+): Promise<HuggingFaceModel> {
+  const normalizedRepoId = repoId.trim();
+  if (!normalizedRepoId || !normalizedRepoId.includes('/')) {
+    throw new Error('A valid Hugging Face repository ID is required.');
+  }
+
+  const [info, fileDetails] = await Promise.all([
+    fetchModelInfo({repoId: normalizedRepoId, full: true, authToken}),
+    fetchModelFilesDetails(normalizedRepoId, authToken),
+  ]);
+
+  const author = normalizedRepoId.split('/')[0];
+  return {
+    _id: info._id ?? normalizedRepoId,
+    id: info.id ?? normalizedRepoId,
+    author: info.author ?? author,
+    gated: info.gated ?? false,
+    inference: info.inference ?? 'unknown',
+    lastModified: info.lastModified ?? '',
+    likes: info.likes ?? 0,
+    trendingScore: info.trendingScore ?? 0,
+    private: info.private ?? false,
+    sha: info.sha ?? '',
+    downloads: info.downloads ?? 0,
+    tags: info.tags ?? [],
+    library_name: info.library_name ?? '',
+    createdAt: info.createdAt ?? '',
+    model_id: info.model_id ?? normalizedRepoId,
+    siblings: createSiblingsFromFileDetails(normalizedRepoId, fileDetails),
+    url: info.url ?? urls.modelWebPage(normalizedRepoId),
+    ...(info.specs ? {specs: info.specs} : {}),
+  };
 }
