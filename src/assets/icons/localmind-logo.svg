@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300"><path id="orbit-a" d="M150 48C206 48 252 94 252 150C252 206 206 252 150 252C94 252 48 206 48 150C48 94 94 48 150 48Z" fill="none" stroke="#7657FF" stroke-width="13"/>
 <path id="orbit-b" d="M73 91C109 55 191 55 227 91C263 127 263 173 227 209C191 245 109 245 73 209C37 173 37 127 73 91Z" fill="none" stroke="#21C7D9" stroke-width="11"/>
-<path id="link-left" d="M150 150L91 112" fill="none" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round"/>
-<path id="link-right" d="M150 150L209 112" fill="none" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round"/>
-<path id="link-bottom" d="M150 150L150 218" fill="none" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round"/>
+<path id="link-left" d="M150 150L91 112" fill="none" stroke="#21C7D9" stroke-width="12" stroke-linecap="round"/>
+<path id="link-right" d="M150 150L209 112" fill="none" stroke="#21C7D9" stroke-width="12" stroke-linecap="round"/>
+<path id="link-bottom" d="M150 150L150 218" fill="none" stroke="#21C7D9" stroke-width="12" stroke-linecap="round"/>
 <path id="node-left" d="M108 112C108 121.389 100.389 129 91 129C81.611 129 74 121.389 74 112C74 102.611 81.611 95 91 95C100.389 95 108 102.611 108 112Z" fill="#F8FAFF"/>
 <path id="node-right" d="M226 112C226 121.389 218.389 129 209 129C199.611 129 192 121.389 192 112C192 102.611 199.611 95 209 95C218.389 95 226 102.611 226 112Z" fill="#F8FAFF"/>
 <path id="node-bottom" d="M167 218C167 227.389 159.389 235 150 235C140.611 235 133 227.389 133 218C133 208.611 140.611 201 150 201C159.389 201 167 208.611 167 218Z" fill="#F8FAFF"/>
