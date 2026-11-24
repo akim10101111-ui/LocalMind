@@ -4,7 +4,7 @@ import NativeSpeechPlayback from '../../specs/NativeSpeechPlayback';
 import type {SpeechPlaybackCopy} from '../../specs/NativeSpeechPlayback';
 
 /**
- * Asks Android to keep PocketPal in the foreground while it speaks. A refused
+ * Asks Android to keep LocalMind in the foreground while it speaks. A refused
  * or failed start is logged and never surfaces: speech goes on without it.
  */
 export async function holdSpeechService(
