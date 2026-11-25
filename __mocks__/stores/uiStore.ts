@@ -32,9 +32,17 @@ export const mockUiStore = {
       },
     },
   },
-  language: 'en',
+  _language: 'ru' as keyof typeof l10n,
+  get language() {
+    return this._language in l10n ? this._language : 'ru';
+  },
+  get l10n() {
+    return l10n[this.language];
+  },
+  setLanguage(language: keyof typeof l10n) {
+    this._language = language in l10n ? language : 'ru';
+  },
   supportedLanguages: [...supportedLanguages],
-  l10n: l10n.en,
   setValue: jest.fn(),
   displayMemUsage: false,
   setAutoNavigateToChat: jest.fn(),
