@@ -421,7 +421,15 @@ class DownloadEngine(
 
         val sharedClient: OkHttpClient by lazy {
             OkHttpClient.Builder()
-                .readTimeout(60, TimeUnit.SECONDS)
+                // Large GGUF files often travel through VPN tunnels and CDN redirects.
+                // Give DNS/TLS establishment and slow mobile links room to recover.
+                .connectTimeout(45, TimeUnit.SECONDS)
+                .readTimeout(120, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .callTimeout(0, TimeUnit.MILLISECONDS)
+                .retryOnConnectionFailure(true)
+                .followRedirects(true)
+                .followSslRedirects(true)
                 .build()
         }
 
