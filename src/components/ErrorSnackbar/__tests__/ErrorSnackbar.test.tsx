@@ -50,7 +50,7 @@ describe('ErrorSnackbar', () => {
     expect(getByTestId('icon-key-alert')).toBeTruthy();
 
     // Check that the error message is displayed
-    expect(getByText(l10n.en.errors.hfAuthenticationError)).toBeTruthy();
+    expect(getByText(l10n.ru.errors.hfAuthenticationError)).toBeTruthy();
 
     // Check that the "Add Token" action is available for HF auth errors
     const addTokenButton = getByText('Add Token');
