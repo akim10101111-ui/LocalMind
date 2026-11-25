@@ -1406,9 +1406,9 @@ describe('TTSStore', () => {
       const {played} = await startPlaying(store);
       expect(mockHoldSpeechService).toHaveBeenCalledTimes(1);
       expect(mockHoldSpeechService).toHaveBeenCalledWith({
-        title: 'LocalMind is speaking',
-        stopLabel: 'Stop',
-        channelName: 'Speech',
+        title: 'LocalMind говорит',
+        stopLabel: 'Остановить',
+        channelName: 'Речь',
       });
       expect(mockReleaseSpeechService).not.toHaveBeenCalled();
 
