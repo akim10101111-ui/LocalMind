@@ -55,7 +55,7 @@ describe('DownloadErrorDialog', () => {
 
   it('renders authentication error correctly when no token is present', () => {
     const error: ErrorState = createErrorState(
-      new Error('Client error: 401'),
+      new Error('Token is missing'),
       'download',
       'huggingface',
       {
