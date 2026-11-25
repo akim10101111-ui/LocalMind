@@ -75,20 +75,20 @@ describe('DownloadErrorDialog', () => {
 
     // Check that the correct title and message are displayed
     expect(
-      getByText(l10n.en.components.downloadErrorDialog.getTokenTitle),
+      getByText(l10n.ru.components.downloadErrorDialog.getTokenTitle),
     ).toBeTruthy();
     expect(
-      getByText(l10n.en.components.downloadErrorDialog.getTokenMessage),
+      getByText(l10n.ru.components.downloadErrorDialog.getTokenMessage),
     ).toBeTruthy();
 
-    const steps = l10n.en.components.downloadErrorDialog.getTokenSteps;
+    const steps = l10n.ru.components.downloadErrorDialog.getTokenSteps;
     for (let i = 0; i < steps.length; i++) {
       expect(getByText(steps[i])).toBeTruthy();
     }
 
     // Check that the HF button exists
     const hfButton = getByText(
-      l10n.en.components.downloadErrorDialog.viewOnHuggingFace,
+      l10n.ru.components.downloadErrorDialog.viewOnHuggingFace,
     );
     fireEvent.press(hfButton);
     expect(Linking.openURL).toHaveBeenCalledWith(
@@ -97,7 +97,7 @@ describe('DownloadErrorDialog', () => {
 
     // Check retry button works
     const retryButton = getByText(
-      l10n.en.components.downloadErrorDialog.tryAgain,
+      l10n.ru.components.downloadErrorDialog.tryAgain,
     );
     fireEvent.press(retryButton);
     expect(mockTryAgain).toHaveBeenCalled();
@@ -127,14 +127,14 @@ describe('DownloadErrorDialog', () => {
 
     // Check that the correct title and message are displayed
     expect(
-      getByText(l10n.en.components.downloadErrorDialog.forbiddenTitle),
+      getByText(l10n.ru.components.downloadErrorDialog.forbiddenTitle),
     ).toBeTruthy();
     expect(
-      getByText(l10n.en.components.downloadErrorDialog.forbiddenMessage),
+      getByText(l10n.ru.components.downloadErrorDialog.forbiddenMessage),
     ).toBeTruthy();
 
     // Check that the steps for forbidden models are displayed
-    const steps = l10n.en.components.downloadErrorDialog.forbiddenSteps;
+    const steps = l10n.ru.components.downloadErrorDialog.forbiddenSteps;
     for (let i = 0; i < steps.length; i++) {
       expect(getByText(steps[i])).toBeTruthy();
     }
@@ -167,15 +167,15 @@ describe('DownloadErrorDialog', () => {
 
     // Check that the correct title and message for disabled token
     expect(
-      getByText(l10n.en.components.downloadErrorDialog.tokenDisabledTitle),
+      getByText(l10n.ru.components.downloadErrorDialog.tokenDisabledTitle),
     ).toBeTruthy();
     expect(
-      getByText(l10n.en.components.downloadErrorDialog.tokenDisabledMessage),
+      getByText(l10n.ru.components.downloadErrorDialog.tokenDisabledMessage),
     ).toBeTruthy();
 
     // Check the enable button works
     const enableButton = getByText(
-      l10n.en.components.downloadErrorDialog.enableAndRetry,
+      l10n.ru.components.downloadErrorDialog.enableAndRetry,
     );
     fireEvent.press(enableButton);
     expect(hfStore.setUseHfToken).toHaveBeenCalledWith(true);
@@ -208,7 +208,7 @@ describe('DownloadErrorDialog', () => {
 
     // Check that the generic error title is displayed
     expect(
-      getByText(l10n.en.components.downloadErrorDialog.downloadFailedTitle),
+      getByText(l10n.ru.components.downloadErrorDialog.downloadFailedTitle),
     ).toBeTruthy();
 
     // Check that the error message is displayed using testID
