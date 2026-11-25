@@ -384,8 +384,8 @@ describe('exportUtils', () => {
 
       await expect(exportChatSession('session-1')).rejects.toThrow();
       expect(Alert.alert).toHaveBeenCalledWith(
-        expect.stringContaining('Export Error'),
-        expect.stringContaining('export'),
+        expect.stringContaining('Ошибка экспорта'),
+        expect.stringContaining('экспорта'),
         expect.any(Array),
       );
     });
