@@ -1,11 +1,15 @@
 import React from 'react';
 import {fireEvent} from '@testing-library/react-native';
-import {render} from '../../../../jest/test-utils';
+import {render as rtlRender} from '../../../../jest/test-utils';
 import {DownloadErrorDialog} from '../DownloadErrorDialog';
 import {Linking} from 'react-native';
 import {hfStore, uiStore} from '../../../store';
 import {createModel} from '../../../../jest/fixtures/models';
 import {l10n} from '../../../locales';
+import {L10nContext} from '../../../utils';
+
+const render = (node: React.ReactElement) =>
+  rtlRender(<L10nContext.Provider value={l10n.ru}>{node}</L10nContext.Provider>);
 import {createErrorState, ErrorState} from '../../../utils/errors';
 
 // Mock Linking - need to spy on the actual Linking object
