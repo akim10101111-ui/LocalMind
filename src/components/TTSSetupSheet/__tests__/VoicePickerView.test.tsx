@@ -250,7 +250,7 @@ describe('VoicePickerView', () => {
       expect(queryByText(/voice mode/i)).toBeNull();
       const field = getByTestId('tts-system-language-button');
       expect(field.props.accessibilityLabel).toBe(
-        'Languages: \u2068English\u2069',
+        'Languages: \u2068Русский\u2069',
       );
       expect(
         testIDs(
@@ -283,7 +283,7 @@ describe('VoicePickerView', () => {
 
       expect(
         getByTestId('tts-system-language-button').props.accessibilityLabel,
-      ).toBe('Languages: \u2068Deutsch\u2069, \u2068English\u2069');
+      ).toBe('Languages: \u2068Deutsch\u2069, \u2068Русский\u2069');
       expect(testIDs(getAllByTestId(/^tts-system-section-/))).toEqual([
         'tts-system-section-de-de',
         'tts-system-section-en-gb',
