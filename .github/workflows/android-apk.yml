@@ -140,7 +140,8 @@ jobs:
           set -euo pipefail
           yarn typecheck
           yarn eslint src/components/ChatInput/styles.ts src/components/ChatHeader/styles.ts src/components/SidebarContent/styles.ts src/components/PalsSheets/PalSheet.tsx src/utils/hf.ts src/utils/__tests__/hf.test.ts
-          yarn test --runInBand --coverage=false
+          # Two Jest workers use the hosted runner's spare CPU without the memory spike of full parallelism.
+          yarn test --maxWorkers=2 --coverage=false
 
       - name: Derive llama.rn native variant allowlist
         shell: bash
@@ -170,6 +171,8 @@ jobs:
 
       - name: Set up C/C++ compiler cache
         uses: ./.github/actions/setup-ccache
+        with:
+          max-size: 5G
 
       - name: Create CI-only Firebase configuration
         shell: bash
