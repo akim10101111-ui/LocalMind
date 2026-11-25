@@ -50,7 +50,7 @@ describe('DownloadErrorDialog', () => {
       />,
     );
 
-    expect(queryByText('Download Failed')).toBeNull();
+    expect(queryByText('Ошибка загрузки')).toBeNull();
   });
 
   it('renders authentication error correctly when no token is present', () => {
