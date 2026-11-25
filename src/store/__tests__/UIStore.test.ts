@@ -11,7 +11,7 @@ describe('UIStore', () => {
     uiStore.setAutoNavigateToChat(true);
     uiStore.setDisplayMemUsage(false);
     uiStore.setValue('modelsScreen', 'filters', []);
-    uiStore.setLanguage('en');
+    uiStore.setLanguage('ru');
   });
 
   it('should initialize with default values', () => {
@@ -59,8 +59,8 @@ describe('UIStore', () => {
   });
 
   describe('language', () => {
-    it('should default to en', () => {
-      expect(uiStore.language).toBe('en');
+    it('should default to ru', () => {
+      expect(uiStore.language).toBe('ru');
     });
 
     it('should set language correctly', () => {
@@ -68,11 +68,11 @@ describe('UIStore', () => {
       expect(uiStore.language).toBe('ja');
     });
 
-    it('should fall back to en for unknown language', () => {
+    it('should fall back to ru for unknown language', () => {
       // Simulate a persisted language value that is no longer supported
       // @ts-ignore - Testing invalid input
       uiStore._language = 'xx';
-      expect(uiStore.language).toBe('en');
+      expect(uiStore.language).toBe('ru');
     });
 
     it('should return correct l10n translations for selected language', () => {
@@ -85,10 +85,10 @@ describe('UIStore', () => {
       expect(uiStore.l10n).toBe(l10n.en);
     });
 
-    it('should return en translations when language is unknown (fallback)', () => {
+    it('should return ru translations when language is unknown (fallback)', () => {
       // @ts-ignore - Testing invalid input
       uiStore._language = 'xx';
-      expect(uiStore.l10n).toBe(l10n.en);
+      expect(uiStore.l10n).toBe(l10n.ru);
     });
 
     it('supportedLanguages getter returns from locales registry', () => {
