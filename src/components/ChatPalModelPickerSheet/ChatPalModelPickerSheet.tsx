@@ -369,10 +369,13 @@ export const ChatPalModelPickerSheet = observer(
         backdropComponent={isVisible ? CustomBackdrop : undefined} // on android we need this check to ensure it doenst' block interaction
         backgroundComponent={SheetBackground}
         backgroundStyle={{
-          backgroundColor: theme.colors.background,
+          backgroundColor: theme.colors.surface,
+          borderTopLeftRadius: 28,
+          borderTopRightRadius: 28,
         }}
         handleIndicatorStyle={{
-          backgroundColor: theme.colors.primary,
+          backgroundColor: theme.colors.outline,
+          width: 38,
         }}
         // Add these props to better handle gestures
         enableContentPanningGesture={false}
