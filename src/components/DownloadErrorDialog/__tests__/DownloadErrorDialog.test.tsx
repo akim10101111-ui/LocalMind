@@ -37,7 +37,7 @@ describe('DownloadErrorDialog', () => {
   });
 
   beforeEach(() => {
-    uiStore.setLanguage('ru');
+    uiStore.setLanguage('en');
     jest.clearAllMocks();
   });
 
@@ -50,7 +50,7 @@ describe('DownloadErrorDialog', () => {
       />,
     );
 
-    expect(queryByText('Ошибка загрузки')).toBeNull();
+    expect(queryByText(l10n.en.components.downloadErrorDialog.downloadFailedTitle)).toBeNull();
   });
 
   it('renders authentication error correctly when no token is present', () => {
