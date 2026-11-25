@@ -39,7 +39,7 @@ export class UIStore {
     Appearance.getColorScheme() === 'dark' ? 'dark' : 'light';
 
   // Current selected language (default to English)
-  _language: AvailableLanguage = 'en';
+  _language: AvailableLanguage = 'ru';
 
   // List of supported languages (derived from locales registry)
   get supportedLanguages(): readonly AvailableLanguage[] {
@@ -158,7 +158,7 @@ export class UIStore {
   get language() {
     // If the language is not in l10n, return 'en'
     // This can happen when the app removes a language from l10n
-    return this._language in l10n ? this._language : 'en';
+    return this._language in l10n ? this._language : 'ru';
   }
 
   get l10n() {
