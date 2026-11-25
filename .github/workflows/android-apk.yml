@@ -10,7 +10,7 @@ permissions:
 
 concurrency:
   group: localmind-android-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build-android:
@@ -232,6 +232,23 @@ jobs:
           sha256sum "$APK"
           ls -lh "$APK"
 
+      - name: Publish direct APK download
+        if: success()
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: android-apk-latest
+          name: LocalMind Android APK
+          body: |
+            Latest verified ARM64 Android APK.
+            Built from commit ${{ github.sha }}.
+            Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          prerelease: true
+          make_latest: false
+          overwrite_files: true
+          files: android/app/build/outputs/apk/prod/debug/app-prod-debug.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Upload APK and build diagnostics
         if: always()
         uses: actions/upload-artifact@v4
@@ -243,6 +260,7 @@ jobs:
             android-payload-report.txt
           if-no-files-found: warn
           retention-days: 30
+          compression-level: 0
 
       - name: Write build summary
         if: always()
