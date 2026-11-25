@@ -41,7 +41,7 @@ it('renders hydration splash while UIStore is not hydrated', () => {
   // present after PaperProvider + NavigationContainer mount, are the
   // proxy: they should be absent.
   expect(result.queryByTestId('hydration-splash')).not.toBeNull();
-  expect(result.queryByText('Модели')).toBeNull();
+  expect(result.queryByText('Models')).toBeNull();
   expect(result.queryByText('Настройки')).toBeNull();
   // The hold is neutral: it carries no branding text. Re-introducing the
   // old PocketPal/LLM Ventures labels would fail these assertions.
