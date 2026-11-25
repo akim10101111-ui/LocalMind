@@ -15,19 +15,23 @@ export const createStyles = ({
       flexDirection: 'column',
     },
     palBtn: {
-      height: 28,
-      width: 28,
+      minHeight: 32,
+      minWidth: 32,
+      paddingHorizontal: 9,
       alignItems: 'center',
       justifyContent: 'center',
-      borderRadius: 100,
+      borderRadius: 16,
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: theme.colors.outlineVariant,
     },
     plusButton: {
-      height: 28,
-      width: 28,
+      height: 34,
+      width: 34,
       alignItems: 'center',
       justifyContent: 'center',
-      borderRadius: 100,
-      opacity: 0.9,
+      borderRadius: 17,
+      backgroundColor: theme.colors.surfaceVariant,
+      opacity: 1,
     },
     thinkingToggle: {
       height: 28,
@@ -66,9 +70,10 @@ export const createStyles = ({
     palSelector: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 4,
+      gap: 7,
       flexShrink: 1,
       minWidth: 32,
+      paddingRight: 4,
     },
     inputWrapper: {
       flexDirection: 'row',
@@ -165,12 +170,12 @@ export const createStyles = ({
     // New compact pal name styles for control bar
     palNameCompact: {
       flexShrink: 1,
-      fontSize: 10,
+      fontSize: 12,
       ...fontStyles.regular,
       color: theme.colors.onSurface,
     },
     palNameValueCompact: {
-      fontSize: 10,
+      fontSize: 12,
       ...fontStyles.semibold,
       color: theme.colors.onSurface,
     },
