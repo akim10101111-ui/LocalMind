@@ -8,7 +8,7 @@ import {act, fireEvent, render, within} from '../../../../jest/test-utils';
 import {L10nContext} from '../../../utils';
 import {l10n} from '../../../locales';
 import {getPhoneLocale, languageLabel} from '../../../services/tts';
-import {ttsStore} from '../../../store';
+import {ttsStore, uiStore} from '../../../store';
 
 import {VoicePickerView} from '../VoicePickerView';
 
@@ -70,6 +70,8 @@ const getEngineGroupCount = (query: (id: string) => unknown): number =>
 describe('VoicePickerView', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    // These cases exercise the English voice catalog; do not inherit the app's Russian default.
+    uiStore.setLanguage('en');
     runInAction(() => {
       ttsStore.currentVoice = null;
       ttsStore.kittenDownloadState = 'not_installed';
