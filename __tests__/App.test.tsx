@@ -111,7 +111,7 @@ it('mounts the app once UIStore hydration completes', () => {
 
   // Splash gone, post-hydration tree mounted (drawer titles present).
   expect(result.queryByTestId('hydration-splash')).toBeNull();
-  expect(result.queryByText('Модели')).not.toBeNull();
+  expect(result.queryByText('Models')).not.toBeNull();
 });
 
 describe('status bar', () => {
