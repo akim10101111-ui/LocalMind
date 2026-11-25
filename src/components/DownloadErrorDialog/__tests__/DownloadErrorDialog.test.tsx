@@ -3,7 +3,7 @@ import {fireEvent} from '@testing-library/react-native';
 import {render} from '../../../../jest/test-utils';
 import {DownloadErrorDialog} from '../DownloadErrorDialog';
 import {Linking} from 'react-native';
-import {hfStore} from '../../../store';
+import {hfStore, uiStore} from '../../../store';
 import {createModel} from '../../../../jest/fixtures/models';
 import {l10n} from '../../../locales';
 import {createErrorState, ErrorState} from '../../../utils/errors';
@@ -37,6 +37,7 @@ describe('DownloadErrorDialog', () => {
   });
 
   beforeEach(() => {
+    uiStore.setLanguage('ru');
     jest.clearAllMocks();
   });
 
