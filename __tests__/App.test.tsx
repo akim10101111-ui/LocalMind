@@ -101,7 +101,7 @@ it('mounts the app once UIStore hydration completes', () => {
   __setHydrated(false);
   const result = render(<App />);
   expect(result.queryByTestId('hydration-splash')).not.toBeNull();
-  expect(result.queryByText('Models')).toBeNull();
+  expect(result.queryByText('Модели')).toBeNull();
 
   // Hydration completes. The observable flag flips inside MobX action;
   // the observer-wrapped gate re-renders and falls through to the app.
@@ -111,7 +111,7 @@ it('mounts the app once UIStore hydration completes', () => {
 
   // Splash gone, post-hydration tree mounted (drawer titles present).
   expect(result.queryByTestId('hydration-splash')).toBeNull();
-  expect(result.queryByText('Models')).not.toBeNull();
+  expect(result.queryByText('Модели')).not.toBeNull();
 });
 
 describe('status bar', () => {
