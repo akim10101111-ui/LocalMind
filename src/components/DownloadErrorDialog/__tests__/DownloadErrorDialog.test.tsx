@@ -42,6 +42,9 @@ describe('DownloadErrorDialog', () => {
 
   beforeEach(() => {
     uiStore.setLanguage('ru');
+    // Keep token-dependent cases isolated; previous tests may leave a token set.
+    hfStore.hfToken = null;
+    hfStore.useHfToken = true;
     jest.clearAllMocks();
   });
 
