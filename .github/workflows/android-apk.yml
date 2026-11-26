@@ -128,7 +128,10 @@ jobs:
         run: npm install --global yarn@1.22.22
 
       - name: Install JavaScript dependencies
-        run: yarn install --frozen-lockfile --network-timeout 600000
+        run: |
+          # ZIP uploads do not reliably preserve executable bits on shell scripts.
+          chmod +x scripts/postinstall.sh
+          yarn install --frozen-lockfile --network-timeout 600000
 
       - name: Restore enriched Markdown native assets
         run: INIT_CWD="$GITHUB_WORKSPACE" node node_modules/react-native-enriched-markdown/postinstall.mjs
