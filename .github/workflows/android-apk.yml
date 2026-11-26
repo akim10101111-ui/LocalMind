@@ -133,7 +133,7 @@ jobs:
           chmod +x scripts/postinstall.sh
           yarn install --frozen-lockfile --network-timeout 600000
 
-      - name: Use preinstalled JDK without Foojay network resolver
+      - name: Disable optional Foojay resolver block safely
         shell: bash
         run: |
           set -euo pipefail
@@ -141,16 +141,19 @@ jobs:
           test -s "$FILE"
           python3 - <<'PY'
           from pathlib import Path
+          import re
           p = Path("node_modules/@react-native/gradle-plugin/settings.gradle.kts")
           s = p.read_text()
-          line = 'id("org.gradle.toolchains.foojay-resolver-convention").version("1.0.0")'
-          if line in s:
-              s = s.replace(line, "// JDK 17 is provisioned by actions/setup-java; no remote toolchain resolver needed.")
-              p.write_text(s)
-          elif "foojay-resolver-convention" in s:
-              raise SystemExit("Unexpected Foojay resolver declaration; refusing an unsafe patch.")
+          pattern = r'(?ms)^plugins\\s*\\{\\s*id\\("org\\.gradle\\.toolchains\\.foojay-resolver-convention"\\)\\.version\\("1\\.0\\.0"\\)\\s*\\}'
+          if "foojay-resolver-convention" in s:
+              updated, count = re.subn(pattern, "// Foojay resolver disabled: JDK 17 is installed by CI.", s, count=1)
+              if count != 1:
+                  raise SystemExit("Could not safely remove the complete Foojay plugins block.")
+              p.write_text(updated)
+          if "foojay-resolver-convention" in p.read_text():
+              raise SystemExit("Foojay resolver declaration remains.")
           PY
-          ! grep -q "foojay-resolver-convention" "$FILE"
+          sed -n '1,35p' "$FILE"
 
       - name: Restore enriched Markdown native assets
         run: INIT_CWD="$GITHUB_WORKSPACE" node node_modules/react-native-enriched-markdown/postinstall.mjs
