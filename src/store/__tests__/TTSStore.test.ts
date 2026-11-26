@@ -208,7 +208,6 @@ import type {Voice} from '../../services/tts';
 import {ttsRuntime} from '../../services/tts';
 import {chatSessionStore} from '../ChatSessionStore';
 import {modelStore} from '../ModelStore';
-import {dumpVoiceTrace} from '../../utils/voiceTrace';
 
 const SYSTEM_VOICE: Voice = {
   id: 'com.apple.voice.Sarah',
