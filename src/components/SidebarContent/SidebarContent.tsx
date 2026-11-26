@@ -571,7 +571,6 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
               testID="sidebar-search-input"
             />
           </View>
-eOpacity>
           <Text variant="labelSmall" style={styles.menuSectionTitle}>
             {l10n.components.sidebarContent.historyLabel}
           </Text>
