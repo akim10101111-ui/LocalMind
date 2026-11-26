@@ -39,10 +39,18 @@ jobs:
             rm -rf .localmind-extract
             mkdir -p .localmind-extract
             unzip -q "$ZIP_PATH" -d .localmind-extract
-            SOURCE_DIR="$(find .localmind-extract -mindepth 1 -maxdepth 4 -type f -name package.json -printf '%h\\n' | while IFS= read -r dir; do if [ -f "$dir/android/gradlew" ]; then printf '%s\\n' "$dir"; break; fi; done)"
+            SOURCE_DIR="$(python3 - <<'PY'
+          import os
+          for root, dirs, files in os.walk(".localmind-extract"):
+              dirs[:] = [d for d in dirs if d not in {"node_modules", ".git"}]
+              if "package.json" in files and os.path.isfile(os.path.join(root, "android", "gradlew")):
+                  print(root)
+                  break
+          PY
+          )"
             if [ -z "$SOURCE_DIR" ]; then
               echo "::error::The uploaded archive does not contain a complete React Native Android project."
-              find .localmind-extract -maxdepth 4 -type f | head -80
+              find .localmind-extract -maxdepth 5 -name package.json -print
               exit 1
             fi
             echo "Using uploaded source tree: $SOURCE_DIR"
