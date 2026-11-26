@@ -55,12 +55,13 @@ const DrawerStatusNavigator = () => (
 
 describe('SidebarContent Component', () => {
   it('shows LocalMind navigation without retired Pals and Plus sections', () => {
-    const {getByText, getByTestId, queryByText} = render(<TestNavigator />);
+    const {getByText, getByTestId, queryByText, queryByTestId} = render(<TestNavigator />);
 
     expect(getByText('LocalMind')).toBeTruthy();
     expect(getByTestId('sidebar-new-chat')).toBeTruthy();
-    expect(getByTestId('drawer-item-chat')).toBeTruthy();
-    expect(getByTestId('drawer-item-models')).toBeTruthy();
+    expect(getByTestId('sidebar-search-input')).toBeTruthy();
+    expect(getByTestId('sidebar-settings')).toBeTruthy();
+    expect(queryByTestId('drawer-item-chat')).toBeNull();
     expect(queryByText('Pals')).toBeNull();
     expect(queryByText('PocketPal Plus')).toBeNull();
   });
@@ -128,24 +129,18 @@ describe('SidebarContent Component', () => {
     it('after pressing the Chat item', async () => {
       const {getByText, getByTestId} = await renderOpenDrawerOnChat();
 
-      fireEvent.press(getByTestId('drawer-item-chat'));
+      fireEvent.press(getByTestId('sidebar-new-chat'));
 
       await waitFor(() => expect(getByText('drawer:closed')).toBeTruthy());
     });
   });
 
-  it('navigates to correct screen from drawer items', () => {
-    const {getByText, queryByText} = render(<TestNavigator />);
+  it('opens Settings from the compact sidebar navigation', () => {
+    const {getByTestId, getByText, queryByText} = render(<TestNavigator />);
 
-    // Ensure the Models screen is rendered by pressing the 'Models' drawer item
-    fireEvent.press(getByText('Models'));
-    expect(getByText('Models Screen')).toBeTruthy();
-    expect(queryByText('Chat Screen')).toBeNull();
-
-    // Ensure the Settings screen is rendered by pressing the 'Settings' drawer item
-    fireEvent.press(getByText('Settings'));
+    fireEvent.press(getByTestId('sidebar-settings'));
     expect(getByText('Settings Screen')).toBeTruthy();
-    expect(queryByText('Models Screen')).toBeNull();
+    expect(queryByText('Chat Screen')).toBeNull();
   });
 
   describe('Selection Mode', () => {

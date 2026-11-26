@@ -19,7 +19,6 @@ import {
   uiStore,
   ttsStore,
   asrStore,
-  voiceModeStore,
 } from '../../../store';
 import {Menu} from '../../../components';
 import {l10n, t} from '../../../locales';
@@ -1387,7 +1386,6 @@ describe('SettingsScreen', () => {
 
   describe('voice input (ASR)', () => {
     afterEach(() => {
-      (voiceModeStore as any).reset();
       runInAction(() => {
         modelStore.deviceTier = 'low';
         asrStore.userASROverride = null;
@@ -1495,16 +1493,14 @@ describe('SettingsScreen', () => {
     });
 
     it.each([
-      [false, true, true],
-      [false, false, false],
-      [true, false, true],
+      [false, false],
+      [true, true],
     ])(
-      'voice input %s, hands-free %s → model rows shown %s',
-      (dictation, handsFree, shown) => {
+      'voice input enabled %s → speech model rows shown %s',
+      (dictation, shown) => {
         runInAction(() => {
           modelStore.deviceTier = 'low';
           asrStore.userASROverride = dictation;
-          voiceModeStore.userVoiceModeOverride = handsFree;
         });
         const {queryByTestId} = renderSettings();
         expect(queryByTestId('asr-install-small') != null).toBe(shown);
@@ -1512,12 +1508,11 @@ describe('SettingsScreen', () => {
       },
     );
 
-    it('adds one divider with the model section, none without it', () => {
-      const dividers = (handsFree: boolean) => {
+    it('adds one divider with the speech model section, none without it', () => {
+      const dividers = (dictation: boolean) => {
         runInAction(() => {
           modelStore.deviceTier = 'low';
-          asrStore.userASROverride = false;
-          voiceModeStore.userVoiceModeOverride = handsFree;
+          asrStore.userASROverride = dictation;
         });
         const {UNSAFE_queryAllByType, unmount} = renderSettings();
         const count = UNSAFE_queryAllByType(Divider).length;
@@ -1625,49 +1620,6 @@ describe('SettingsScreen', () => {
           }),
         ),
       ).toBeTruthy();
-    });
-  });
-
-  describe('hands-free voice', () => {
-    const renderSettings = () =>
-      render(<SettingsScreen />, {withSafeArea: true, withNavigation: true});
-
-    afterEach(() => {
-      (voiceModeStore as any).reset();
-      runInAction(() => {
-        modelStore.deviceTier = 'low';
-      });
-    });
-
-    it('shows the device gate, with no helper, on a capable phone', () => {
-      runInAction(() => {
-        modelStore.deviceTier = 'high';
-      });
-      const {getByTestId, queryByText} = renderSettings();
-      expect(getByTestId('voice-mode-availability-switch').props.value).toBe(
-        true,
-      );
-      expect(queryByText(l10n.en.voiceMode.unsupportedDeviceHelper)).toBeNull();
-    });
-
-    it('is off with a heads-up on a weaker phone, and turns on from the switch', () => {
-      runInAction(() => {
-        modelStore.deviceTier = 'low';
-      });
-      const {getByTestId, getByText} = renderSettings();
-      const toggle = getByTestId('voice-mode-availability-switch');
-      expect(toggle.props.value).toBe(false);
-      expect(getByText(l10n.en.voiceMode.unsupportedDeviceHelper)).toBeTruthy();
-
-      act(() => {
-        fireEvent(toggle, 'valueChange', true);
-      });
-      expect(voiceModeStore.setUserVoiceModeOverride).toHaveBeenCalledWith(
-        true,
-      );
-      expect(getByTestId('voice-mode-availability-switch').props.value).toBe(
-        true,
-      );
     });
   });
 
