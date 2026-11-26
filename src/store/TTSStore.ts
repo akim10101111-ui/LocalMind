@@ -618,7 +618,7 @@ export class TTSStore {
   /**
    * Stop any in-flight playback and reset state to idle.
    */
-  async stop(): Promise<void> {
+  async stop(_by = 'other'): Promise<void> {
     const state = this.playbackState;
     const voice = this.currentVoice;
     let settle = () => {};

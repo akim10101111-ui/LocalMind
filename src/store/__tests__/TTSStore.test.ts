@@ -2623,7 +2623,7 @@ describe('TTSStore', () => {
         let released = false;
         waitFor.then(() => (released = true));
         expect(streamVoice).toEqual(voice);
-        expect(opts !== undefined).toBe(isSupertonic || voiceReply);
+        expect(opts !== undefined).toBe(isSupertonic);
 
         await flush();
         expect(mockEnsureVoiceFile).not.toHaveBeenCalled();
