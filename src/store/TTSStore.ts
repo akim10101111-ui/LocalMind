@@ -618,7 +618,7 @@ export class TTSStore {
   /**
    * Stop any in-flight playback and reset state to idle.
    */
-  async stop(by = 'other'): Promise<void> {
+  async stop(): Promise<void> {
     const state = this.playbackState;
     const voice = this.currentVoice;
     let settle = () => {};
@@ -786,7 +786,7 @@ export class TTSStore {
     // promise is passed to the streaming handle so it waits for the old
     // `Speech.stop()` to complete before starting synthesis — prevents
     // the old stop flag from killing the new stream's first sentence.
-    const stopDone = this.stop('new_stream').catch(err => {
+    const stopDone = this.stop().catch(err => {
       console.warn('[TTSStore] stop before new stream failed:', err);
     });
 
