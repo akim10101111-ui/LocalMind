@@ -1,11 +1,12 @@
 import React, {useContext} from 'react';
-import {Image, View} from 'react-native';
+import {View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
 import {useTheme} from '../../../hooks';
 import {L10nContext} from '../../../utils';
 import {ROUTES} from '../../../utils/navigationConstants';
 import {createStyles} from './styles';
+import {LocalMindLogo} from '../../../assets/icons';
 
 const SPLASH_MIN_DWELL_MS = 600;
 
@@ -29,9 +30,9 @@ export const SplashScreen: React.FC = () => {
 
   return (
     <View testID="onboarding-splash" style={styles.root}>
-      <Image
-        source={require('../../../assets/brand/logo.png')}
-        style={{width: 112, height: 112}}
+      <LocalMindLogo
+        width={112}
+        height={112}
         accessibilityLabel={l10n.onboarding.splash.brand}
         accessibilityRole="image"
       />

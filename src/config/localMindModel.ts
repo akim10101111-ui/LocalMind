@@ -28,7 +28,7 @@ export const LOCALMIND_MODEL_ENTRY: OnboardingPalModelEntry = {
   filename: LOCALMIND_MODEL_FILENAME,
   author: 'bartowski',
   downloadUrl: `https://huggingface.co/${LOCALMIND_MODEL_REPO}/resolve/main/${LOCALMIND_MODEL_FILENAME}`,
-  displayName: 'LocalMind',
+  displayName: 'LocalMind 1.5B',
   sizeBytes: 1_200_000_000,
   params: 1_500_000_000,
 };
