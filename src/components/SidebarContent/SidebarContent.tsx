@@ -314,15 +314,11 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
 
     // Convert groupedSessions to SectionList format
     // observer() HOC handles MobX reactivity, transformation is cheap
-    const sections = React.useMemo(
-      () =>
-        Object.entries(chatSessionStore.groupedSessions).map(
-          ([dateLabel, sessions]) => ({
-            title: dateLabel,
-            data: sessions,
-          }),
-        ),
-      [chatSessionStore.groupedSessions],
+    const sections = Object.entries(chatSessionStore.groupedSessions).map(
+      ([dateLabel, sessions]) => ({
+        title: dateLabel,
+        data: sessions,
+      }),
     );
 
     useEffect(() => {
