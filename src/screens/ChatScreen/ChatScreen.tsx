@@ -244,7 +244,8 @@ export const ChatScreen: React.FC = observer(() => {
 
   // Regular chat view
   return (
-    <View style={styles.chat}>
+    <>
+      <View style={styles.chat}>
         <ChatView
           renderBubble={renderBubble}
           messages={chatSessionStore.currentSessionMessages}
@@ -294,6 +295,7 @@ export const ChatScreen: React.FC = observer(() => {
         onClose={handleCloseErrorReport}
         error={errorToReport}
       />
+    </>
   );
 });
 
