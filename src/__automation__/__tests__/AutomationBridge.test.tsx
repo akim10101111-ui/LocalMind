@@ -19,14 +19,6 @@ jest.mock('../adapters/TTSAdapter', () => {
   };
 });
 
-jest.mock('../adapters/VoiceAdapter', () => {
-  const React = require('react');
-  const {View} = require('react-native');
-  return {
-    VoiceAdapter: () => React.createElement(View, {testID: 'voice-adapter'}),
-  };
-});
-
 jest.mock('../adapters/OnboardingBypass', () => {
   const React = require('react');
   const {View} = require('react-native');
@@ -56,7 +48,6 @@ describe('AutomationBridge', () => {
     // initialization are covered by each adapter's dedicated suite.
     expect(getByTestId('memory-adapter')).toBeTruthy();
     expect(getByTestId('tts-adapter')).toBeTruthy();
-    expect(getByTestId('voice-adapter')).toBeTruthy();
     expect(getByTestId('onboarding-bypass')).toBeTruthy();
   });
 });
