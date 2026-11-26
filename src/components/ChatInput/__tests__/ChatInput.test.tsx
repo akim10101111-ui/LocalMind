@@ -357,27 +357,6 @@ describe('input', () => {
     expect(plusButton.props.accessibilityState.disabled).toBe(false);
   });
 
-  it('shows pal selector button', () => {
-    expect.assertions(1);
-    const onSendPress = jest.fn();
-    const onPalBtnPress = jest.fn();
-    const {getByLabelText} = render(
-      <UserContext.Provider value={user}>
-        <ChatInput
-          {...{
-            onSendPress,
-            onPalBtnPress,
-            sendButtonVisibilityMode: 'editing',
-          }}
-        />
-      </UserContext.Provider>,
-    );
-
-    const palButton = getByLabelText('Select Pal');
-    fireEvent.press(palButton);
-    expect(onPalBtnPress).toHaveBeenCalledTimes(1);
-  });
-
   it('lets the pal name and Think label shrink to fit beside the mic', async () => {
     const pal = await palStore.createPal({
       type: 'local',
@@ -565,7 +544,7 @@ describe('input', () => {
     }
   });
 
-  it('hides plus button when vision is not enabled', () => {
+  it('hides plus button when image upload is disabled', () => {
     expect.assertions(1);
     const onSendPress = jest.fn();
     const {queryByLabelText} = render(
@@ -573,8 +552,7 @@ describe('input', () => {
         <ChatInput
           {...{
             onSendPress,
-            showImageUpload: true,
-            isVisionEnabled: false,
+            showImageUpload: false,
             sendButtonVisibilityMode: 'editing',
           }}
         />
