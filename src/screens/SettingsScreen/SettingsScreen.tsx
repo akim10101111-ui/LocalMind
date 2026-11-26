@@ -15,7 +15,7 @@ import {debounce} from 'lodash';
 import {observer} from 'mobx-react-lite';
 import {toJS} from 'mobx';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useIsFocused} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {
   Switch,
   Text,
@@ -34,7 +34,8 @@ import {
   LinkExternalIcon,
   VolumeOnIcon,
   MicrophoneIcon,
-  VoiceWaveformIcon,
+  AppInfoIcon,
+  BenchmarkIcon,
 } from '../../assets/icons';
 
 import {
@@ -61,7 +62,6 @@ import {
   ttsStore,
   asrStore,
   searchProviderStore,
-  voiceModeStore,
 } from '../../store';
 import type {SearchProviderId} from '../../services/search/types';
 import {
@@ -81,6 +81,7 @@ import {
 } from '../../utils';
 import {type AvailableLanguage, languageDisplayNames, t} from '../../locales';
 import {asrTierHint, asrTierLabel} from '../../utils/asrTierLabel';
+import {ROUTES} from '../../utils/navigationConstants';
 import {checkGpuSupport} from '../../utils/deviceCapabilities';
 import {exportLegacyChatSessions} from '../../utils/exportUtils';
 import {getDeviceOptions, DeviceOption} from '../../utils/deviceSelection';
@@ -101,6 +102,7 @@ const languageName = (code: string): string =>
 
 export const SettingsScreen: React.FC = observer(() => {
   const l10n = useContext(L10nContext);
+  const navigation = useNavigation<any>();
   const theme = useTheme();
   const styles = createStyles(theme);
   const isFocused = useIsFocused();
@@ -1181,38 +1183,7 @@ export const SettingsScreen: React.FC = observer(() => {
 
                 <Divider />
 
-                <View style={styles.switchContainer}>
-                  <View style={styles.textContainer}>
-                    <View style={styles.labelWithIconContainer}>
-                      <VoiceWaveformIcon
-                        width={20}
-                        height={20}
-                        style={styles.settingIcon}
-                        color={theme.colors.onSurface}
-                      />
-                      <Text variant="titleMedium" style={styles.textLabel}>
-                        {l10n.voiceMode.settingTitle}
-                      </Text>
-                    </View>
-                    <Text variant="labelSmall" style={styles.textDescription}>
-                      {l10n.voiceMode.settingDescription}
-                    </Text>
-                    {!voiceModeStore.deviceSupported && (
-                      <Text variant="labelSmall" style={styles.textDescription}>
-                        {l10n.voiceMode.unsupportedDeviceHelper}
-                      </Text>
-                    )}
-                  </View>
-                  <Switch
-                    testID="voice-mode-availability-switch"
-                    value={voiceModeStore.supported}
-                    onValueChange={value =>
-                      voiceModeStore.setUserVoiceModeOverride(value)
-                    }
-                  />
-                </View>
-
-                {(asrStore.asrAvailable || voiceModeStore.supported) && (
+                {asrStore.asrAvailable && (
                   <>
                     <Divider />
                     <View
@@ -1680,6 +1651,25 @@ export const SettingsScreen: React.FC = observer(() => {
           )}
 
           <LocalApiServerCard />
+
+          <Card elevation={0} style={styles.card}>
+            <Card.Title title={uiStore.language === 'ru' ? 'Диагностика и информация' : 'Diagnostics & info'} />
+            <Card.Content>
+              <List.Item
+                title={l10n.components.sidebarContent.menuItems.benchmark}
+                left={({color}) => <BenchmarkIcon width={22} height={22} stroke={color} />}
+                onPress={() => navigation.navigate(ROUTES.BENCHMARK)}
+                testID="settings-open-benchmark"
+              />
+              <Divider />
+              <List.Item
+                title={l10n.components.sidebarContent.menuItems.appInfo}
+                left={({color}) => <AppInfoIcon width={22} height={22} stroke={color} />}
+                onPress={() => navigation.navigate(ROUTES.APP_INFO)}
+                testID="settings-open-app-info"
+              />
+            </Card.Content>
+          </Card>
 
           {/* Export Options */}
           <Card elevation={0} style={styles.card}>
