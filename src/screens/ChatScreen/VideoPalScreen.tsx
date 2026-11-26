@@ -2,7 +2,6 @@ import React, {useState, useCallback, useContext, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {observer} from 'mobx-react';
 import {ChatView, EmbeddedVideoView} from '../../components';
-import {PalSheet} from '../../components/PalsSheets';
 import {L10nContext, UserContext, safeAlert} from '../../utils';
 import {modelStore, palStore} from '../../store';
 import {Pal} from '../../types/pal';
@@ -27,9 +26,6 @@ export const VideoPalScreen = observer(({activePal}: VideoPalScreenProps) => {
   const [captureInterval, setCaptureInterval] = useState(1000); // Default to 1 second
   const [lastAnalysisTime, setLastAnalysisTime] = useState(0);
   const [isStoppingCamera, setIsStoppingCamera] = useState(false);
-
-  // State for pal sheet
-  const [isPalSheetVisible, setIsPalSheetVisible] = useState(false);
 
   // Use active pal if it has video capability, otherwise fallback to first video pal
   // TODO: need to figure out why the fallback is needed, if the active pal is not video why wer are here in the first place.
@@ -155,16 +151,6 @@ export const VideoPalScreen = observer(({activePal}: VideoPalScreenProps) => {
     setIsStoppingCamera(false);
   }, []);
 
-  // Callback handler for opening pal sheet
-  const handleOpenPalSheet = useCallback((_pal: Pal) => {
-    // We expect this to be called with the activePal, but we use activePal directly
-    setIsPalSheetVisible(true);
-  }, []);
-
-  const handleClosePalSheet = useCallback(() => {
-    setIsPalSheetVisible(false);
-  }, []);
-
   // Handle capture interval change
   const handleCaptureIntervalChange = useCallback(
     (interval: number) => {
@@ -263,7 +249,6 @@ export const VideoPalScreen = observer(({activePal}: VideoPalScreenProps) => {
             messages={[]}
             onSendPress={() => {}}
             onStopPress={() => modelStore.abortActiveGeneration()}
-            onPalSettingsSelect={handleOpenPalSheet}
             user={user}
             isStopVisible={modelStore.inferencing}
             isStreaming={modelStore.isStreaming}
@@ -282,13 +267,6 @@ export const VideoPalScreen = observer(({activePal}: VideoPalScreenProps) => {
           />
         )}
       </View>
-      {activePal && (
-        <PalSheet
-          isVisible={isPalSheetVisible}
-          onClose={handleClosePalSheet}
-          pal={activePal}
-        />
-      )}
     </UserContext.Provider>
   );
 });
