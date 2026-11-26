@@ -1,4 +1,4 @@
-import React, {useMemo, useRef, ReactNode, useState} from 'react';
+import React, {useRef, ReactNode, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 
 import {observer} from 'mobx-react';
@@ -9,25 +9,17 @@ import {
   ChatView,
   ErrorSnackbar,
   ModelErrorReportSheet,
-  VoiceMemorySheet,
-  VoiceModeControlsContext,
-  VoiceModeView,
-  VoiceSetupSheet,
 } from '../../components';
-import {PalSheet} from '../../components/PalsSheets';
 
-import {useChatSession, useVoiceMode} from '../../hooks';
+import {useChatSession} from '../../hooks';
 import {usePendingMessage} from '../../hooks/useDeepLinking';
-import {Pal} from '../../types/pal';
 
 import {
   modelStore,
   chatSessionStore,
   palStore,
   serverStore,
-  ttsStore,
   uiStore,
-  voiceModeStore,
 } from '../../store';
 import {hasVideoCapability} from '../../utils/pal-capabilities';
 
@@ -72,9 +64,6 @@ export const ChatScreen: React.FC = observer(() => {
     : undefined;
   const isVideoPal = activePal && hasVideoCapability(activePal);
 
-  // State for pal sheet
-  const [isPalSheetVisible, setIsPalSheetVisible] = useState(false);
-
   // State for model error report sheet
   const [isErrorReportVisible, setIsErrorReportVisible] = useState(false);
   const [errorToReport, setErrorToReport] = useState<ErrorState | null>(null);
@@ -85,47 +74,8 @@ export const ChatScreen: React.FC = observer(() => {
     assistant,
   );
 
-  const voiceMode = useVoiceMode({
-    port: {
-      send: async (text, onTurnCreated) => {
-        await handleSendPress(
-          {text, type: 'text'},
-          {spoken: true, onTurnCreated},
-        );
-      },
-      stop: () => handleStopPress(),
-    },
-  });
-  const {tapCloud, toggleMute, end, dismissSheet} = voiceMode;
-  React.useEffect(() => {
-    if (isVideoPal) {
-      end();
-    }
-  }, [isVideoPal, end]);
-  const voiceControls = useMemo(
-    () => ({tapCloud, toggleMute, end}),
-    [tapCloud, toggleMute, end],
-  );
-  const handleCloseVoiceSetup = React.useCallback(
-    () => dismissSheet('setup'),
-    [dismissSheet],
-  );
-  const handleCloseVoiceMemory = React.useCallback(
-    () => dismissSheet('memory'),
-    [dismissSheet],
-  );
-
   // Handle deep linking for message prefill
   const {pendingMessage, clearPendingMessage} = usePendingMessage();
-
-  // Callback handler for opening pal sheet
-  const handleOpenPalSheet = React.useCallback((_pal: Pal) => {
-    setIsPalSheetVisible(true);
-  }, []);
-
-  const handleClosePalSheet = React.useCallback(() => {
-    setIsPalSheetVisible(false);
-  }, []);
 
   // Handlers for model error report
   const handleReportModelError = React.useCallback(() => {
@@ -140,8 +90,6 @@ export const ChatScreen: React.FC = observer(() => {
     setIsErrorReportVisible(false);
     setErrorToReport(null);
   }, []);
-
-  const visionEnabled = modelStore.activeModelCaps.visionActive;
 
   // Resolver is the single source of truth for reasoning capability.
   // Pill is reachable whenever the model is not known to be non-reasoning
@@ -294,31 +242,22 @@ export const ChatScreen: React.FC = observer(() => {
     return <VideoPalScreen activePal={activePal} />;
   }
 
-  const chatCovered = voiceModeStore.isFullViewOpen;
-
-  // Otherwise, show the regular chat view
+  // Regular chat view
   return (
-    <VoiceModeControlsContext.Provider value={voiceControls}>
-      <View
-        style={styles.chat}
-        importantForAccessibility={chatCovered ? 'no-hide-descendants' : 'auto'}
-        accessibilityElementsHidden={chatCovered}>
+    <View style={styles.chat}>
         <ChatView
           renderBubble={renderBubble}
           messages={chatSessionStore.currentSessionMessages}
           activePal={activePal}
           onSendPress={handleSendPress}
           onStopPress={handleStopPress}
-          onPalSettingsSelect={handleOpenPalSheet}
           user={user}
           isStopVisible={modelStore.inferencing}
           isStreaming={modelStore.isStreaming}
-          sendButtonVisibilityMode="always"
+          sendButtonVisibilityMode="editing"
           showImageUpload={true}
-          isVisionEnabled={visionEnabled}
           initialInputText={pendingMessage || undefined}
           onInitialTextConsumed={clearPendingMessage}
-          onVoiceModePress={voiceMode.requestEntry}
           inputProps={{
             showThinkingToggle: thinkingSupported,
             isThinkingEnabled: thinkingEnabled,
@@ -337,20 +276,6 @@ export const ChatScreen: React.FC = observer(() => {
           }}
         />
       </View>
-      {voiceModeStore.isFullViewOpen && <VoiceModeView />}
-      <VoiceSetupSheet
-        isVisible={voiceMode.sheet?.kind === 'setup'}
-        onClose={handleCloseVoiceSetup}
-        onDone={voiceMode.setupDone}
-      />
-      <VoiceMemorySheet
-        fit={voiceMode.sheet?.kind === 'memory' ? voiceMode.sheet.fit : null}
-        chatModelName={modelStore.activeModel?.name ?? ''}
-        voiceName={ttsStore.currentVoice?.name ?? ''}
-        onClose={handleCloseVoiceMemory}
-        onContinue={voiceMode.continueAnyway}
-        onChooseSmallerModel={voiceMode.chooseSmallerModel}
-      />
       {uiStore.chatWarning && (
         <ErrorSnackbar
           error={uiStore.chatWarning}
@@ -369,14 +294,6 @@ export const ChatScreen: React.FC = observer(() => {
         onClose={handleCloseErrorReport}
         error={errorToReport}
       />
-      {activePal && (
-        <PalSheet
-          isVisible={isPalSheetVisible}
-          onClose={handleClosePalSheet}
-          pal={activePal}
-        />
-      )}
-    </VoiceModeControlsContext.Provider>
   );
 });
 

@@ -6,7 +6,6 @@ import {
   StatusBar,
   View,
   TouchableOpacity,
-  Keyboard,
 } from 'react-native';
 
 import dayjs from 'dayjs';
@@ -56,10 +55,8 @@ import {
   asrStore,
   chatSessionStore,
   modelStore,
-  voiceModeStore,
 } from '../../store';
 import type {UndoneSend} from '../../hooks/useChatSession';
-import type {VoiceEntryActions} from '../../hooks/useVoiceMode';
 
 import {finiteNumber} from '../../utils/finite';
 import {openMicSettings} from '../../utils/asrMicPermission';
@@ -83,14 +80,12 @@ import {
   ChatInputTopLevelProps,
   Menu,
   PendingIndicator,
-  ChatPalModelPickerSheet,
   ChatHeader,
   ChatEmptyPlaceholder,
   VideoPalEmptyPlaceholder,
   ContentReportSheet,
   GreetingBubble,
   SuggestedPromptsRow,
-  VoiceBar,
 } from '..';
 import {
   AlertIcon,
@@ -166,8 +161,6 @@ export interface ChatProps extends Omit<ChatTopLevelProps, 'onSendPress'> {
   onEndReached?: () => Promise<void>;
   /** The currently active pal */
   activePal?: Pal;
-  /** Called when pal sheet should be opened */
-  onPalSettingsSelect?: (pal: Pal) => void;
   /** Show user names for received messages. Useful for a group chat. Will be
    * shown only on text messages. */
   showUserNames?: boolean;
@@ -175,14 +168,10 @@ export interface ChatProps extends Omit<ChatTopLevelProps, 'onSendPress'> {
   showDateHeaders?: boolean;
   /** Whether to show the image upload button in the chat input */
   showImageUpload?: boolean;
-  /** Whether to enable vision mode for the chat input */
-  isVisionEnabled?: boolean;
   /** Initial text to prefill the input (e.g., from deep linking) */
   initialInputText?: string;
   /** Callback when initial text is consumed */
   onInitialTextConsumed?: () => void;
-  /** Opens voice mode with this chat's model picker and composer focus. */
-  onVoiceModePress?: (actions: VoiceEntryActions) => void;
   /**
    * Allows you to customize the time format. IMPORTANT: only for the time,
    * do not return date here. @see {@link ChatProps.dateFormat} to customize the date format.
@@ -253,7 +242,6 @@ export const ChatView = observer(
     onEndReached,
     onMessagePress,
     activePal,
-    onPalSettingsSelect,
     onPreviewDataFetched,
     onSendPress,
     onStopPress,
@@ -267,9 +255,7 @@ export const ChatView = observer(
     showUserNames = false,
     showDateHeaders = false,
     showImageUpload = false,
-    isVisionEnabled = false,
     initialInputText,
-    onVoiceModePress,
     onInitialTextConsumed,
     textInputProps,
     timeFormat,
@@ -292,11 +278,6 @@ export const ChatView = observer(
     const inputTextRef = React.useRef(inputText);
     inputTextRef.current = inputText;
     const [inputImages, setInputImages] = React.useState<string[]>([]);
-    const [isPickerVisible, setIsPickerVisible] = React.useState(false);
-    const [_selectedModel, setSelectedModel] = React.useState<string | null>(
-      null,
-    );
-    const [_selectedPal, setSelectedPal] = React.useState<string | undefined>();
 
     // Image viewer state
     const [isImageViewVisible, setIsImageViewVisible] = React.useState(false);
@@ -739,7 +720,6 @@ export const ChatView = observer(
     } = l10n.components.chatView.menuItems;
 
     const isStopping = chatSessionStore.isStopping;
-    const voiceModeOpen = voiceModeStore.isOpen;
     const menuItems = React.useMemo((): MenuItem[] => {
       if (
         !selectedMessage ||
@@ -751,7 +731,7 @@ export const ChatView = observer(
 
       const isAuthor = selectedMessage.author.id === user.id;
       const canGenerate =
-        modelStore.activeModelId !== undefined && !isStopping && !voiceModeOpen;
+        modelStore.activeModelId !== undefined && !isStopping;
       const models = modelStore.availableModels || [];
 
       const baseItems: MenuItem[] = [];
@@ -782,7 +762,7 @@ export const ChatView = observer(
         baseItems.push({
           label: regenerateWithLabel,
           icon: () => <GridIcon stroke={theme.colors.primary} />,
-          disabled: isStopping || voiceModeOpen,
+          disabled: isStopping,
           submenu: models.map(model => ({
             label: model.name,
             width: Math.min(300, size.width),
@@ -820,7 +800,6 @@ export const ChatView = observer(
     }, [
       selectedMessage,
       isStopping,
-      voiceModeOpen,
       user.id,
       handleCopy,
       handleTryAgain,
@@ -1149,17 +1128,6 @@ export const ChatView = observer(
       ],
     );
 
-    // ============ PAL/MODEL PICKER HANDLERS ============
-    const handleModelSelect = React.useCallback((model: string) => {
-      setSelectedModel(model);
-      setIsPickerVisible(false);
-    }, []);
-
-    const handlePalSelect = React.useCallback((pal: string | undefined) => {
-      setSelectedPal(pal);
-      setIsPickerVisible(false);
-    }, []);
-
     // ============ COMPUTED VALUES ============
     // The composer must follow the app theme. Legacy assistant presets can
     // carry fixed light colors; using them here caused a white composer in dark mode.
@@ -1220,10 +1188,7 @@ export const ChatView = observer(
                 onNewChat={() => chatSessionStore.resetActiveSession()}
                 onIncreaseContext={() => setIncreaseSheetOpen(true)}
               />
-              {onVoiceModePress && voiceModeStore.isOpen ? (
-                <VoiceBar />
-              ) : (
-                <ChatInput
+              <ChatInput
                   {...{
                     ...unwrap(inputProps),
                     isStreaming,
@@ -1232,26 +1197,14 @@ export const ChatView = observer(
                     chatInputHeight,
                     inputBackgroundColor,
                     onCancelEdit: handleCancelEdit,
-                    onPalBtnPress: () => setIsPickerVisible(!isPickerVisible),
                     isStopVisible,
-                    isPickerVisible,
                     sendButtonVisibilityMode,
                     showImageUpload,
-                    isVisionEnabled,
                     defaultImages: inputImages,
                     onDefaultImagesChange: setInputImages,
                     appendTranscript: composerShowsPromptText
                       ? undefined
                       : appendTranscript,
-                    onVoicePress:
-                      onVoiceModePress &&
-                      ((focusInput: () => void) => {
-                        Keyboard.dismiss();
-                        onVoiceModePress({
-                          openModelPicker: () => setIsPickerVisible(true),
-                          focusInput,
-                        });
-                      }),
                     textInputProps: {
                       ...textInputProps,
                       ...(!composerShowsPromptText && {
@@ -1261,7 +1214,6 @@ export const ChatView = observer(
                     },
                   }}
                 />
-              )}
             </Reanimated.View>
 
             {/* Suggested prompts — float above the input container, share
@@ -1269,7 +1221,6 @@ export const ChatView = observer(
                 render as a sibling (no shared background / rounded top). */}
             {messages.length === 0 &&
             !isStreaming &&
-            !voiceModeOpen &&
             modelStore.activeModelId !== undefined &&
             activePal?.greeting?.suggestedPrompts &&
             activePal.greeting.suggestedPrompts.length > 0 ? (
@@ -1289,19 +1240,6 @@ export const ChatView = observer(
               </Reanimated.View>
             ) : null}
 
-            {/* Pal/Model picker sheet */}
-            {/* Conditionally render the sheet to avoid keyboard issues.
-            It makes the disappearing sudden, but it's better than the keyboard issue.*/}
-            {isPickerVisible && (
-              <ChatPalModelPickerSheet
-                isVisible={isPickerVisible}
-                onClose={() => setIsPickerVisible(false)}
-                onModelSelect={handleModelSelect}
-                onPalSelect={handlePalSelect}
-                onPalSettingsSelect={onPalSettingsSelect}
-                chatInputHeight={chatInputHeight.height}
-              />
-            )}
           </Reanimated.View>
 
           {/* Image viewer */}

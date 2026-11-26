@@ -21,7 +21,6 @@ import {localMindInstallState} from '../../services/localMindModel';
 import {hasVideoCapability} from '../../utils/pal-capabilities';
 
 import {
-  ChevronUpIcon,
   VideoRecorderIcon,
   PlusIcon,
   AtomIcon,
@@ -37,7 +36,6 @@ import {
   modelStore,
   palStore,
   uiStore,
-  voiceModeStore,
 } from '../../store';
 
 import {MessageType} from '../../utils/types';
@@ -48,10 +46,8 @@ import {
   SendButton,
   StopButton,
   Menu,
-  VoiceChip,
   MicButton,
   VoiceRecordingBar,
-  VoiceModeButton,
 } from '..';
 
 export interface ChatInputTopLevelProps {
@@ -62,13 +58,11 @@ export interface ChatInputTopLevelProps {
   onSendPress: (message: MessageType.PartialText) => void;
   onStopPress?: () => void;
   onCancelEdit?: () => void;
-  onPalBtnPress?: () => void;
   isStopVisible?: boolean;
   /** Controls the visibility behavior of the {@link SendButton} based on the
    * `TextInput` state. Defaults to `editing`. */
   sendButtonVisibilityMode?: 'always' | 'editing';
   textInputProps?: TextInputProps;
-  isPickerVisible?: boolean;
   inputBackgroundColor?: string;
   /** External control for selected images (for edit mode) */
   defaultImages?: string[];
@@ -82,7 +76,6 @@ export interface ChatInputTopLevelProps {
   onPromptTextChange?: (text: string) => void;
   /** Whether to show the image upload button */
   showImageUpload?: boolean;
-  isVisionEnabled?: boolean;
   /** Whether to show the thinking toggle button */
   showThinkingToggle?: boolean;
   /** Whether thinking mode is currently enabled */
@@ -91,11 +84,6 @@ export interface ChatInputTopLevelProps {
   onThinkingToggle?: (enabled: boolean) => void;
   /** Append a voice transcript to the composer (never auto-sent). */
   appendTranscript?: (text: string) => void;
-  /**
-   * Opens voice mode; the empty composer then shows the voice button.
-   * `focusInput` puts the cursor back in this composer.
-   */
-  onVoicePress?: (focusInput: () => void) => void;
   /** Whether the model supports graded reasoning effort (axis 2) */
   supportsEffort?: boolean;
   /** The graded effort value set, e.g. ['low','medium','high'] */
@@ -146,25 +134,21 @@ export const ChatInput = observer(
     onSendPress,
     onStopPress,
     onCancelEdit,
-    onPalBtnPress,
     isStopVisible,
     sendButtonVisibilityMode,
     textInputProps,
-    isPickerVisible,
     inputBackgroundColor,
     isCameraActive = false,
     onStartCamera,
     promptText,
     onPromptTextChange,
     showImageUpload = false,
-    isVisionEnabled = false,
     defaultImages,
     onDefaultImagesChange,
     showThinkingToggle = false,
     isThinkingEnabled = false,
     onThinkingToggle,
     appendTranscript,
-    onVoicePress,
     supportsEffort = false,
     effortValues = [],
     reasoningEffort,
@@ -174,11 +158,9 @@ export const ChatInput = observer(
     const theme = useTheme();
     const user = React.useContext(UserContext);
     const inputRef = React.useRef<TextInputInstance>(null);
-    const focusInput = React.useCallback(() => inputRef.current?.focus(), []);
     // iOS keeps the old height when only `value` is cleared: react/react-native#56291
     const clearNativeText = () => inputRef.current?.clear();
     const editBarHeight = React.useRef(new Animated.Value(0)).current;
-    const iconRotation = React.useRef(new Animated.Value(0)).current;
     const activePalId = chatSessionStore.activePalId;
     const currentActivePal = palStore.pals.find(pal => pal.id === activePalId);
 
@@ -239,14 +221,6 @@ export const ChatInput = observer(
         onCancelEdit?.();
       }
     }, [isEditMode, editBarHeight, onCancelEdit]);
-
-    React.useEffect(() => {
-      Animated.spring(iconRotation, {
-        toValue: isPickerVisible ? 1 : 0,
-        useNativeDriver: true,
-        friction: 8,
-      }).start();
-    }, [isPickerVisible, iconRotation]);
 
     const handleChangeText = (newText: string) => {
       if (isVideoCapable && onPromptTextChange) {
@@ -414,30 +388,14 @@ export const ChatInput = observer(
       (sendButtonVisibilityMode === 'always' || value.trim());
     const isSendButtonEnabled =
       value.trim().length > 0 && hasActiveModel && !isStopping;
-    const isVoiceModeButtonVisible =
-      !!onVoicePress &&
-      voiceModeStore.supported &&
-      !value.trim() &&
-      selectedImages.length === 0 &&
-      !isEditMode &&
-      !isVideoCapable &&
-      !isStopVisible &&
-      !isVoiceCaptureActive;
     const sendButtonOpacity = isSendButtonEnabled ? 1 : 0.4;
-
-    const rotateInterpolate = iconRotation.interpolate({
-      inputRange: [0, 1],
-      outputRange: ['0deg', '180deg'],
-    });
 
     // Preset colors are not theme-aware; keep composer text accessible in both themes.
     const onSurfaceColor = theme.colors.onSurface;
     const onSurfaceColorVariant = onSurfaceColor + '55'; // for disabled state or placeholder text
     // // Plus button state
-    const isPlusButtonEnabled = !isStreaming && isVisionEnabled;
-    const plusColor = isPlusButtonEnabled
-      ? onSurfaceColor
-      : onSurfaceColorVariant;
+    const isPlusButtonEnabled = !isStreaming;
+    const plusColor = onSurfaceColor;
 
     // Localize the current graded-effort tier through the same table the
     // model-settings chips use; fall back to the raw token for an unlisted one.
@@ -575,10 +533,8 @@ export const ChatInput = observer(
             <View style={styles.controlBar}>
               {/* Left Controls */}
               <View style={styles.leftControls}>
-                {/* Plus Button for Image Upload (only for regular chat) */}
-                {/* Hidden unless the loaded model accepts images: otherwise it
-                    is a dead, always-disabled button for text-only models. */}
-                {showImageUpload && !isVideoCapable && isVisionEnabled && (
+                {/* Attachment action remains available from the composer. */}
+                {showImageUpload && !isVideoCapable && (
                   <Menu
                     visible={showImageUploadMenu}
                     onDismiss={() => setShowImageUploadMenu(false)}
@@ -607,57 +563,6 @@ export const ChatInput = observer(
                     />
                   </Menu>
                 )}
-
-                {/* Pal Selector */}
-                <View testID="pal-selector" style={styles.palSelector}>
-                  <TouchableOpacity
-                    style={[
-                      styles.palBtn,
-                      {
-                        backgroundColor:
-                          uiStore.colorScheme === 'dark'
-                            ? theme.colors.inverseOnSurface
-                            : theme.colors.inverseSurface,
-                      },
-                      currentActivePal?.color && {
-                        backgroundColor: currentActivePal?.color?.[0],
-                      },
-                    ]}
-                    onPress={onPalBtnPress}
-                    accessibilityLabel="Select Pal"
-                    accessibilityRole="button">
-                    <Animated.View
-                      style={{
-                        transform: [{rotate: rotateInterpolate}],
-                      }}>
-                      <ChevronUpIcon stroke={inputBackgroundColor} />
-                    </Animated.View>
-                  </TouchableOpacity>
-
-                  {/* Pal Name Display */}
-                  {currentActivePal?.name && hasActiveModel && (
-                    <Text
-                      testID="active-pal-name"
-                      numberOfLines={1}
-                      style={[
-                        styles.palNameCompact,
-                        {
-                          color: onSurfaceColor,
-                        },
-                      ]}>
-                      Pal:{' '}
-                      <Text
-                        style={[
-                          styles.palNameValueCompact,
-                          {
-                            color: onSurfaceColor,
-                          },
-                        ]}>
-                        {currentActivePal?.name}
-                      </Text>
-                    </Text>
-                  )}
-                </View>
 
                 {/* Thinking Toggle Button. Graded models (axis-2) cycle
                   off -> low -> medium -> high; effortless models toggle
@@ -729,16 +634,12 @@ export const ChatInput = observer(
                   </View>
                 )}
 
-                {/* Voice chip (TTS) — always present so users can stop
-                  audio independently of text generation. Self-gates:
-                  returns null when TTS is unavailable. */}
-                <VoiceChip />
-
                 {/* Voice input (ASR) mic. Self-gates: returns null when voice
                   input is unavailable. */}
-                {appendTranscript && (
+                {appendTranscript && !value.trim() && !isStopVisible && (
                   <MicButton
                     onStart={voiceCapture.start}
+                    variant="waveform"
                     style={styles.micBeforeSend}
                   />
                 )}
@@ -768,8 +669,6 @@ export const ChatInput = observer(
                       {l10n.video.startCamera}
                     </Text>
                   </TouchableOpacity>
-                ) : isVoiceModeButtonVisible ? (
-                  <VoiceModeButton onPress={() => onVoicePress?.(focusInput)} />
                 ) : (
                   isSendButtonVisible && (
                     <View

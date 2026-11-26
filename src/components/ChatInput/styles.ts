@@ -14,22 +14,13 @@ export const createStyles = ({
     container: {
       flexDirection: 'column',
     },
-    palBtn: {
-      minHeight: 32,
-      minWidth: 32,
-      paddingHorizontal: 9,
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: 16,
-      borderWidth: StyleSheet.hairlineWidth,
-      borderColor: theme.colors.outlineVariant,
-    },
+
     plusButton: {
-      height: 34,
-      width: 34,
+      height: 40,
+      width: 40,
       alignItems: 'center',
       justifyContent: 'center',
-      borderRadius: 17,
+      borderRadius: 20,
       backgroundColor: theme.colors.surfaceVariant,
       opacity: 1,
     },
@@ -67,14 +58,7 @@ export const createStyles = ({
     thinkingToggleTextDisabled: {
       // Dynamic color will be applied via theme
     },
-    palSelector: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 7,
-      flexShrink: 1,
-      minWidth: 32,
-      paddingRight: 4,
-    },
+
     inputWrapper: {
       flexDirection: 'row',
       alignItems: 'flex-start',
@@ -94,7 +78,7 @@ export const createStyles = ({
     inputContainer: {
       flex: 1,
       flexDirection: 'column',
-      borderRadius: 24,
+      borderRadius: 30,
       borderWidth: 1,
       borderColor: theme.colors.outlineVariant,
       overflow: 'hidden',
@@ -111,9 +95,9 @@ export const createStyles = ({
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      paddingHorizontal: 16,
-      paddingVertical: 8,
-      minHeight: 36,
+      paddingHorizontal: 14,
+      paddingVertical: 10,
+      minHeight: 54,
       backgroundColor: theme.colors.surface,
     },
     leftControls: {
@@ -156,28 +140,6 @@ export const createStyles = ({
       paddingHorizontal: 16,
       paddingVertical: 12,
       marginTop: isEditMode ? 28 : 0,
-    },
-    palNameWrapper: {
-      ...fontStyles.regular,
-      color: theme.colors.onSurface,
-      fontSize: 12,
-    },
-    palName: {
-      fontSize: 12,
-      color: theme.colors.onSurface,
-      ...fontStyles.semibold,
-    },
-    // New compact pal name styles for control bar
-    palNameCompact: {
-      flexShrink: 1,
-      fontSize: 12,
-      ...fontStyles.regular,
-      color: theme.colors.onSurface,
-    },
-    palNameValueCompact: {
-      fontSize: 12,
-      ...fontStyles.semibold,
-      color: theme.colors.onSurface,
     },
     // Image preview styles
     imagePreviewContainer: {
@@ -243,7 +205,8 @@ export const createStyles = ({
     },
 
     micBeforeSend: {
-      marginRight: -16,
+      marginLeft: 8,
+      marginRight: 0,
     },
 
     // Compact Video Button (for right side)

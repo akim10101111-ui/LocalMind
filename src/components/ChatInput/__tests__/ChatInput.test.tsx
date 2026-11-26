@@ -14,7 +14,6 @@ import {
   palStore,
   chatSessionStore,
   modelStore,
-  voiceModeStore,
 } from '../../../store';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
@@ -405,12 +404,13 @@ describe('input', () => {
     });
 
     try {
-      const {getByTestId} = render(
+      const {getByTestId, queryByTestId, getByLabelText} = render(
         <UserContext.Provider value={user}>
           <ChatInput
             {...{
               onSendPress: jest.fn(),
               sendButtonVisibilityMode: 'editing',
+              showImageUpload: true,
               showThinkingToggle: true,
             }}
           />
@@ -419,21 +419,11 @@ describe('input', () => {
 
       const shrinkOf = (testID: string) =>
         StyleSheet.flatten(getByTestId(testID).props.style).flexShrink;
-      expect(getByTestId('active-pal-name').props.numberOfLines).toBe(1);
+      expect(getByLabelText('Add image')).toBeTruthy();
+      expect(queryByTestId('pal-selector')).toBeNull();
       expect(getByTestId('thinking-toggle-label').props.numberOfLines).toBe(1);
-      expect(shrinkOf('pal-selector')).toBe(1);
-      expect(
-        StyleSheet.flatten(getByTestId('pal-selector').props.style).minWidth,
-      ).toBe(32);
-      expect(shrinkOf('active-pal-name')).toBe(1);
       expect(shrinkOf('thinking-toggle')).toBeGreaterThan(0);
-      expect(shrinkOf('thinking-toggle')).toBeLessThan(
-        shrinkOf('pal-selector') / 100,
-      );
       expect(shrinkOf('thinking-toggle-label')).toBe(1);
-      expect(
-        StyleSheet.flatten(getByTestId('thinking-toggle').props.style).minWidth,
-      ).toBe(32);
     } finally {
       runInAction(() => {
         modelStore.activeModelId = originalActiveModelId;
@@ -1069,78 +1059,6 @@ describe('input', () => {
         imageUris: undefined,
       });
     });
-  });
-});
-
-describe('voice mode button', () => {
-  const onVoicePress = jest.fn();
-  const renderInput = (props: Record<string, unknown> = {}) =>
-    render(
-      <UserContext.Provider value={user}>
-        <ChatInput
-          {...{
-            onSendPress: jest.fn(),
-            sendButtonVisibilityMode: 'always',
-            onVoicePress,
-            ...props,
-          }}
-        />
-      </UserContext.Provider>,
-    );
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-    (voiceModeStore as any).reset();
-    runInAction(() => {
-      modelStore.activeModelId = 'test-model-id';
-      modelStore.deviceTier = 'high';
-      modelStore.isContextLoading = false;
-      chatSessionStore.isEditMode = false;
-      asrStore.captureState = 'idle';
-    });
-  });
-
-  it('shows the voice button while empty and Send once the user types', () => {
-    const {getByTestId, queryByTestId, getByPlaceholderText} = renderInput();
-    expect(getByTestId('voice-mode-button')).toBeTruthy();
-    expect(queryByTestId('send-button')).toBeNull();
-
-    const input = getByPlaceholderText(
-      l10n.en.components.chatInput.inputPlaceholder,
-    );
-    fireEvent.changeText(input, 'h');
-    expect(queryByTestId('voice-mode-button')).toBeNull();
-    expect(getByTestId('send-button')).toBeTruthy();
-
-    fireEvent.changeText(input, '');
-    expect(getByTestId('voice-mode-button')).toBeTruthy();
-  });
-
-  it('opens voice mode on press, with a way to focus this composer', () => {
-    const focus = TextInput.prototype.focus as jest.Mock;
-    const {getByTestId} = renderInput();
-    fireEvent.press(getByTestId('voice-mode-button'));
-    expect(onVoicePress).toHaveBeenCalledTimes(1);
-
-    focus.mockClear();
-    onVoicePress.mock.calls[0][0]();
-    expect(focus).toHaveBeenCalledTimes(1);
-  });
-
-
-  it('shows no voice button while a reply runs', () => {
-    const {queryByTestId} = renderInput({isStopVisible: true});
-    expect(queryByTestId('voice-mode-button')).toBeNull();
-  });
-
-  it('shows no voice button with an image attached', () => {
-    const {queryByTestId} = renderInput({defaultImages: ['file://a.jpg']});
-    expect(queryByTestId('voice-mode-button')).toBeNull();
-  });
-
-  it('shows no voice button without a voice-mode handler', () => {
-    const {queryByTestId} = renderInput({onVoicePress: undefined});
-    expect(queryByTestId('voice-mode-button')).toBeNull();
   });
 });
 
