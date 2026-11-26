@@ -12,7 +12,7 @@ import {MicSetupSheet} from '../MicSetupSheet';
 import {useTheme} from '../../hooks';
 import {asrStore} from '../../store';
 import {L10nContext} from '../../utils';
-import {MicrophoneIcon} from '../../assets/icons';
+import {MicrophoneIcon, VoiceWaveformIcon} from '../../assets/icons';
 
 import {styles} from './styles';
 
@@ -20,6 +20,7 @@ interface MicButtonProps {
   /** Start a voice capture. */
   onStart: () => void;
   style?: StyleProp<ViewStyle>;
+  variant?: 'default' | 'waveform';
 }
 
 /**
@@ -31,7 +32,7 @@ interface MicButtonProps {
  * capture; the composer then shows `VoiceRecordingBar`.
  */
 export const MicButton: React.FC<MicButtonProps> = observer(
-  ({onStart, style}) => {
+  ({onStart, style, variant = 'default'}) => {
     const theme = useTheme();
     const l10n = useContext(L10nContext);
     const [setupOpen, setSetupOpen] = useState(false);
@@ -40,19 +41,32 @@ export const MicButton: React.FC<MicButtonProps> = observer(
       return null;
     }
 
-    const icon = (
-      <MicrophoneIcon
-        width={18}
-        height={18}
-        color={theme.colors.onSurfaceVariant}
-      />
-    );
+    const icon =
+      variant === 'waveform' ? (
+        <VoiceWaveformIcon width={22} height={22} color={theme.colors.onSecondary} />
+      ) : (
+        <MicrophoneIcon
+          width={18}
+          height={18}
+          color={theme.colors.onSurfaceVariant}
+        />
+      );
+    const variantStyle =
+      variant === 'waveform'
+        ? {
+            width: 40,
+            height: 40,
+            borderRadius: 20,
+            marginLeft: 0,
+            backgroundColor: theme.colors.secondary,
+          }
+        : undefined;
 
     return (
       <>
         {asrStore.isSelectedTierReady ? (
           <Pressable
-            style={[styles.button, style]}
+            style={[styles.button, variantStyle, style]}
             onPress={onStart}
             disabled={asrStore.captureState === 'requesting_perm'}
             accessibilityRole="button"
@@ -62,7 +76,7 @@ export const MicButton: React.FC<MicButtonProps> = observer(
           </Pressable>
         ) : (
           <Pressable
-            style={[styles.button, style]}
+            style={[styles.button, variantStyle, style]}
             onPress={() => {
               Keyboard.dismiss();
               setSetupOpen(true);
