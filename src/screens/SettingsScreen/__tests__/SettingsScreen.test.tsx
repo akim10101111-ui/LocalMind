@@ -1533,7 +1533,7 @@ describe('SettingsScreen', () => {
       ).toBeTruthy();
       expect(getByText('Very slow on most phones')).toBeTruthy();
       expect(
-        getByText('Used by voice input and hands-free voice.'),
+        getByText('Used for speech-to-text.'),
       ).toBeTruthy();
     });
 

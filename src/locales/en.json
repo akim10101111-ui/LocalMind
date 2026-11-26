@@ -1541,7 +1541,7 @@
     "removeCta": "Remove",
     "useCta": "Use",
     "inUseLabel": "In use",
-    "modelSectionHelper": "Used by voice input and hands-free voice.",
+    "modelSectionHelper": "Used for speech-to-text.",
     "errorPermissionDenied": "Microphone access is needed for voice input.",
     "errorPermissionBlocked": "Microphone access is blocked. Enable it in Settings.",
     "errorTranscribeFailed": "Couldn't transcribe — please try again.",
