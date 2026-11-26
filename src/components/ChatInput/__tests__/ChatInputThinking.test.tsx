@@ -93,10 +93,8 @@ describe('ChatInput Thinking Toggle', () => {
   const defaultProps = {
     onSendPress: jest.fn(),
     onStopPress: jest.fn(),
-    onPalBtnPress: jest.fn(),
     isStopVisible: false,
     sendButtonVisibilityMode: 'editing' as const,
-    isPickerVisible: false,
     textInputProps: {},
   };
 
