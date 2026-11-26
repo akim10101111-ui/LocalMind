@@ -153,7 +153,21 @@ jobs:
           if "foojay-resolver-convention" in p.read_text():
               raise SystemExit("Foojay resolver declaration remains.")
           PY
-          sed -n '1,35p' "$FILE"
+          # Use Google's Maven Central mirror for plugin transitive dependencies too.
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("node_modules/@react-native/gradle-plugin/settings.gradle.kts")
+          s = p.read_text()
+          marker = "repositories {"
+          mirror = 'repositories {\\n    maven { url = uri("https://maven-central.storage-download.googleapis.com/maven2/") }'
+          if "maven-central.storage-download.googleapis.com" not in s:
+              if marker not in s:
+                  raise SystemExit("Could not locate pluginManagement repositories block for Maven mirror.")
+              s = s.replace(marker, mirror, 1)
+              p.write_text(s)
+          PY
+          sed -n '1,45p' "$FILE"
+          sed -n '1,45p' node_modules/@react-native/gradle-plugin/settings.gradle.kts
 
       - name: Restore enriched Markdown native assets
         run: INIT_CWD="$GITHUB_WORKSPACE" node node_modules/react-native-enriched-markdown/postinstall.mjs
