@@ -147,6 +147,7 @@ jobs:
         run: |
           set -euo pipefail
           yarn typecheck
+          yarn prettier --write src/components/ChatInput/ChatInput.tsx src/components/ChatInput/styles.ts src/components/DownloadOverlay/DownloadBanner.tsx src/components/SidebarContent/SidebarContent.tsx src/config/localMindModel.ts src/services/localMindModel.ts src/screens/ModelSetupScreen/ModelSetupScreen.tsx src/screens/OnboardingScreens/OnboardingStack.tsx src/screens/OnboardingScreens/useOnboardingHandlers.ts src/screens/OnboardingScreens/SplashScreen/SplashScreen.tsx
           yarn eslint src/components/ChatInput/ChatInput.tsx src/components/ChatInput/styles.ts src/components/DownloadOverlay/DownloadBanner.tsx src/components/SidebarContent/SidebarContent.tsx src/config/localMindModel.ts src/services/localMindModel.ts src/screens/ModelSetupScreen/ModelSetupScreen.tsx src/screens/OnboardingScreens/OnboardingStack.tsx src/screens/OnboardingScreens/useOnboardingHandlers.ts src/screens/OnboardingScreens/SplashScreen/SplashScreen.tsx
           # Run focused regression tests for the changed onboarding, download and composer flows.
           yarn test --runInBand --coverage=false src/components/ChatInput/__tests__/ChatInput.test.tsx src/components/DownloadOverlay/__tests__/DownloadBanner.test.tsx src/screens/OnboardingScreens/__tests__/useOnboardingHandlers.test.ts
