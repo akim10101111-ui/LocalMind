@@ -29,9 +29,9 @@ const LIGHT_PRIMARY = '#171717';
 const LIGHT_SECONDARY = '#D97757';
 const LIGHT_TERTIARY = '#B8674A';
 const LIGHT_ERROR = '#FF653F';
-const LIGHT_BACKGROUND = '#F5F4F0';
+const LIGHT_BACKGROUND = '#F6F4EF';
 const LIGHT_ON_BACKGROUND = '#171717';
-const LIGHT_SURFACE = '#FBFAF7';
+const LIGHT_SURFACE = '#FCFBF8';
 const LIGHT_ON_SURFACE = '#171717';
 const LIGHT_INVERSE_ON_SURFACE = '#fcfcfc';
 
@@ -43,38 +43,38 @@ export const lightColors: TokenColors = {
   onPrimaryContainer: '#2D2F33',
   secondary: LIGHT_SECONDARY,
   onSecondary: '#FFFFFF',
-  secondaryContainer: '#E0E0E0',
-  onSecondaryContainer: '#424242',
+  secondaryContainer: '#F2DED5',
+  onSecondaryContainer: '#6B3D2F',
   tertiary: LIGHT_TERTIARY,
   onTertiary: '#FFFFFF',
-  tertiaryContainer: '#F1F3FF',
-  onTertiaryContainer: '#013332',
+  tertiaryContainer: '#F0E4D8',
+  onTertiaryContainer: '#584238',
   error: LIGHT_ERROR,
   onError: '#FFFFFF',
-  errorContainer: '#E6ACA9',
-  onErrorContainer: '#330B09',
+  errorContainer: '#F6D9D0',
+  onErrorContainer: '#6A2117',
   background: LIGHT_BACKGROUND,
   onBackground: LIGHT_ON_BACKGROUND,
   surface: LIGHT_SURFACE,
   onSurface: LIGHT_ON_SURFACE,
-  surfaceVariant: '#e4e4e6',
-  onSurfaceVariant: '#646466',
-  outline: withOpacity(LIGHT_PRIMARY, 0.05),
-  outlineVariant: '#a1a1a1',
-  mutedLight: '#e5e3e1',
+  surfaceVariant: '#EEEAE2',
+  onSurfaceVariant: '#726D65',
+  outline: withOpacity(LIGHT_PRIMARY, 0.08),
+  outlineVariant: '#D9D3C9',
+  mutedLight: '#EDE9E1',
   // Figma `Color/Secondary/Default` — the secondary surface used by
   // small DS buttons (back chevron, audio glyph) over the muted canvas.
-  secondaryDefault: '#f3f2f2',
+  secondaryDefault: '#F1EEE8',
   // MD3 extras
   surfaceDisabled: withOpacity('#fcfcfc', 0.12),
   onSurfaceDisabled: withOpacity('#333333', 0.38),
-  inverseSurface: '#858585',
+  inverseSurface: '#3D3934',
   inverseOnSurface: LIGHT_INVERSE_ON_SURFACE,
-  inversePrimary: '#DEE0E6',
-  inverseSecondary: '#95ABE6',
+  inversePrimary: '#E9C7B9',
+  inverseSecondary: '#E5A58E',
   shadow: '#000000',
   scrim: 'rgba(0, 0, 0, 0.25)',
-  backdrop: 'rgba(51, 51, 51, 0.6)',
+  backdrop: 'rgba(38, 34, 30, 0.52)',
 
   // Semantic surface variants (light derives via primary-tint math)
   surfaceContainerHighest: withOpacity(LIGHT_PRIMARY, 0.05),
@@ -112,7 +112,7 @@ export const lightColors: TokenColors = {
   menuDangerText: LIGHT_ERROR,
 
   // Messages
-  authorBubbleBackground: '#f2f2f2',
+  authorBubbleBackground: '#F0EEE8',
   receivedMessageDocumentIcon: LIGHT_PRIMARY,
   sentMessageDocumentIcon: LIGHT_ON_SURFACE,
   userAvatarImageBackground: 'transparent',
@@ -125,12 +125,12 @@ export const lightColors: TokenColors = {
   searchBarBackground: 'rgba(118, 118, 128, 0.12)',
 
   // Thinking bubble
-  thinkingBubbleBackground: '#f0f5fa',
-  thinkingBubbleText: '#0a5999',
-  thinkingBubbleBorder: 'rgba(10, 89, 153, 0.4)',
-  thinkingBubbleShadow: '#0a5999',
-  thinkingBubbleChevronBackground: 'rgba(10, 89, 153, 0.1)',
-  thinkingBubbleChevronBorder: 'rgba(10, 89, 153, 0.2)',
+  thinkingBubbleBackground: '#F7EAE3',
+  thinkingBubbleText: '#8C4B36',
+  thinkingBubbleBorder: 'rgba(140, 75, 54, 0.28)',
+  thinkingBubbleShadow: '#A65F46',
+  thinkingBubbleChevronBackground: 'rgba(140, 75, 54, 0.08)',
+  thinkingBubbleChevronBorder: 'rgba(140, 75, 54, 0.18)',
 
   // Status bar
   bgStatusActive: '#22c55e',
@@ -138,9 +138,9 @@ export const lightColors: TokenColors = {
   statusLoaded: '#178543',
 
   // Buttons
-  btnPrimaryBg: '#eff6ff',
-  btnPrimaryBorder: '#bfdbff',
-  btnPrimaryText: '#1447e6',
+  btnPrimaryBg: '#F8EAE4',
+  btnPrimaryBorder: '#EAC7B9',
+  btnPrimaryText: '#874632',
   btnReadyBg: '#ecfdf5',
   btnReadyBorder: '#bbf7d0',
   btnReadyText: '#047857',
@@ -149,13 +149,13 @@ export const lightColors: TokenColors = {
   btnDownloadText: '#047857',
 
   // Icons
-  iconModelTypeText: '#3b82f6',
-  iconModelTypeVision: '#9810fa',
+  iconModelTypeText: '#8A6958',
+  iconModelTypeVision: '#D97757',
   iconModelTypeAudio: '#f97316',
 
   // Accent — peach pill background (canonical Figma `Color/Accent/Peach`).
   accent: {
-    peach: '#FCE7CF',
+    peach: '#F6E3DA',
     // Progress-bar fill (canonical Figma `Color/Green/Strong`).
     greenStrong: '#7c8e8a',
   },
@@ -168,26 +168,26 @@ const DARK_PRIMARY = '#F5F4F0';
 const DARK_SECONDARY = '#D97757';
 const DARK_TERTIARY = '#E8A088';
 const DARK_ERROR = '#FF653F';
-const DARK_BACKGROUND = '#262624';
+const DARK_BACKGROUND = '#242321';
 const DARK_ON_BACKGROUND = '#F5F4F0';
-const DARK_SURFACE = '#30302E';
+const DARK_SURFACE = '#2D2B28';
 const DARK_ON_SURFACE = '#F5F4F0';
-const DARK_INVERSE_ON_SURFACE = '#3D3D3A';
+const DARK_INVERSE_ON_SURFACE = '#3A3631';
 
 export const darkColors: TokenColors = {
   // MD3 base palette (dark) — verbatim from canonical Figma
   primary: DARK_PRIMARY,
-  onPrimary: '#44464C',
-  primaryContainer: '#5B5E66',
-  onPrimaryContainer: '#DEE0E6',
+  onPrimary: '#282521',
+  primaryContainer: '#504942',
+  onPrimaryContainer: '#F4EEE6',
   secondary: DARK_SECONDARY,
-  onSecondary: '#11214C',
-  secondaryContainer: '#424242',
-  onSecondaryContainer: '#E0E0E0',
+  onSecondary: '#FFFFFF',
+  secondaryContainer: '#49372F',
+  onSecondaryContainer: '#F4D7CA',
   tertiary: DARK_TERTIARY,
-  onTertiary: '#014C4C',
-  tertiaryContainer: '#016665',
-  onTertiaryContainer: '#9EE6E5',
+  onTertiary: '#312722',
+  tertiaryContainer: '#4A382E',
+  onTertiaryContainer: '#F0D5C6',
   error: DARK_ERROR,
   onError: '#4C100D',
   errorContainer: '#661511',
@@ -196,23 +196,23 @@ export const darkColors: TokenColors = {
   onBackground: DARK_ON_BACKGROUND,
   surface: DARK_SURFACE,
   onSurface: DARK_ON_SURFACE,
-  surfaceVariant: '#646466',
-  onSurfaceVariant: '#e3e4e6',
-  outline: '#444444',
-  outlineVariant: '#a1a1a1',
-  mutedLight: '#3a3937',
+  surfaceVariant: '#3C3934',
+  onSurfaceVariant: '#C5BFB5',
+  outline: '#504A42',
+  outlineVariant: '#625A50',
+  mutedLight: '#393630',
   // Figma `Color/Secondary/Default` — dark binding from canonical file.
-  secondaryDefault: '#2a2928',
+  secondaryDefault: '#35312C',
   // MD3 extras
   surfaceDisabled: withOpacity('#333333', 0.12),
   onSurfaceDisabled: withOpacity('#e5e5e6', 0.38),
-  inverseSurface: '#e5e5e6',
+  inverseSurface: '#EAE4DA',
   inverseOnSurface: DARK_INVERSE_ON_SURFACE,
-  inversePrimary: '#5B5E66',
-  inverseSecondary: LIGHT_SECONDARY, // md3BaseColors.secondary used in current code
-  shadow: '#ffffff',
+  inversePrimary: '#E4B29F',
+  inverseSecondary: LIGHT_SECONDARY, // Warm brand accent for inverse surfaces
+  shadow: '#000000',
   scrim: 'rgba(0, 0, 0, 0.25)',
-  backdrop: 'rgba(66, 66, 66, 0.8)',
+  backdrop: 'rgba(0, 0, 0, 0.68)',
 
   // Semantic surface variants (dark derives via surface-tint math)
   // Explicit binding pending in a later design-system phase.
@@ -242,7 +242,7 @@ export const darkColors: TokenColors = {
   focusStateOpacity: stateLayerOpacity.focus,
 
   // Menu
-  menuBackground: '#2a2a2a',
+  menuBackground: '#302D29',
   menuBackgroundDimmed: withOpacity(DARK_SURFACE, 0.9),
   menuBackgroundActive: withOpacity(DARK_PRIMARY, 0.08),
   menuSeparator: withOpacity(DARK_PRIMARY, 0.5),
@@ -251,7 +251,7 @@ export const darkColors: TokenColors = {
   menuDangerText: DARK_ERROR,
 
   // Messages
-  authorBubbleBackground: '#212121',
+  authorBubbleBackground: '#393631',
   receivedMessageDocumentIcon: DARK_PRIMARY,
   sentMessageDocumentIcon: DARK_ON_SURFACE,
   userAvatarImageBackground: 'transparent',
@@ -261,15 +261,15 @@ export const darkColors: TokenColors = {
     DARK_TERTIARY,
     DARK_ERROR,
   ],
-  searchBarBackground: 'rgba(28, 28, 30, 0.92)',
+  searchBarBackground: 'rgba(48, 45, 41, 0.94)',
 
   // Thinking bubble
-  thinkingBubbleBackground: '#142e4d',
-  thinkingBubbleText: '#6abaff',
-  thinkingBubbleBorder: 'rgba(74, 140, 199, 0.6)',
-  thinkingBubbleShadow: '#4a9fff',
-  thinkingBubbleChevronBackground: 'rgba(74, 140, 199, 0.15)',
-  thinkingBubbleChevronBorder: 'rgba(74, 140, 199, 0.3)',
+  thinkingBubbleBackground: '#40342F',
+  thinkingBubbleText: '#F0B49B',
+  thinkingBubbleBorder: 'rgba(217, 119, 87, 0.45)',
+  thinkingBubbleShadow: '#D97757',
+  thinkingBubbleChevronBackground: 'rgba(217, 119, 87, 0.15)',
+  thinkingBubbleChevronBorder: 'rgba(217, 119, 87, 0.3)',
 
   // Status bar
   bgStatusActive: '#22c55e',
@@ -277,24 +277,24 @@ export const darkColors: TokenColors = {
   statusLoaded: '#34c768',
 
   // Buttons
-  btnPrimaryBg: '#0f1629',
-  btnPrimaryBorder: '#192645',
-  btnPrimaryText: '#93c5fd',
-  btnReadyBg: '#052e16',
-  btnReadyBorder: '#166534',
-  btnReadyText: '#6ee7b7',
-  btnDownloadBg: '#0a1f17',
-  btnDownloadBorder: '#143d2d',
-  btnDownloadText: '#34d399',
+  btnPrimaryBg: '#3C302A',
+  btnPrimaryBorder: '#684537',
+  btnPrimaryText: '#F0B49B',
+  btnReadyBg: '#26352C',
+  btnReadyBorder: '#536F59',
+  btnReadyText: '#B4D1B7',
+  btnDownloadBg: '#2B342B',
+  btnDownloadBorder: '#50644F',
+  btnDownloadText: '#B4D1B7',
 
   // Icons
-  iconModelTypeText: '#93c5fd',
-  iconModelTypeVision: '#c4b5fd',
-  iconModelTypeAudio: '#fdba74',
+  iconModelTypeText: '#C6B09E',
+  iconModelTypeVision: '#E2A18A',
+  iconModelTypeAudio: '#D9A46C',
 
   // Accent — peach pill background (dark binding from canonical Figma).
   accent: {
-    peach: '#7A4A1F',
+    peach: '#58372D',
     // Progress-bar fill — dark binding mirrors the light token (same hue).
     greenStrong: '#7c8e8a',
   },
