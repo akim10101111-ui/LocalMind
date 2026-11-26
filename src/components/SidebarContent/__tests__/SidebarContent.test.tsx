@@ -95,19 +95,13 @@ describe('SidebarContent Component', () => {
     expect(chatSessionStore.resetActiveSession).toHaveBeenCalled();
   });
 
-  it('navigates to Chat screen when a session is pressed', async () => {
-    const {getByText, queryByText} = render(<TestNavigator />);
+  it('filters recent chats from the sidebar search field', () => {
+    const {getByTestId, getByText, queryByText} = render(<TestNavigator />);
 
-    // Navigate to a differnet page (as the default is chat screen)
-    fireEvent.press(getByText('Models'));
-    expect(queryByText('Chat Screen')).toBeNull();
-    expect(getByText('Models Screen')).toBeTruthy();
+    fireEvent.changeText(getByTestId('sidebar-search-input'), 'Session 1');
 
-    // Pressing a session should navigate to the Chat screen
-    fireEvent.press(getByText('Session 1'));
-    await waitFor(() => {
-      expect(getByText('Chat Screen')).toBeTruthy();
-    });
+    expect(getByText('Session 1')).toBeTruthy();
+    expect(queryByText('Session 2')).toBeNull();
   });
 
   describe('closes the drawer when the target is already focused', () => {
@@ -126,7 +120,7 @@ describe('SidebarContent Component', () => {
       await waitFor(() => expect(getByText('drawer:closed')).toBeTruthy());
     });
 
-    it('after pressing the Chat item', async () => {
+    it('after pressing New Chat', async () => {
       const {getByText, getByTestId} = await renderOpenDrawerOnChat();
 
       fireEvent.press(getByTestId('sidebar-new-chat'));
