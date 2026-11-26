@@ -1,34 +1,28 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {TouchableOpacity, View, Alert, SectionList} from 'react-native';
+import {TouchableOpacity, View, Alert, SectionList, TextInput} from 'react-native';
 import {observer} from 'mobx-react';
-import {Divider, Drawer, Text} from 'react-native-paper';
+import {Divider, Text} from 'react-native-paper';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {DrawerContentComponentProps} from '@react-navigation/drawer';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {useTheme} from '../../hooks';
 import {createStyles} from './styles';
-import {chatSessionStore, SessionMetaData} from '../../store';
+import {chatSessionStore, SessionMetaData, uiStore} from '../../store';
 import {Menu, RenameModal, Checkbox} from '..';
 import {
-  BenchmarkIcon,
-  ChatIcon,
   EditIcon,
-  LocalMindLogo,
   PlusIcon,
   SettingsIcon,
   ShareIcon,
   StarIcon,
   TrashIcon,
-  AppInfoIcon,
+  SearchIcon,
 } from '../../assets/icons';
 import {L10nContext} from '../../utils';
 import {t} from '../../locales';
 import {ROUTES} from '../../utils/navigationConstants';
 import {exportChatSession} from '../../utils/exportUtils';
-
-// Check if app is in debug mode
-const isDebugMode = __DEV__;
 
 // Session item props interface
 interface SessionItemProps {
@@ -306,20 +300,25 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
     const [menuPosition, setMenuPosition] = useState({x: 0, y: 0});
     const [sessionToRename, setSessionToRename] =
       useState<SessionMetaData | null>(null);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const theme = useTheme();
     const styles = React.useMemo(() => createStyles(theme), [theme]);
     const l10n = useContext(L10nContext);
     const insets = useSafeAreaInsets();
 
-    // Convert groupedSessions to SectionList format
-    // observer() HOC handles MobX reactivity, transformation is cheap
-    const sections = Object.entries(chatSessionStore.groupedSessions).map(
-      ([dateLabel, sessions]) => ({
+    // Search the recent chat list without changing saved session metadata.
+    const normalizedSearch = searchQuery.trim().toLocaleLowerCase();
+    const sections = Object.entries(chatSessionStore.groupedSessions)
+      .map(([dateLabel, sessions]) => ({
         title: dateLabel,
-        data: sessions,
-      }),
-    );
+        data: normalizedSearch
+          ? sessions.filter(session =>
+              String(session.title ?? '').toLocaleLowerCase().includes(normalizedSearch),
+            )
+          : sessions,
+      }))
+      .filter(section => section.data.length > 0);
 
     useEffect(() => {
       chatSessionStore.loadSessionList();
@@ -553,84 +552,38 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
       () => (
         <View style={styles.menuHeader}>
           <View style={styles.brandRow}>
-            <View style={styles.brandMark}>
-              <LocalMindLogo width={48} height={48} />
-            </View>
-            <View style={styles.brandCopy}>
-              <Text variant="titleMedium" style={styles.brandTitle}>
-                LocalMind
-              </Text>
-              <Text variant="labelSmall" style={styles.brandSubtitle}>
-                {l10n.components.sidebarContent.brandSubtitle}
-              </Text>
-            </View>
+            <Text style={styles.brandTitle}>LocalMind</Text>
+          </View>
+          <View style={styles.searchContainer}>
+            <SearchIcon width={21} height={21} stroke={theme.colors.onSurface} />
+            <TextInput
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              placeholder={uiStore.language === 'ru' ? 'Поиск по чатам' : 'Search chats'}
+              placeholderTextColor={theme.colors.onSurfaceVariant}
+              style={styles.searchInput}
+              returnKeyType="search"
+              accessibilityLabel={uiStore.language === 'ru' ? 'Поиск по чатам' : 'Search chats'}
+              testID="sidebar-search-input"
+            />
           </View>
           <TouchableOpacity
-            onPress={handleNewChat}
-            style={styles.newChatButton}
+            onPress={() => navigateTo(ROUTES.SETTINGS)}
+            style={styles.settingsRow}
             accessibilityRole="button"
-            accessibilityLabel={l10n.chat.contextNewChat}
-            testID="sidebar-new-chat">
-            <PlusIcon width={20} height={20} stroke={theme.colors.onPrimary} />
-            <Text variant="titleSmall" style={styles.newChatLabel}>
-              {l10n.chat.contextNewChat}
+            accessibilityLabel={l10n.components.sidebarContent.menuItems.settings}
+            testID="sidebar-settings">
+            <SettingsIcon width={23} height={23} stroke={theme.colors.onSurface} />
+            <Text variant="titleMedium" style={styles.settingsLabel}>
+              {l10n.components.sidebarContent.menuItems.settings}
             </Text>
           </TouchableOpacity>
-          <Drawer.Section showDivider={false}>
-            <Drawer.Item
-              label={l10n.components.sidebarContent.menuItems.chat}
-              icon={() => <ChatIcon stroke={theme.colors.primary} />}
-              onPress={() => navigateTo(ROUTES.CHAT)}
-              style={styles.menuDrawerItem}
-              testID="drawer-item-chat"
-            />
-          </Drawer.Section>
-          <Divider style={styles.divider} />
-          <Text variant="labelSmall" style={styles.menuSectionTitle}>
-            {l10n.components.sidebarContent.toolsLabel}
-          </Text>
-          <Drawer.Section showDivider={false}>
-            <Drawer.Item
-              label={l10n.components.sidebarContent.menuItems.benchmark}
-              icon={() => <BenchmarkIcon stroke={theme.colors.primary} />}
-              onPress={() => navigateTo(ROUTES.BENCHMARK)}
-              style={styles.menuDrawerItem}
-              testID="drawer-item-benchmark"
-            />
-            <Drawer.Item
-              label={l10n.components.sidebarContent.menuItems.settings}
-              icon={() => (
-                <SettingsIcon width={24} height={24} stroke={theme.colors.primary} />
-              )}
-              onPress={() => navigateTo(ROUTES.SETTINGS)}
-              style={styles.menuDrawerItem}
-              testID="drawer-item-settings"
-            />
-            <Drawer.Item
-              label={l10n.components.sidebarContent.menuItems.appInfo}
-              icon={() => (
-                <AppInfoIcon width={24} height={24} stroke={theme.colors.primary} />
-              )}
-              onPress={() => navigateTo(ROUTES.APP_INFO)}
-              style={styles.menuDrawerItem}
-              testID="drawer-item-app-info"
-            />
-            {isDebugMode && (
-              <Drawer.Item
-                label="Dev Tools"
-                icon={() => <SettingsIcon width={24} height={24} stroke={theme.colors.primary} />}
-                onPress={() => navigateTo(ROUTES.DEV_TOOLS)}
-                style={styles.menuDrawerItem}
-              />
-            )}
-          </Drawer.Section>
-          <Divider style={styles.divider} />
           <Text variant="labelSmall" style={styles.menuSectionTitle}>
             {l10n.components.sidebarContent.historyLabel}
           </Text>
         </View>
       ),
-      [l10n, theme, styles, navigateTo, handleNewChat],
+      [l10n, theme, styles, navigateTo, searchQuery],
     );
 
     return (
@@ -638,7 +591,7 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
         <View
           style={[
             styles.contentWrapper,
-            {paddingTop: insets.top, paddingBottom: insets.bottom},
+            {paddingTop: insets.top, paddingBottom: 0},
           ]}>
           {chatSessionStore.isSelectionMode ? (
             <>
@@ -681,6 +634,28 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
               stickySectionHeadersEnabled={false}
               contentContainerStyle={styles.scrollViewContent}
             />
+          )}
+          {!chatSessionStore.isSelectionMode && (
+            <View style={[styles.bottomBar, {paddingBottom: Math.max(insets.bottom, 12)}]}>
+              <TouchableOpacity
+                onPress={() => navigateTo(ROUTES.SETTINGS)}
+                style={styles.avatarButton}
+                accessibilityRole="button"
+                accessibilityLabel={l10n.components.sidebarContent.menuItems.settings}>
+                <Text style={styles.avatarText}>{uiStore.language === 'ru' ? 'Л' : 'L'}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleNewChat}
+                style={styles.newChatButton}
+                accessibilityRole="button"
+                accessibilityLabel={l10n.chat.contextNewChat}
+                testID="sidebar-new-chat">
+                <PlusIcon width={19} height={19} stroke={theme.colors.onPrimary} />
+                <Text variant="titleSmall" style={styles.newChatLabel}>
+                  {l10n.chat.contextNewChat}
+                </Text>
+              </TouchableOpacity>
+            </View>
           )}
         </View>
         <RenameModal
