@@ -36,12 +36,12 @@ jobs:
           set -euo pipefail
           ZIP_PATH="$(find . -maxdepth 1 -type f -name 'LocalMind-source*.zip' -print -quit)"
           if [ -n "$ZIP_PATH" ]; then
-            rm -rf .localmind-extract
-            mkdir -p .localmind-extract
-            unzip -q "$ZIP_PATH" -d .localmind-extract
+            rm -rf /tmp/localmind-extract
+            mkdir -p /tmp/localmind-extract
+            unzip -q "$ZIP_PATH" -d /tmp/localmind-extract
             SOURCE_DIR="$(python3 - <<'PY'
           import os
-          for root, dirs, files in os.walk(".localmind-extract"):
+          for root, dirs, files in os.walk("/tmp/localmind-extract"):
               dirs[:] = [d for d in dirs if d not in {"node_modules", ".git"}]
               if "package.json" in files and os.path.isfile(os.path.join(root, "android", "gradlew")):
                   print(root)
@@ -50,12 +50,12 @@ jobs:
           )"
             if [ -z "$SOURCE_DIR" ]; then
               echo "::error::The uploaded archive does not contain a complete React Native Android project."
-              find .localmind-extract -maxdepth 5 -name package.json -print
+              find /tmp/localmind-extract -maxdepth 5 -name package.json -print
               exit 1
             fi
             echo "Using uploaded source tree: $SOURCE_DIR"
             rsync -a --delete --exclude='.git' --exclude='.github' "$SOURCE_DIR/" ./
-            rm -rf .localmind-extract
+            rm -rf /tmp/localmind-extract
             rm -f "$ZIP_PATH"
           fi
           test -f package.json
