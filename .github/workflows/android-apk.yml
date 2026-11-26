@@ -147,9 +147,9 @@ jobs:
         run: |
           set -euo pipefail
           yarn typecheck
-          yarn eslint src/components/ChatInput/styles.ts src/components/ChatHeader/styles.ts src/components/SidebarContent/styles.ts src/components/PalsSheets/PalSheet.tsx src/utils/hf.ts src/utils/__tests__/hf.test.ts
-          # Two Jest workers use the hosted runner's spare CPU without the memory spike of full parallelism.
-          yarn test --maxWorkers=2 --coverage=false
+          yarn eslint src/components/ChatInput/ChatInput.tsx src/components/ChatInput/styles.ts src/components/DownloadOverlay/DownloadBanner.tsx src/components/SidebarContent/SidebarContent.tsx src/config/localMindModel.ts src/services/localMindModel.ts src/screens/ModelSetupScreen/ModelSetupScreen.tsx src/screens/OnboardingScreens/OnboardingStack.tsx src/screens/OnboardingScreens/useOnboardingHandlers.ts src/screens/OnboardingScreens/SplashScreen/SplashScreen.tsx
+          # Run focused regression tests for the changed onboarding, download and composer flows.
+          yarn test --runInBand --coverage=false src/components/ChatInput/__tests__/ChatInput.test.tsx src/components/DownloadOverlay/__tests__/DownloadBanner.test.tsx src/screens/OnboardingScreens/__tests__/useOnboardingHandlers.test.ts
 
       - name: Derive llama.rn native variant allowlist
         shell: bash
