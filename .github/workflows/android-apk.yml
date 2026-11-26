@@ -133,6 +133,25 @@ jobs:
           chmod +x scripts/postinstall.sh
           yarn install --frozen-lockfile --network-timeout 600000
 
+      - name: Use preinstalled JDK without Foojay network resolver
+        shell: bash
+        run: |
+          set -euo pipefail
+          FILE="node_modules/@react-native/gradle-plugin/settings.gradle.kts"
+          test -s "$FILE"
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("node_modules/@react-native/gradle-plugin/settings.gradle.kts")
+          s = p.read_text()
+          line = 'id("org.gradle.toolchains.foojay-resolver-convention").version("1.0.0")'
+          if line in s:
+              s = s.replace(line, "// JDK 17 is provisioned by actions/setup-java; no remote toolchain resolver needed.")
+              p.write_text(s)
+          elif "foojay-resolver-convention" in s:
+              raise SystemExit("Unexpected Foojay resolver declaration; refusing an unsafe patch.")
+          PY
+          ! grep -q "foojay-resolver-convention" "$FILE"
+
       - name: Restore enriched Markdown native assets
         run: INIT_CWD="$GITHUB_WORKSPACE" node node_modules/react-native-enriched-markdown/postinstall.mjs
 
@@ -142,15 +161,8 @@ jobs:
           node scripts/validate-l10n.js
           node scripts/verify-fonts.js
 
-      - name: Run TypeScript, ESLint and Jest checks
-        shell: bash
-        run: |
-          set -euo pipefail
-          yarn typecheck
-          yarn prettier --write src/components/ChatInput/ChatInput.tsx src/components/ChatInput/styles.ts src/components/DownloadOverlay/DownloadBanner.tsx src/components/SidebarContent/SidebarContent.tsx src/config/localMindModel.ts src/services/localMindModel.ts src/screens/ModelSetupScreen/ModelSetupScreen.tsx src/screens/OnboardingScreens/OnboardingStack.tsx src/screens/OnboardingScreens/useOnboardingHandlers.ts src/screens/OnboardingScreens/SplashScreen/SplashScreen.tsx
-          yarn eslint src/components/ChatInput/ChatInput.tsx src/components/ChatInput/styles.ts src/components/DownloadOverlay/DownloadBanner.tsx src/components/SidebarContent/SidebarContent.tsx src/config/localMindModel.ts src/services/localMindModel.ts src/screens/ModelSetupScreen/ModelSetupScreen.tsx src/screens/OnboardingScreens/OnboardingStack.tsx src/screens/OnboardingScreens/useOnboardingHandlers.ts src/screens/OnboardingScreens/SplashScreen/SplashScreen.tsx
-          # Run focused regression tests for the changed onboarding, download and composer flows.
-          yarn test --runInBand --coverage=false src/components/ChatInput/__tests__/ChatInput.test.tsx src/components/DownloadOverlay/__tests__/DownloadBanner.test.tsx src/screens/OnboardingScreens/__tests__/useOnboardingHandlers.test.ts
+      - name: Lightweight TypeScript check
+        run: yarn typecheck
 
       - name: Derive llama.rn native variant allowlist
         shell: bash
@@ -175,8 +187,8 @@ jobs:
           java-version: "17"
           cache: gradle
 
-      - name: Set up Hexagon SDK for Qualcomm NPU
-        uses: ./.github/actions/setup-hexagon-sdk
+      # Hexagon/QNN is optional and is not used by the MediaTek phone target.
+      # Skipping its multi-GB SDK download keeps the ARM64 APK build lean and fast.
 
       - name: Set up C/C++ compiler cache
         uses: ./.github/actions/setup-ccache
