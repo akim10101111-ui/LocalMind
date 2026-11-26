@@ -144,7 +144,7 @@ jobs:
           import re
           p = Path("node_modules/@react-native/gradle-plugin/settings.gradle.kts")
           s = p.read_text()
-          pattern = r'(?ms)^plugins\\s*\\{\\s*id\\("org\\.gradle\\.toolchains\\.foojay-resolver-convention"\\)\\.version\\("1\\.0\\.0"\\)\\s*\\}'
+          pattern = r'(?ms)^plugins\s*\{\s*id\("org\.gradle\.toolchains\.foojay-resolver-convention"\)\.version\("1\.0\.0"\)\s*\}'
           if "foojay-resolver-convention" in s:
               updated, count = re.subn(pattern, "// Foojay resolver disabled: JDK 17 is installed by CI.", s, count=1)
               if count != 1:
