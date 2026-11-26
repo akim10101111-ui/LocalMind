@@ -10,6 +10,7 @@ import {Onboarding3Screen} from './Onboarding3Screen';
 import {Onboarding4Screen} from './Onboarding4Screen';
 import {Onboarding5Screen} from './Onboarding5Screen';
 import {Onboarding6Screen} from './Onboarding6Screen';
+import {ModelSetupScreen} from '../ModelSetupScreen/ModelSetupScreen';
 import {
   OnboardingTopChrome,
   chromeStepFromRouteName,
@@ -70,6 +71,10 @@ export const OnboardingStack: React.FC = () => {
         <Stack.Screen
           name={ROUTES.ONBOARDING.STEP_6}
           component={Onboarding6Screen}
+        />
+        <Stack.Screen
+          name={ROUTES.ONBOARDING.MODEL_SETUP}
+          component={ModelSetupScreen}
         />
       </Stack.Navigator>
       <OnboardingTopChrome step={chromeStep} />

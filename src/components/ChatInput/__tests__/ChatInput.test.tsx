@@ -307,6 +307,7 @@ describe('input', () => {
           {...{
             onSendPress,
             showImageUpload: true,
+            isVisionEnabled: true,
             sendButtonVisibilityMode: 'editing',
           }}
         />
@@ -574,10 +575,10 @@ describe('input', () => {
     }
   });
 
-  it('disables plus button when vision is not enabled', () => {
+  it('hides plus button when vision is not enabled', () => {
     expect.assertions(1);
     const onSendPress = jest.fn();
-    const {getByLabelText} = render(
+    const {queryByLabelText} = render(
       <UserContext.Provider value={user}>
         <ChatInput
           {...{
@@ -590,8 +591,8 @@ describe('input', () => {
       </UserContext.Provider>,
     );
 
-    const plusButton = getByLabelText('Add image');
-    expect(plusButton.props.accessibilityState.disabled).toBe(true);
+    // Text-only models: no image button at all (it would be a dead control).
+    expect(queryByLabelText('Add image')).toBeNull();
   });
 
   it('enables plus button when vision is enabled', () => {

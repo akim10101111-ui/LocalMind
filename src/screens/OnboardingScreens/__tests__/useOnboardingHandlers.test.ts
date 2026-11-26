@@ -54,7 +54,7 @@ describe('useOnboardingHandlers', () => {
     it('navigates 1 -> Onboarding2, 5 -> Onboarding6', () => {
       const {result: r1} = renderHook(() => useOnboardingHandlers(1));
       act(() => r1.current.next());
-      expect(mockNavigate).toHaveBeenLastCalledWith(ROUTES.ONBOARDING.STEP_2);
+      expect(mockNavigate).toHaveBeenLastCalledWith(ROUTES.ONBOARDING.MODEL_SETUP);
 
       const {result: r5} = renderHook(() => useOnboardingHandlers(5));
       act(() => r5.current.next());

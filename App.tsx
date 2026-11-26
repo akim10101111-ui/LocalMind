@@ -20,7 +20,8 @@ import {
   GestureHandlerRootView,
 } from 'react-native-gesture-handler';
 
-import {asrStore, ttsStore, uiStore} from './src/store';
+import {asrStore, modelStore, ttsStore, uiStore} from './src/store';
+import {installLocalMind} from './src/services/localMindModel';
 import {useTheme} from './src/hooks';
 import {useDeepLinking} from './src/hooks/useDeepLinking';
 import {useNavigationBarAppearance} from './src/hooks/useNavigationBarAppearance';
@@ -78,10 +79,23 @@ const DeepLinkHandler = () => {
 // outer gate.
 type SwitchPointProps = {drawer: React.ReactNode};
 const SwitchPoint: React.FC<SwitchPointProps> = observer(({drawer}) => {
+  const isReady = isHydrated(uiStore) && isHydrated(modelStore);
+  const onboarded = uiStore.hasCompletedOnboarding;
+
+  // Resume (or finish) the LocalMind install in the background after
+  // onboarding. The chat is never blocked by it: the input shows status.
+  React.useEffect(() => {
+    if (isReady && onboarded) {
+      installLocalMind().catch(() => {
+        // Error is exposed via localMindInstallState for the UI.
+      });
+    }
+  }, [isReady, onboarded]);
+
   if (!isHydrated(uiStore)) {
     return null;
   }
-  if (!uiStore.hasCompletedOnboarding) {
+  if (!onboarded) {
     return <OnboardingStack />;
   }
   return <>{drawer}</>;

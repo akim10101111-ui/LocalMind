@@ -9,7 +9,6 @@ import {DownloadBanner} from '../DownloadBanner';
 import {modelStore, palStore, uiStore} from '../../../store';
 import {downloadManager} from '../../../services/downloads';
 import {createErrorState} from '../../../utils/errors';
-import {ROUTES} from '../../../utils/navigationConstants';
 
 const mockNavigate = jest.fn();
 
@@ -180,13 +179,13 @@ describe('DownloadBanner', () => {
     expect(queryByTestId('download-banner-failed')).toBeNull();
   });
 
-  it('opens the Models screen from the failure row body', () => {
+  it('does not open a catalog from the failure row body', () => {
     failWith(failedModel.id);
 
     const {getByLabelText} = render(<DownloadBanner />, {withNavigation: true});
     fireEvent.press(getByLabelText("Download didn't finish, Failed Model"));
 
-    expect(mockNavigate).toHaveBeenCalledWith(ROUTES.MODELS);
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 
   it('cancels the visible download from the progress row Stop pill', () => {
@@ -209,13 +208,13 @@ describe('DownloadBanner', () => {
     expect(modelStore.clearDownloadError).not.toHaveBeenCalled();
   });
 
-  it('opens the Models screen from the progress row body', () => {
+  it('does not open a catalog from the progress row body', () => {
     withActiveDownloads(1);
 
     const {getByTestId} = render(<DownloadBanner />, {withNavigation: true});
     fireEvent.press(getByTestId('download-banner'));
 
-    expect(mockNavigate).toHaveBeenCalledWith(ROUTES.MODELS);
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 
   it.each([

@@ -53,7 +53,7 @@ export const useOnboardingHandlers = (step: OnboardingStep) => {
 
   const next = useCallback(() => {
     const map: Record<OnboardingStep, string | null> = {
-      1: ROUTES.ONBOARDING.STEP_2,
+      1: ROUTES.ONBOARDING.MODEL_SETUP,
       2: ROUTES.ONBOARDING.STEP_3,
       3: ROUTES.ONBOARDING.STEP_4,
       4: ROUTES.ONBOARDING.STEP_5,

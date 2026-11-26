@@ -16,6 +16,7 @@ import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
 import {observer} from 'mobx-react';
 import {IconButton, Text} from 'react-native-paper';
+import {localMindInstallState} from '../../services/localMindModel';
 
 import {hasVideoCapability} from '../../utils/pal-capabilities';
 
@@ -256,9 +257,20 @@ export const ChatInput = observer(
       }
     };
 
+    // The text is cleared asynchronously, so a fast double tap could send the
+    // same message twice. This lock ignores repeat taps for a short window.
+    const sendLockRef = React.useRef(false);
     const handleSend = () => {
       const trimmedValue = value.trim();
       if (trimmedValue) {
+        if (sendLockRef.current) {
+          return;
+        }
+        sendLockRef.current = true;
+        setTimeout(() => {
+          sendLockRef.current = false;
+        }, 600);
+
         // Check if model is loaded before sending
         if (!hasActiveModel) {
           // Trigger haptic feedback to indicate the action is blocked
@@ -435,6 +447,12 @@ export const ChatInput = observer(
         ? effortLevelLabels[reasoningEffort as keyof typeof effortLevelLabels]
         : reasoningEffort;
 
+    const installingNotice = localMindInstallState.isInstalling
+      ? uiStore.language === 'ru'
+        ? `Локальный ИИ ещё загружается… ${localMindInstallState.percent}%`
+        : `Local AI is still loading… ${localMindInstallState.percent}%`
+      : null;
+
     return (
       <View style={styles.container}>
         <View style={styles.inputContainer}>
@@ -558,7 +576,9 @@ export const ChatInput = observer(
               {/* Left Controls */}
               <View style={styles.leftControls}>
                 {/* Plus Button for Image Upload (only for regular chat) */}
-                {showImageUpload && !isVideoCapable && (
+                {/* Hidden unless the loaded model accepts images: otherwise it
+                    is a dead, always-disabled button for text-only models. */}
+                {showImageUpload && !isVideoCapable && isVisionEnabled && (
                   <Menu
                     visible={showImageUploadMenu}
                     onDismiss={() => setShowImageUploadMenu(false)}
@@ -704,7 +724,7 @@ export const ChatInput = observer(
                 {showModelWarning && !hasActiveModel && (
                   <View style={styles.helperTextContainer}>
                     <Text variant="bodySmall" style={styles.helperText}>
-                      {l10n.chat.cannotSendWithoutModel}
+                      {installingNotice ?? l10n.chat.cannotSendWithoutModel}
                     </Text>
                   </View>
                 )}

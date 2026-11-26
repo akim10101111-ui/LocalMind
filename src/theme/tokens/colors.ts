@@ -25,14 +25,14 @@ import {withOpacity, stateLayerOpacity} from '../../utils/colorUtils';
 import {TokenColors} from './types';
 
 // Light base colors (verbatim from src/utils/theme.ts:111-147).
-const LIGHT_PRIMARY = '#333333';
-const LIGHT_SECONDARY = '#1E4DF6';
-const LIGHT_TERTIARY = '#7880FF';
+const LIGHT_PRIMARY = '#171717';
+const LIGHT_SECONDARY = '#D97757';
+const LIGHT_TERTIARY = '#B8674A';
 const LIGHT_ERROR = '#FF653F';
-const LIGHT_BACKGROUND = '#ffffff';
-const LIGHT_ON_BACKGROUND = '#111111';
-const LIGHT_SURFACE = '#F9FAFB';
-const LIGHT_ON_SURFACE = '#333333';
+const LIGHT_BACKGROUND = '#F5F4F0';
+const LIGHT_ON_BACKGROUND = '#171717';
+const LIGHT_SURFACE = '#FBFAF7';
+const LIGHT_ON_SURFACE = '#171717';
 const LIGHT_INVERSE_ON_SURFACE = '#fcfcfc';
 
 export const lightColors: TokenColors = {
@@ -135,7 +135,7 @@ export const lightColors: TokenColors = {
   // Status bar
   bgStatusActive: '#22c55e',
   bgStatusIdle: '#d1d5db',
-  statusLoaded: '#1e9e4f',
+  statusLoaded: '#178543',
 
   // Buttons
   btnPrimaryBg: '#eff6ff',
@@ -164,15 +164,15 @@ export const lightColors: TokenColors = {
 // Dark base values from canonical Figma. Where the canonical dark binding
 // differs visibly from the current dark Theme value, the current value
 // wins to avoid visual regression (tracked as a designer follow-up).
-const DARK_PRIMARY = '#DADDE6';
-const DARK_SECONDARY = '#95ABE6';
-const DARK_TERTIARY = '#80E6E4';
+const DARK_PRIMARY = '#F5F4F0';
+const DARK_SECONDARY = '#D97757';
+const DARK_TERTIARY = '#E8A088';
 const DARK_ERROR = '#FF653F';
-const DARK_BACKGROUND = '#000000';
-const DARK_ON_BACKGROUND = '#ffffff';
-const DARK_SURFACE = '#0E0E0E';
-const DARK_ON_SURFACE = '#E2E2E2';
-const DARK_INVERSE_ON_SURFACE = '#333333';
+const DARK_BACKGROUND = '#262624';
+const DARK_ON_BACKGROUND = '#F5F4F0';
+const DARK_SURFACE = '#30302E';
+const DARK_ON_SURFACE = '#F5F4F0';
+const DARK_INVERSE_ON_SURFACE = '#3D3D3A';
 
 export const darkColors: TokenColors = {
   // MD3 base palette (dark) — verbatim from canonical Figma

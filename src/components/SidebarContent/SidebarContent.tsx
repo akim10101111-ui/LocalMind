@@ -14,7 +14,6 @@ import {
   BenchmarkIcon,
   ChatIcon,
   EditIcon,
-  ModelIcon,
   LocalMindLogo,
   PlusIcon,
   SettingsIcon,
@@ -588,13 +587,6 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
               onPress={() => navigateTo(ROUTES.CHAT)}
               style={styles.menuDrawerItem}
               testID="drawer-item-chat"
-            />
-            <Drawer.Item
-              label={l10n.components.sidebarContent.menuItems.models}
-              icon={() => <ModelIcon stroke={theme.colors.primary} />}
-              onPress={() => navigateTo(ROUTES.MODELS)}
-              style={styles.menuDrawerItem}
-              testID="drawer-item-models"
             />
           </Drawer.Section>
           <Divider style={styles.divider} />

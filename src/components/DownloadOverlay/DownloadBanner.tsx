@@ -1,14 +1,21 @@
 import React, {useContext} from 'react';
 import {Pressable, Text, View} from 'react-native';
 import {observer} from 'mobx-react';
-import {useNavigation, NavigationProp} from '@react-navigation/native';
 
 import {XIcon} from '../../assets/icons';
 import {useTheme} from '../../hooks';
 import {modelStore, palStore, uiStore} from '../../store';
 import {L10nContext} from '../../utils';
-import {ROUTES} from '../../utils/navigationConstants';
 import {bannerStyles as createStyles} from './styles';
+
+import {installLocalMind} from '../../services/localMindModel';
+
+const noop = () => {};
+const retryLocalMindInstall = () => {
+  installLocalMind().catch(() => {
+    // Failure is shown by the banner state.
+  });
+};
 
 const formatSize = (bytes: number): string => {
   if (!bytes || bytes <= 0) {
@@ -45,7 +52,6 @@ const ownerOf = (modelId: string, modelName: string) => {
 export const DownloadBanner: React.FC = observer(() => {
   const theme = useTheme();
   const styles = createStyles(theme);
-  const navigation = useNavigation<NavigationProp<any>>();
   const l10n = useContext(L10nContext);
 
   const failedId = modelStore.downloadError?.metadata?.modelId;
@@ -77,7 +83,7 @@ export const DownloadBanner: React.FC = observer(() => {
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={failedLabel}
-          onPress={() => navigation.navigate(ROUTES.MODELS as never)}
+          onPress={retryLocalMindInstall}
           style={styles.body}>
           <View
             accessibilityElementsHidden
@@ -165,7 +171,7 @@ export const DownloadBanner: React.FC = observer(() => {
             ? `${title}, ${eta}, ${extraLabel}`
             : `${title}, ${eta}`
         }
-        onPress={() => navigation.navigate(ROUTES.MODELS as never)}
+        onPress={noop}
         style={styles.body}>
         <View
           accessibilityElementsHidden

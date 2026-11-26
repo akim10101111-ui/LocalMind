@@ -27,5 +27,6 @@ export const ROUTES = {
     STEP_4: 'Onboarding4',
     STEP_5: 'Onboarding5',
     STEP_6: 'Onboarding6',
+    MODEL_SETUP: 'OnboardingModelSetup',
   } as const,
 } as const;

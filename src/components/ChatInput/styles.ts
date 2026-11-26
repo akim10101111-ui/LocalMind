@@ -94,7 +94,7 @@ export const createStyles = ({
     inputContainer: {
       flex: 1,
       flexDirection: 'column',
-      borderRadius: 20,
+      borderRadius: 24,
       borderWidth: 1,
       borderColor: theme.colors.outlineVariant,
       overflow: 'hidden',
@@ -228,9 +228,9 @@ export const createStyles = ({
         width: 0,
         height: 2,
       },
-      shadowOpacity: 0.25,
+      shadowOpacity: 0,
       shadowRadius: 3.84,
-      elevation: 5,
+      elevation: 0,
     },
 
     stopButton: {
@@ -285,9 +285,9 @@ export const createStyles = ({
         width: 0,
         height: 2,
       },
-      shadowOpacity: 0.15,
+      shadowOpacity: 0,
       shadowRadius: 3,
-      elevation: 3,
+      elevation: 0,
     },
     helperText: {
       color: theme.colors.onErrorContainer,
