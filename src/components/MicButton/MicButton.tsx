@@ -37,7 +37,9 @@ export const MicButton: React.FC<MicButtonProps> = observer(
     const l10n = useContext(L10nContext);
     const [setupOpen, setSetupOpen] = useState(false);
 
-    if (!asrStore.asrAvailable) {
+    // Keep the waveform entry point visible in the composer even before
+    // speech recognition is enabled; tapping it opens the ASR setup sheet.
+    if (!asrStore.asrAvailable && variant !== 'waveform') {
       return null;
     }
 
@@ -64,7 +66,7 @@ export const MicButton: React.FC<MicButtonProps> = observer(
 
     return (
       <>
-        {asrStore.isSelectedTierReady ? (
+        {asrStore.asrAvailable && asrStore.isSelectedTierReady ? (
           <Pressable
             style={[styles.button, variantStyle, style]}
             onPress={onStart}
