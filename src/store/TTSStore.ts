@@ -6,7 +6,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import DeviceInfo from 'react-native-device-info';
 import {onAudioInterruption} from '@pocketpalai/react-native-speech';
 import type {
-  StreamProgressEvent,
   SupertonicLanguage,
 } from '@pocketpalai/react-native-speech';
 
@@ -27,7 +26,6 @@ import {
 import type {
   EngineId,
   NeuralEngineId,
-  StreamOptions,
   StreamingHandle,
   SupertonicSteps,
   Voice,
@@ -41,12 +39,6 @@ import {
   ThinkingStripper,
   pickThinkingPlaceholder,
 } from '../services/tts/thinkingStripper';
-import {
-  VOICE_CLAUSE_FIRST_CHUNK_ENGINES,
-  VOICE_FIRST_CHUNK_HOLD_MS,
-  VOICE_FIRST_CHUNK_MAX_WORDS,
-} from '../services/voice/constants';
-import {vtrace} from '../utils/voiceTrace';
 import {chatSessionStore} from './ChatSessionStore';
 import {modelStore} from './ModelStore';
 import {uiStore} from './UIStore';
@@ -91,14 +83,6 @@ const DEFAULT_SUPERTONIC_LANGUAGE: SupertonicLanguage = 'na';
 
 const previewMessageId = (voice: Voice): string =>
   `preview:${voice.engine}:${voice.id}`;
-
-/** A voice reply's stream and its first-chunk hold. */
-type VoiceStream = {
-  messageId: string;
-  held: string[] | null;
-  holdTimer: ReturnType<typeof setTimeout> | null;
-  chars: number;
-};
 
 /**
  * Store that coordinates text-to-speech playback.
@@ -146,14 +130,6 @@ export class TTSStore {
   // Runtime playback state (discriminated union)
   playbackState: TTSPlaybackState = {mode: 'idle'};
 
-  /** True while a voice-mode session is open; it speaks every reply. */
-  voiceOutputActive: boolean = false;
-  private holdFirstChunk: boolean = false;
-  /** Message id of the voice reply whose speech has begun playing. */
-  voiceSpeechStarted: string | null = null;
-  /** Message id of the last voice reply whose speech failed. */
-  voiceStreamFailed: string | null = null;
-  private voiceStream: VoiceStream | null = null;
   /** Settles once every `stop()` started so far has finished cancelling. */
   private stopsSettled: Promise<void> = Promise.resolve();
 
@@ -220,10 +196,10 @@ export class TTSStore {
   constructor() {
     makeAutoObservable<
       TTSStore,
-      'holdFirstChunk' | 'voiceStream' | 'stopsSettled'
+      'stopsSettled'
     >(
       this,
-      {holdFirstChunk: false, voiceStream: false, stopsSettled: false},
+      {stopsSettled: false},
       {autoBind: true},
     );
     makePersistable(this, {
@@ -409,31 +385,19 @@ export class TTSStore {
   }
 
   /**
-   * Whether Android should keep PocketPal in the foreground for its speech,
-   * which then also keeps playing in the background. Voice replies are left
-   * out: voice mode ends when the app leaves the screen.
+   * Whether Android should keep LocalMind in the foreground for speech,
+   * which then also keeps playing in the background.
    */
   get speechServiceWanted(): boolean {
     return (
       Platform.OS === 'android' &&
-      this.playbackState.mode !== 'idle' &&
-      !this.voiceOutputActive
+      this.playbackState.mode !== 'idle'
     );
   }
 
   /** Whether the next assistant reply opens a speech stream. */
   get streamsReplies(): boolean {
-    return (
-      this.voiceOutputActive || (this.isTTSAvailable && this.autoSpeakEnabled)
-    );
-  }
-
-  setVoiceOutputActive(
-    active: boolean,
-    {holdFirstChunk = false}: {holdFirstChunk?: boolean} = {},
-  ) {
-    this.voiceOutputActive = active;
-    this.holdFirstChunk = active && holdFirstChunk;
+    return this.isTTSAvailable && this.autoSpeakEnabled;
   }
 
   isEngineOffered(id: EngineId): boolean {
@@ -657,7 +621,6 @@ export class TTSStore {
   async stop(by = 'other'): Promise<void> {
     const state = this.playbackState;
     const voice = this.currentVoice;
-    vtrace('tts.stop', {by, mode: state.mode});
     let settle = () => {};
     const settled = new Promise<void>(resolve => (settle = resolve));
     this.stopsSettled = Promise.all([this.stopsSettled, settled]).then(
@@ -669,7 +632,6 @@ export class TTSStore {
       });
       this.streamStripper = null;
       this.streamPlaceholderEmitted = false;
-      this.clearVoiceHold();
       if (state.mode === 'streaming') {
         try {
           await state.handle.cancel();
@@ -835,7 +797,6 @@ export class TTSStore {
     this.lastSpokenMessageId = messageId;
     this.streamStripper = new ThinkingStripper();
     this.streamPlaceholderEmitted = false;
-    const voiceOpts = this.openVoiceStream(messageId, voice.engine);
     const engine = getEngine(voice.engine);
     let engineHandle: StreamingHandle;
     if (voice.engine === 'supertonic') {
@@ -843,13 +804,10 @@ export class TTSStore {
         voice,
         voiceReady,
         {
-          ...voiceOpts,
           language: this.supertonicLanguage,
           inferenceSteps: this.supertonicSteps,
         },
       );
-    } else if (voiceOpts) {
-      engineHandle = engine.playStreaming(voice, voiceReady, voiceOpts);
     } else {
       engineHandle = engine.playStreaming(voice, voiceReady);
     }
@@ -860,103 +818,11 @@ export class TTSStore {
     runInAction(() => {
       this.playbackState = {mode: 'streaming', messageId, handle};
     });
-    vtrace('tts.open', {
-      voice: !!voiceOpts,
-      engine: voice.engine,
-      first: voiceOpts?.firstChunk,
-      maxWords: voiceOpts?.firstChunkMaxWords,
-    });
-  }
-
-  private openVoiceStream(
-    messageId: string,
-    engine: EngineId,
-  ): StreamOptions | undefined {
-    if (!this.voiceOutputActive) {
-      this.voiceStream = null;
-      return undefined;
-    }
-    this.voiceSpeechStarted = null;
-    this.voiceStreamFailed = null;
-    const stream: VoiceStream = {
-      messageId,
-      held: this.holdFirstChunk ? [] : null,
-      holdTimer: null,
-      chars: 0,
-    };
-    if (stream.held) {
-      stream.holdTimer = setTimeout(
-        () => this.releaseHeldVoiceText(messageId),
-        VOICE_FIRST_CHUNK_HOLD_MS,
-      );
-    }
-    this.voiceStream = stream;
-    const onProgress = (event: StreamProgressEvent) =>
-      this.onVoiceProgress(messageId, event);
-    if (!VOICE_CLAUSE_FIRST_CHUNK_ENGINES.has(engine)) {
-      return {firstChunk: 'sentence', onProgress};
-    }
-    const tier = modelStore.deviceTier;
-    const maxWords = tier ? VOICE_FIRST_CHUNK_MAX_WORDS[tier] : undefined;
-    return {
-      firstChunk: 'clause',
-      ...(maxWords ? {firstChunkMaxWords: maxWords} : {}),
-      onProgress,
-    };
-  }
-
-  private onVoiceProgress(messageId: string, event: StreamProgressEvent) {
-    vtrace('tts.chunk', {
-      i: event.chunkIndex,
-      chars: event.chunkText.length,
-      current: this.voiceStream?.messageId === messageId,
-    });
-    if (this.voiceStream?.messageId === messageId) {
-      this.voiceSpeechStarted = messageId;
-    }
-  }
-
-  private appendReplyText(handle: StreamingHandle, text: string) {
-    if (this.voiceStream) {
-      this.voiceStream.chars += text.length;
-    }
-    const held = this.voiceStream?.held;
-    if (held) {
-      held.push(text);
-    } else {
-      handle.appendText(text);
-    }
   }
 
   private appendPlaceholder(handle: StreamingHandle) {
     this.streamPlaceholderEmitted = true;
-    this.appendReplyText(handle, `${pickThinkingPlaceholder()} `);
-  }
-
-  private releaseHeldVoiceText(messageId: string) {
-    const stream = this.voiceStream;
-    const state = this.playbackState;
-    if (stream?.messageId !== messageId || !stream.held) {
-      return;
-    }
-    this.clearVoiceHold();
-    const held = stream.held;
-    stream.held = null;
-    vtrace('tts.unhold', {parts: held.length});
-    if (state.mode !== 'streaming' || state.messageId !== messageId) {
-      return;
-    }
-    for (const text of held) {
-      state.handle.appendText(text);
-    }
-  }
-
-  private clearVoiceHold() {
-    const stream = this.voiceStream;
-    if (stream?.holdTimer) {
-      clearTimeout(stream.holdTimer);
-      stream.holdTimer = null;
-    }
+    handle.appendText(`${pickThinkingPlaceholder()} `);
   }
 
   /** Delta chunk from the LLM stream. */
@@ -971,7 +837,7 @@ export class TTSStore {
     }
     const stripper = this.streamStripper;
     if (stripper == null) {
-      this.appendReplyText(state.handle, chunkText);
+      state.handle.appendText(chunkText);
       return;
     }
     if (reasoningDelta) {
@@ -990,7 +856,7 @@ export class TTSStore {
       if (stripper.hadNonEmptyThink() && !this.streamPlaceholderEmitted) {
         this.appendPlaceholder(state.handle);
       }
-      this.appendReplyText(state.handle, cleaned);
+      state.handle.appendText(cleaned);
     }
   }
 
@@ -1009,34 +875,19 @@ export class TTSStore {
           if (stripper.hadNonEmptyThink() && !this.streamPlaceholderEmitted) {
             this.appendPlaceholder(state.handle);
           }
-          this.appendReplyText(state.handle, leftover);
+          state.handle.appendText(leftover);
         }
       }
-      if (this.voiceStream) {
-        this.releaseHeldVoiceText(this.voiceStream.messageId);
-      }
-      const isVoiceReply = this.voiceStream?.messageId === messageId;
-      vtrace('tts.finalize', {
-        voice: isVoiceReply,
-        chars: this.voiceStream?.chars,
-      });
       state.handle
         .finalize()
         .catch(err => {
           console.warn('[TTSStore] finalize failed:', err);
-          vtrace('tts.finalize.fail', {err: String(err)});
-          if (isVoiceReply) {
-            runInAction(() => {
-              this.voiceStreamFailed = messageId;
-            });
-          }
         })
         .finally(() => {
           runInAction(() => {
             const owns =
               this.playbackState.mode === 'streaming' &&
               this.playbackState.messageId === messageId;
-            vtrace('tts.finalized', {owns});
             if (owns) {
               this.playbackState = {mode: 'idle'};
               // Only reset stripper if this message still owns it —
