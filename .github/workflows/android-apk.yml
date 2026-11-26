@@ -34,22 +34,19 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [ ! -f package.json ] || [ ! -f android/gradlew ]; then
-            ZIP_PATH="$(find . -maxdepth 1 -type f -name 'LocalMind-source*.zip' -print -quit)"
-            if [ -z "$ZIP_PATH" ]; then
-              echo "::error::No LocalMind source tree or LocalMind-source*.zip archive found."
-              exit 1
-            fi
+          ZIP_PATH="$(find . -maxdepth 1 -type f -name 'LocalMind-source*.zip' -print -quit)"
+          if [ -n "$ZIP_PATH" ]; then
             rm -rf .localmind-extract
             mkdir -p .localmind-extract
             unzip -q "$ZIP_PATH" -d .localmind-extract
-            SOURCE_DIR=".localmind-extract/LocalMind"
-            if [ ! -f "$SOURCE_DIR/package.json" ] || [ ! -f "$SOURCE_DIR/android/gradlew" ]; then
+            SOURCE_DIR="$(find .localmind-extract -mindepth 1 -maxdepth 4 -type f -name package.json -printf '%h\\n' | while IFS= read -r dir; do if [ -f "$dir/android/gradlew" ]; then printf '%s\\n' "$dir"; break; fi; done)"
+            if [ -z "$SOURCE_DIR" ]; then
               echo "::error::The uploaded archive does not contain a complete React Native Android project."
-              find .localmind-extract -maxdepth 3 -type f | head -80
+              find .localmind-extract -maxdepth 4 -type f | head -80
               exit 1
             fi
-            rsync -a --exclude='.git' "$SOURCE_DIR/" ./
+            echo "Using uploaded source tree: $SOURCE_DIR"
+            rsync -a --delete --exclude='.git' --exclude='.github' "$SOURCE_DIR/" ./
             rm -rf .localmind-extract
             rm -f "$ZIP_PATH"
           fi
