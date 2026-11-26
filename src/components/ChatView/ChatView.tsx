@@ -3,6 +3,7 @@ import {
   FlatList,
   FlatListProps,
   Platform,
+  Keyboard,
   StatusBar,
   View,
   TouchableOpacity,
@@ -976,11 +977,10 @@ export const ChatView = observer(
           ) : null}
           <ChatEmptyPlaceholder
             bottomComponentHeight={bottomComponentHeight}
-            onSelectModel={() => setIsPickerVisible(true)}
           />
         </>
       );
-    }, [bottomComponentHeight, setIsPickerVisible, activePal]);
+    }, [bottomComponentHeight, activePal]);
 
     // Render footer (loading indicator or spacer)
     const renderListFooterComponent = React.useCallback(

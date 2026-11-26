@@ -12,12 +12,11 @@ import {L10nContext} from '../../utils';
 import {LocalMindLogo} from '../../assets/icons';
 
 interface ChatEmptyPlaceholderProps {
-  onSelectModel: () => void;
   bottomComponentHeight: number;
 }
 
 export const ChatEmptyPlaceholder = observer(
-  ({onSelectModel, bottomComponentHeight}: ChatEmptyPlaceholderProps) => {
+  ({bottomComponentHeight}: ChatEmptyPlaceholderProps) => {
     const theme = useTheme();
     const navigation = useNavigation<NavigationProp<any>>();
     const l10n = useContext(L10nContext);
@@ -72,8 +71,8 @@ export const ChatEmptyPlaceholder = observer(
         title: l10n.components.chatEmptyPlaceholder.activateModelTitle,
         description:
           l10n.components.chatEmptyPlaceholder.activateModelDescription,
-        buttonText: l10n.components.chatEmptyPlaceholder.activateModelButton,
-        onPress: onSelectModel,
+        buttonText: null,
+        onPress: () => {},
       };
     };
 

@@ -62,7 +62,6 @@ import {mockServerStore} from '../__mocks__/stores/serverStore';
 import {mockRouterStore} from '../__mocks__/stores/routerStore';
 import {mockTTSStore} from '../__mocks__/stores/ttsStore';
 import {mockASRStore} from '../__mocks__/stores/asrStore';
-import {mockVoiceModeStore} from '../__mocks__/stores/voiceModeStore';
 import {mockSearchProviderStore} from '../__mocks__/stores/searchProviderStore';
 import {mockLocalApiServerStore} from '../__mocks__/stores/localApiServerStore';
 
@@ -138,7 +137,6 @@ jest.mock('../src/store', () => {
     routerStore: mockRouterStore,
     ttsStore: mockTTSStore,
     asrStore: mockASRStore,
-    voiceModeStore: mockVoiceModeStore,
     searchProviderStore: mockSearchProviderStore,
     localApiServerStore: mockLocalApiServerStore,
     isValidLocalApiPort,
