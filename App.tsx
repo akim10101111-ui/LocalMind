@@ -255,8 +255,8 @@ const createStyles = (theme: Theme) =>
 // storyboard, Android has no native launch screen), so it cannot diverge
 // from native on any axis and reads simply as "app launching".
 const splashStyles = StyleSheet.create({
-  light: {flex: 1, backgroundColor: '#ffffff'},
-  dark: {flex: 1, backgroundColor: '#000000'},
+  light: {flex: 1, backgroundColor: '#F4F2EC'},
+  dark: {flex: 1, backgroundColor: '#1E1E1B'},
 });
 
 const HydrationHold = () => (

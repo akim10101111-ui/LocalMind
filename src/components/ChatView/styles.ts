@@ -58,9 +58,9 @@ export const createStyles = ({theme}: {theme: Theme}) =>
       borderTopRightRadius: theme.borders.inputBorderRadius,
       position: 'absolute',
       zIndex: 10,
-      left: 0,
-      right: 0,
-      bottom: 0,
+      left: 10,
+      right: 10,
+      bottom: 8,
       ...(!theme.dark
         ? {
             boxShadow: `0px -2px 8px ${theme.colors.shadow}1A`,

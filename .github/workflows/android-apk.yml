@@ -159,7 +159,7 @@ jobs:
           p = Path("node_modules/@react-native/gradle-plugin/settings.gradle.kts")
           s = p.read_text()
           marker = "repositories {"
-          mirror = 'repositories {\\n    maven { url = uri("https://maven-central.storage-download.googleapis.com/maven2/") }'
+          mirror = 'repositories {\n    maven { url = uri("https://maven-central.storage-download.googleapis.com/maven2/") }'
           if "maven-central.storage-download.googleapis.com" not in s:
               if marker not in s:
                   raise SystemExit("Could not locate pluginManagement repositories block for Maven mirror.")

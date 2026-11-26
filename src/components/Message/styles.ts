@@ -28,7 +28,7 @@ const styles = ({
       flex: 1,
       flexDirection: 'row',
       marginBottom: message.type === 'dateHeader' ? 0 : 4 + message.offset,
-      marginLeft: 20,
+      marginLeft: 16,
     },
     contentContainer: {
       backgroundColor:

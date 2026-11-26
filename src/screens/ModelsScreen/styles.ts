@@ -8,11 +8,11 @@ export const createStyles = (theme: Theme) =>
     },
     container: {
       flex: 1,
-      padding: 2,
-      backgroundColor: theme.colors.surface,
+      padding: 4,
+      backgroundColor: theme.colors.background,
     },
     listContainer: {
-      paddingBottom: 150,
+      paddingBottom: 136,
     },
     header: {
       paddingVertical: 12,
@@ -21,7 +21,7 @@ export const createStyles = (theme: Theme) =>
       justifyContent: 'flex-end',
       alignItems: 'center',
       borderBottomWidth: 1,
-      borderBottomColor: theme.colors.outlineVariant,
+      borderBottomColor: theme.colors.border,
     },
     filterContainer: {
       flexDirection: 'row',

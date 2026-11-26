@@ -9,19 +9,19 @@ export const createStyles = (theme: Theme) =>
       backgroundColor: theme.colors.surface,
     },
     container: {
-      padding: 16,
+      padding: 18,
     },
     scrollViewContent: {
-      paddingVertical: 16,
-      paddingHorizontal: 16,
+      paddingVertical: 14,
+      paddingHorizontal: 18,
     },
     card: {
       marginVertical: 8,
-      borderRadius: 12,
-      backgroundColor: theme.colors.background,
+      borderRadius: 18,
+      backgroundColor: theme.colors.surface,
     },
     settingItemContainer: {
-      marginVertical: 16,
+      marginVertical: 12,
     },
     switchContainer: {
       flexDirection: 'row',
@@ -49,7 +49,7 @@ export const createStyles = (theme: Theme) =>
       //marginTop: 4,
     },
     divider: {
-      marginVertical: 12,
+      marginVertical: 14,
     },
     slider: {
       //marginVertical: 8,

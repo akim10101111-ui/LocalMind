@@ -17,11 +17,11 @@ export const ChatHeaderTitle: React.FC = observer(() => {
 
   return (
     <View style={styles.container}>
-      <Text numberOfLines={1} variant="titleSmall">
+      <Text numberOfLines={1} style={styles.title}>
         {activeSession?.title || l10n.components.chatHeaderTitle.defaultTitle}
       </Text>
       {activeModel?.name && (
-        <Text numberOfLines={1} variant="bodySmall">
+        <Text numberOfLines={1} style={styles.subtitle}>
           {activeModel?.name}
         </Text>
       )}

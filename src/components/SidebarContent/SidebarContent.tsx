@@ -18,6 +18,7 @@ import {
   StarIcon,
   TrashIcon,
   SearchIcon,
+  LocalMindLogo,
 } from '../../assets/icons';
 import {L10nContext} from '../../utils';
 import {t} from '../../locales';
@@ -552,6 +553,9 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
       () => (
         <View style={styles.menuHeader}>
           <View style={styles.brandRow}>
+            <View style={styles.brandMark}>
+              <LocalMindLogo width={40} height={40} />
+            </View>
             <Text style={styles.brandTitle}>LocalMind</Text>
           </View>
           <View style={styles.searchContainer}>
@@ -567,17 +571,7 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
               testID="sidebar-search-input"
             />
           </View>
-          <TouchableOpacity
-            onPress={() => navigateTo(ROUTES.SETTINGS)}
-            style={styles.settingsRow}
-            accessibilityRole="button"
-            accessibilityLabel={l10n.components.sidebarContent.menuItems.settings}
-            testID="sidebar-settings">
-            <SettingsIcon width={23} height={23} stroke={theme.colors.onSurface} />
-            <Text variant="titleMedium" style={styles.settingsLabel}>
-              {l10n.components.sidebarContent.menuItems.settings}
-            </Text>
-          </TouchableOpacity>
+eOpacity>
           <Text variant="labelSmall" style={styles.menuSectionTitle}>
             {l10n.components.sidebarContent.historyLabel}
           </Text>
@@ -641,8 +635,11 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
                 onPress={() => navigateTo(ROUTES.SETTINGS)}
                 style={styles.avatarButton}
                 accessibilityRole="button"
-                accessibilityLabel={l10n.components.sidebarContent.menuItems.settings}>
-                <Text style={styles.avatarText}>{uiStore.language === 'ru' ? 'Л' : 'L'}</Text>
+                accessibilityLabel={l10n.components.sidebarContent.menuItems.settings}
+                testID="drawer-item-settings">
+                <View testID="sidebar-settings">
+                  <SettingsIcon width={22} height={22} stroke={theme.colors.onSurfaceVariant} />
+                </View>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleNewChat}

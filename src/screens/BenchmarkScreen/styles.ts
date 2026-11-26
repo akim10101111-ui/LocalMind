@@ -9,7 +9,7 @@ export const createStyles = (theme: Theme) =>
     },
     scrollView: {
       flex: 1,
-      padding: 16,
+      padding: 18,
     },
     card: {
       marginBottom: 16,
@@ -98,8 +98,8 @@ export const createStyles = (theme: Theme) =>
     },
     warningContainer: {
       backgroundColor: theme.colors.errorContainer,
-      padding: 16,
-      borderRadius: 8,
+      padding: 18,
+      borderRadius: 16,
       marginBottom: 16,
     },
     warningList: {
@@ -145,7 +145,7 @@ export const createStyles = (theme: Theme) =>
     },
     detailsContainer: {
       backgroundColor: theme.colors.surfaceVariant,
-      borderRadius: 8,
+      borderRadius: 16,
       padding: 12,
       marginTop: 8,
     },

@@ -85,7 +85,7 @@ export const ChatEmptyPlaceholder = observer(
       <View
         style={[styles.container, {marginBottom: bottomComponentHeight + 100}]}>
         <View style={styles.logo}>
-          <LocalMindLogo width={112} height={112} />
+          <LocalMindLogo width={44} height={44} />
         </View>
         <View>
           <Text style={styles.title}>{title}</Text>

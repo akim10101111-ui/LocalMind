@@ -110,6 +110,7 @@ export const buildTheme = ({
 
   return {
     ...baseTheme,
+    roundness: 14,
     colors: {
       // Keep any Paper-internal keys (e.g. elevation tints) the tokens
       // module doesn't explicitly enumerate.
@@ -119,9 +120,9 @@ export const buildTheme = ({
       ...tokens.colors,
     },
     borders: {
-      inputBorderRadius: 16,
-      messageBorderRadius: 15,
-      default: 12,
+      inputBorderRadius: 26,
+      messageBorderRadius: 18,
+      default: 14,
     },
     // Legacy fonts surface — preserved VERBATIM.
     // Components that read `theme.fonts.bodyMedium`, `theme.fonts.titleSmall`,
@@ -131,9 +132,10 @@ export const buildTheme = ({
       ...baseTheme.fonts,
       ...configuredFonts,
       titleMediumLight: {
-        ...fontStyles.regular,
-        fontSize: 16,
-        lineHeight: 22,
+        fontFamily: 'serif',
+        fontSize: 18,
+        lineHeight: 24,
+        fontWeight: '400',
       },
       dateDividerTextStyle: {
         ...fontStyles.extraBold,
@@ -144,9 +146,10 @@ export const buildTheme = ({
       },
       emptyChatPlaceholderTextStyle: {
         color: tokens.colors.onSurface,
-        fontSize: 16,
-        lineHeight: 24,
-        ...fontStyles.medium,
+        fontFamily: 'serif',
+        fontSize: 28,
+        lineHeight: 36,
+        fontWeight: '400',
       },
       inputTextStyle: {
         fontSize: 16,
@@ -154,7 +157,7 @@ export const buildTheme = ({
         ...fontStyles.medium,
       },
       receivedMessageBodyTextStyle: {
-        color: tokens.colors.onPrimary,
+        color: tokens.colors.onSurface,
         fontSize: 16,
         lineHeight: 24,
         ...fontStyles.medium,
@@ -166,13 +169,13 @@ export const buildTheme = ({
         ...fontStyles.medium,
       },
       receivedMessageLinkDescriptionTextStyle: {
-        color: tokens.colors.onPrimary,
+        color: tokens.colors.onSurface,
         fontSize: 14,
         lineHeight: 20,
         ...fontStyles.regular,
       },
       receivedMessageLinkTitleTextStyle: {
-        color: tokens.colors.onPrimary,
+        color: tokens.colors.onSurface,
         fontSize: 16,
         lineHeight: 22,
         ...fontStyles.extraBold,

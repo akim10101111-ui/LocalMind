@@ -15,12 +15,12 @@ export const createStyles = ({
     },
 
     plusButton: {
-      height: 40,
-      width: 40,
+      height: 36,
+      width: 36,
       alignItems: 'center',
       justifyContent: 'center',
-      borderRadius: 20,
-      backgroundColor: theme.colors.surfaceVariant,
+      borderRadius: 18,
+      backgroundColor: theme.colors.secondaryDefault,
       opacity: 1,
     },
     thinkingToggle: {
@@ -61,7 +61,7 @@ export const createStyles = ({
     inputWrapper: {
       flexDirection: 'row',
       alignItems: 'flex-start',
-      gap: 13,
+      gap: 10,
       flexShrink: 1,
     },
     input: {
@@ -77,17 +77,22 @@ export const createStyles = ({
     inputContainer: {
       flex: 1,
       flexDirection: 'column',
-      borderRadius: 30,
+      borderRadius: 26,
       borderWidth: 1,
-      borderColor: theme.colors.outlineVariant,
+      borderColor: theme.colors.border,
       overflow: 'hidden',
       backgroundColor: theme.colors.surface,
+      shadowColor: theme.colors.shadow,
+      shadowOffset: {width: 0, height: 3},
+      shadowOpacity: theme.dark ? 0 : 0.07,
+      shadowRadius: 12,
+      elevation: theme.dark ? 0 : 2,
     },
     textInputArea: {
       flex: 1,
-      paddingHorizontal: 18,
-      paddingTop: 14,
-      paddingBottom: 8,
+      paddingHorizontal: 20,
+      paddingTop: 16,
+      paddingBottom: 10,
       backgroundColor: theme.colors.surface,
     },
     controlBar: {
@@ -95,8 +100,8 @@ export const createStyles = ({
       alignItems: 'center',
       justifyContent: 'space-between',
       paddingHorizontal: 14,
-      paddingVertical: 10,
-      minHeight: 54,
+      paddingVertical: 8,
+      minHeight: 46,
       backgroundColor: theme.colors.surface,
     },
     leftControls: {
@@ -136,8 +141,8 @@ export const createStyles = ({
       flex: 1,
       flexDirection: 'row',
       alignItems: 'flex-end',
-      paddingHorizontal: 16,
-      paddingVertical: 12,
+      paddingHorizontal: 12,
+      paddingVertical: 10,
       marginTop: isEditMode ? 28 : 0,
     },
     // Image preview styles
