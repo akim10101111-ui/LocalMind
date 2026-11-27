@@ -33,7 +33,6 @@ import {ROUTES} from './src/utils/navigationConstants';
 
 import {
   SidebarContent,
-  ModelsHeaderRight,
   HeaderLeft,
   AppWithMigration,
   TTSSetupSheet,
@@ -44,16 +43,10 @@ import {
   AutomationBridge,
   BenchmarkRunnerScreen,
 } from './src/__automation__';
-import {
-  ChatScreen,
-  ModelsScreen,
-  SettingsScreen,
-  BenchmarkScreen,
-  AboutScreen,
-
-  // Dev tools screen. Only available in debug mode.
-  DevToolsScreen,
-} from './src/screens';
+import {ChatScreen} from './src/screens/ChatScreen/ChatScreen';
+import {SettingsScreen} from './src/screens/SettingsScreen/SettingsScreen';
+import {AboutScreen} from './src/screens/AboutScreen/AboutScreen';
+import {DevToolsScreen} from './src/screens/DevToolsScreen/DevToolsScreen';
 import {OnboardingStack} from './src/screens/OnboardingScreens';
 
 // Check if app is in debug mode
@@ -156,23 +149,6 @@ const App = observer(() => {
                           name={ROUTES.CHAT}
                           component={gestureHandlerRootHOC(ChatScreen)}
                           options={{headerShown: false}}
-                        />
-                        <Drawer.Screen
-                          name={ROUTES.MODELS}
-                          component={gestureHandlerRootHOC(ModelsScreen)}
-                          options={{
-                            headerRight: () => <ModelsHeaderRight />,
-                            headerStyle: styles.headerWithoutDivider,
-                            title: currentL10n.screenTitles.models,
-                          }}
-                        />
-                        <Drawer.Screen
-                          name={ROUTES.BENCHMARK}
-                          component={gestureHandlerRootHOC(BenchmarkScreen)}
-                          options={{
-                            headerStyle: styles.headerWithoutDivider,
-                            title: currentL10n.screenTitles.benchmark,
-                          }}
                         />
                         <Drawer.Screen
                           name={ROUTES.SETTINGS}
