@@ -78,6 +78,7 @@ jobs:
             src/screens/SettingsScreen/__tests__/SettingsScreen.test.tsx \
             src/screens/ChatScreen/ModelNotLoadedMessage/__tests__/ModelNotLoadedMessage.test.tsx \
             src/components/PalsSheets/__tests__/ModelSelector.test.tsx \
+            src/screens/OnboardingScreens/__tests__/useOnboardingHandlers.test.ts \
             --runInBand
 
       - name: Validate translations and fonts
