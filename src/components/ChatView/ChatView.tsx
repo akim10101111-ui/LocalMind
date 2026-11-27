@@ -91,7 +91,6 @@ import {
 import {
   AlertIcon,
   CopyIcon,
-  GridIcon,
   PencilLineIcon,
   RefreshIcon,
 } from '../../assets/icons';
@@ -715,7 +714,6 @@ export const ChatView = observer(
     const {
       copy: copyLabel,
       regenerate: regenerateLabel,
-      regenerateWith: regenerateWithLabel,
       edit: editLabel,
       reportContent: reportContentLabel,
     } = l10n.components.chatView.menuItems;
@@ -733,7 +731,6 @@ export const ChatView = observer(
       const isAuthor = selectedMessage.author.id === user.id;
       const canGenerate =
         modelStore.activeModelId !== undefined && !isStopping;
-      const models = modelStore.availableModels || [];
 
       const baseItems: MenuItem[] = [];
 
@@ -760,19 +757,6 @@ export const ChatView = observer(
           disabled: !canGenerate,
         });
 
-        baseItems.push({
-          label: regenerateWithLabel,
-          icon: () => <GridIcon stroke={theme.colors.primary} />,
-          disabled: isStopping,
-          submenu: models.map(model => ({
-            label: model.name,
-            width: Math.min(300, size.width),
-            onPress: () => {
-              handleTryAgainWith(model.id, selectedMessage);
-              handleMenuDismiss();
-            },
-          })),
-        });
       }
 
       if (isAuthor) {
@@ -804,14 +788,11 @@ export const ChatView = observer(
       user.id,
       handleCopy,
       handleTryAgain,
-      handleTryAgainWith,
       handleEdit,
       handleMenuDismiss,
-      size.width,
       theme.colors.primary,
       copyLabel,
       regenerateLabel,
-      regenerateWithLabel,
       editLabel,
       reportContentLabel,
     ]);
