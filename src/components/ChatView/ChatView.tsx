@@ -595,8 +595,7 @@ export const ChatView = observer(
       setInputText(prev => (prev ? `${prev} ${text}` : text));
     }, []);
 
-    const {handleCopy, handleEdit, handleTryAgain, handleTryAgainWith} =
-      useMessageActions({
+    const {handleCopy, handleEdit, handleTryAgain} = useMessageActions({
         user,
         messages,
         handleSendPress: wrappedOnSendPress,
