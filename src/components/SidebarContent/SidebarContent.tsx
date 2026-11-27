@@ -556,7 +556,7 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
             <View style={styles.brandMark}>
               <LocalMindLogo width={40} height={40} />
             </View>
-            <Text style={styles.brandTitle}>LocalMind</Text>
+            <Text style={styles.brandTitle}>SoRa</Text>
           </View>
           <View style={styles.searchContainer}>
             <SearchIcon width={21} height={21} stroke={theme.colors.onSurface} />
