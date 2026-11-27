@@ -4,32 +4,25 @@ import {Snackbar} from 'react-native-paper';
 import {observer} from 'mobx-react';
 
 import {useTheme} from '../../../hooks';
-import {localMindInstallState, installLocalMind} from '../../../services/localMindModel';
-import {uiStore} from '../../../store';
-import {L10nContext} from '../../../utils';
+import {initializeSoRa} from '../../../services/soRa';
+import {serverStore, uiStore} from '../../../store';
 import {styles} from './styles';
 
-/** Retry/resume the one LocalMind model. Never route users to a model catalogue. */
 export const ModelNotLoadedMessage: React.FC = observer(() => {
-  const l10n = React.useContext(L10nContext);
   const theme = useTheme();
-  const state = localMindInstallState;
-  const russian = uiStore.language === 'ru';
+  const isRu = uiStore.language === 'ru';
+  const status = serverStore.isLoading
+    ? isRu ? 'Подключаем SoRa…' : 'Connecting to SoRa…'
+    : serverStore.error
+      ? isRu ? 'Не удалось подключиться к SoRa. Проверьте интернет и повторите попытку.' : 'Could not connect to SoRa. Check your internet and retry.'
+      : isRu ? 'SoRa пока недоступна. Проверьте подключение к интернету.' : 'SoRa is unavailable. Check your internet connection.';
 
-  const status =
-    state.phase === 'downloading'
-      ? russian ? `Загружаем LocalMind… ${state.percent}%` : `Downloading LocalMind… ${state.percent}%`
-      : state.phase === 'verifying'
-        ? russian ? 'Проверяем целостность модели…' : 'Verifying model…'
-        : state.phase === 'starting'
-          ? russian ? 'Запускаем LocalMind…' : 'Starting LocalMind…'
-          : state.phase === 'failed'
-            ? russian ? 'Не удалось запустить LocalMind. Нажмите «Повторить».' : 'LocalMind could not start. Tap Retry.'
-            : l10n.chat.pleaseLoadModel;
-
-  const handleInstall = () => {
-    if (state.isInstalling) return;
-    installLocalMind().catch(error => console.warn('[LocalMind] model activation failed:', error));
+  const handleRetry = async () => {
+    try {
+      await initializeSoRa();
+    } catch (error) {
+      console.warn('[SoRa] Reconnection failed:', error);
+    }
   };
 
   return (
@@ -38,9 +31,10 @@ export const ModelNotLoadedMessage: React.FC = observer(() => {
         visible
         onDismiss={() => {}}
         action={{
-          label: state.phase === 'failed' ? (russian ? 'Повторить' : 'Retry') : l10n.chat.load,
-          onPress: handleInstall,
+          label: isRu ? 'Повторить' : 'Retry',
+          onPress: handleRetry,
           labelStyle: {color: theme.colors.inverseSecondary},
+          disabled: serverStore.isLoading,
         }}>
         {status}
       </Snackbar>
