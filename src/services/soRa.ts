@@ -1,15 +1,16 @@
+import {runInAction} from 'mobx';
 import {chatSessionStore, modelStore, palStore, serverStore} from '../store';
 import type {Model} from '../utils/types';
 
-const SORA_SERVER_ID = 'localmind-zai-server';
+const SORA_SERVER_URL = 'https://d1c10as5tg10-d.space-z.ai';
 const SORA_MODEL_ID = 'glm-4-plus';
 const SORA_SYSTEM_PROMPT =
   'You are SoRa, a helpful, capable AI assistant. Reply in the user’s language. Be clear, accurate, thoughtful, and honest about uncertainty. Do not invent facts, sources, or actions. Use the conversation history supplied by the app to maintain continuity.';
 
-const resolveSoRaModel = (): Model | undefined =>
+const resolveSoRaModel = (serverId: string): Model | undefined =>
   modelStore.remoteModels.find(
     model =>
-      model.serverId === SORA_SERVER_ID &&
+      model.serverId === serverId &&
       model.remoteModelId === SORA_MODEL_ID,
   );
 
@@ -23,15 +24,17 @@ export async function initializeSoRa(): Promise<void> {
     return;
   }
 
-  const server = serverStore.servers.find(item => item.id === SORA_SERVER_ID);
+  const server = serverStore.servers.find(
+    item => item.url.replace(/\\/+$/, '') === SORA_SERVER_URL,
+  );
   if (!server) {
     throw new Error('SoRa server configuration is missing.');
   }
 
-  let model = resolveSoRaModel();
+  let model = resolveSoRaModel(server.id);
   if (!model) {
     await serverStore.fetchModelsForServer(server.id);
-    model = resolveSoRaModel();
+    model = resolveSoRaModel(server.id);
   }
   if (!model) {
     throw new Error('SoRa AI is not available from the server yet.');
@@ -83,6 +86,8 @@ export async function initializeSoRa(): Promise<void> {
   }
 
   if (!chatSessionStore.activeSessionId && !chatSessionStore.newChatPalId) {
-    chatSessionStore.newChatPalId = assistant.id;
+    runInAction(() => {
+      chatSessionStore.newChatPalId = assistant!.id;
+    });
   }
 }
