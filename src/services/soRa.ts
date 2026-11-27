@@ -7,6 +7,27 @@ const SORA_MODEL_ID = 'glm-4-plus';
 const SORA_SYSTEM_PROMPT =
   'You are SoRa, a helpful, capable AI assistant. Reply in the user’s language. Be clear, accurate, thoughtful, and honest about uncertainty. Do not invent facts, sources, or actions. Use the conversation history supplied by the app to maintain continuity.';
 
+const OBSOLETE_LOCAL_MODEL_IDS = [
+  'bartowski/DeepSeek-R1-Distill-Qwen-1.5B-GGUF/DeepSeek-R1-Distill-Qwen-1.5B-Q4_K_S.gguf',
+  'bartowski/DeepSeek-R1-Distill-Qwen-1.5B-GGUF/DeepSeek-R1-Distill-Qwen-1.5B-Q4_K_M.gguf',
+];
+
+const removeBundledDeepSeek = async (): Promise<void> => {
+  for (const id of OBSOLETE_LOCAL_MODEL_IDS) {
+    const model = modelStore.models.find(
+      item => item.id === id && item.origin !== 'remote',
+    );
+    if (model) {
+      try {
+        await modelStore.deleteModel(model);
+      } catch (error) {
+        // Cleanup is best-effort: a stale local model must never block SoRa.
+        console.warn('[SoRa] Could not remove obsolete local model:', error);
+      }
+    }
+  }
+};
+
 const resolveSoRaModel = (serverId: string): Model | undefined =>
   modelStore.remoteModels.find(
     model =>
@@ -43,6 +64,10 @@ export async function initializeSoRa(): Promise<void> {
   if (modelStore.activeModelId !== model.id || !modelStore.engine) {
     await modelStore.selectModel(model);
   }
+
+  // Remove only the two exact bundled DeepSeek variants from older LocalMind
+  // installs. Chat history, settings, and every unrelated user file remain.
+  await removeBundledDeepSeek();
 
   let assistant =
     palStore.pals.find(
