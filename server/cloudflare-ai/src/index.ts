@@ -175,4 +175,4 @@ export default {
 
     return json({error: {message: "Not found", type: "invalid_request_error"}}, 404);
   },
-} satisfies ExportedHandler<Env>;
+};
