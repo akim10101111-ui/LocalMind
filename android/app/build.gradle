@@ -158,8 +158,6 @@ android {
             // Never create a store-uploadable release signed with the debug key.
             if (signingConfigs.release.storeFile != null && signingConfigs.release.storeFile.exists()) {
                 signingConfig signingConfigs.release
-            } else {
-                throw new GradleException("Configure APP_RELEASE_STORE_FILE, APP_RELEASE_STORE_PASSWORD, APP_RELEASE_KEY_ALIAS and APP_RELEASE_KEY_PASSWORD before building prodRelease.")
             }
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
@@ -326,4 +324,15 @@ tasks.register("downloadLocalMindOcrData") {
 }
 tasks.named("preBuild").configure {
     dependsOn("downloadLocalMindOcrData")
+}
+
+
+// Validate release signing only when a store release task is requested.
+// This keeps debug/CI builds usable without a private release keystore.
+tasks.matching { it.name == "assembleProdRelease" || it.name == "bundleProdRelease" }.configureEach {
+    doFirst {
+        if (signingConfigs.release.storeFile == null || !signingConfigs.release.storeFile.exists()) {
+            throw new GradleException("Configure APP_RELEASE_STORE_FILE, APP_RELEASE_STORE_PASSWORD, APP_RELEASE_KEY_ALIAS and APP_RELEASE_KEY_PASSWORD before building prodRelease.")
+        }
+    }
 }
