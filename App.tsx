@@ -20,8 +20,8 @@ import {
   GestureHandlerRootView,
 } from 'react-native-gesture-handler';
 
-import {asrStore, modelStore, ttsStore, uiStore} from './src/store';
-import {installLocalMind} from './src/services/localMindModel';
+import {asrStore, modelStore, serverStore, ttsStore, uiStore} from './src/store';
+import {initializeSoRa} from './src/services/soRa';
 import {useTheme} from './src/hooks';
 import {useDeepLinking} from './src/hooks/useDeepLinking';
 import {useNavigationBarAppearance} from './src/hooks/useNavigationBarAppearance';
@@ -82,15 +82,15 @@ const SwitchPoint: React.FC<SwitchPointProps> = observer(({drawer}) => {
   const isReady = isHydrated(uiStore) && isHydrated(modelStore);
   const onboarded = uiStore.hasCompletedOnboarding;
 
-  // Resume (or finish) the LocalMind install in the background after
-  // onboarding. The chat is never blocked by it: the input shows status.
+  // Connect the single SoRa cloud model after persisted server settings hydrate.
+  // No local GGUF model is registered or downloaded during startup.
   React.useEffect(() => {
-    if (isReady && onboarded) {
-      installLocalMind().catch(() => {
-        // Error is exposed via localMindInstallState for the UI.
+    if (isReady && onboarded && serverStore.isHydrated) {
+      initializeSoRa().catch(error => {
+        console.warn('[SoRa] Cloud initialization failed:', error);
       });
     }
-  }, [isReady, onboarded]);
+  }, [isReady, onboarded, serverStore.isHydrated]);
 
   if (!isHydrated(uiStore)) {
     return null;
