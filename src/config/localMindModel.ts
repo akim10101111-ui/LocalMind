@@ -1,5 +1,5 @@
 /**
- * The single model LocalMind downloads, verifies and runs.
+ * Legacy LocalMind local model metadata retained only for migration of old installations.
  *
  * Verified on Hugging Face: bartowski/DeepSeek-R1-Distill-Qwen-1.5B-GGUF
  * contains DeepSeek-R1-Distill-Qwen-1.5B-Q4_K_S.gguf (about 1.07 GB).
@@ -28,7 +28,7 @@ export const LOCALMIND_MODEL_ENTRY: OnboardingPalModelEntry = {
   filename: LOCALMIND_MODEL_FILENAME,
   author: 'bartowski',
   downloadUrl: `https://huggingface.co/${LOCALMIND_MODEL_REPO}/resolve/main/${LOCALMIND_MODEL_FILENAME}`,
-  displayName: 'LocalMind AI',
+  displayName: 'SoRa (legacy local model)',
   sizeBytes: 1_100_000_000,
   params: 1_500_000_000,
 };
