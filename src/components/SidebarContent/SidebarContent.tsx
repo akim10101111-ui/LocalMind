@@ -576,7 +576,7 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
           </Text>
         </View>
       ),
-      [l10n, theme, styles, navigateTo, searchQuery],
+      [l10n, theme, styles, searchQuery],
     );
 
     return (
