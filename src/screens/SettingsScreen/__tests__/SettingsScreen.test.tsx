@@ -14,7 +14,7 @@ describe('SoRa SettingsScreen', () => {
     expect(getByText('SoRa AI')).toBeTruthy();
     expect(getByText(uiStore.language === 'ru' ? 'Внешний вид' : 'Appearance')).toBeTruthy();
     expect(getByText(uiStore.language === 'ru' ? 'Голос и диктовка' : 'Voice and dictation')).toBeTruthy();
-    expect(getByText(uiStore.language === 'ru' ? 'История и конфиденциальность' : 'History and privacy')).toBeTruthy();
+    expect(getByText(uiStore.language === 'ru' ? 'История и память' : 'History and memory')).toBeTruthy();
     expect(getByTestId('sora-check-connection')).toBeTruthy();
     expect(queryByText('Model Initialization Settings')).toBeNull();
     expect(queryByText('GPU layers')).toBeNull();
