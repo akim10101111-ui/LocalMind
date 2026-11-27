@@ -65,6 +65,8 @@ jobs:
             src/screens/ChatScreen/ModelNotLoadedMessage/__tests__/ModelNotLoadedMessage.test.tsx \
             src/components/ChatInput/ChatInput.tsx \
             src/components/HeaderRight/HeaderRight.tsx \
+            src/components/PalsSheets/ModelSelector.tsx \
+            src/components/PalsSheets/__tests__/ModelSelector.test.tsx \
             src/components/SidebarContent/SidebarContent.tsx \
             src/components/SidebarContent/styles.ts \
             src/screens/AboutScreen/AboutScreen.tsx \
@@ -75,6 +77,7 @@ jobs:
           yarn jest \
             src/screens/SettingsScreen/__tests__/SettingsScreen.test.tsx \
             src/screens/ChatScreen/ModelNotLoadedMessage/__tests__/ModelNotLoadedMessage.test.tsx \
+            src/components/PalsSheets/__tests__/ModelSelector.test.tsx \
             --runInBand
 
       - name: Validate translations and fonts
