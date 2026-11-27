@@ -331,7 +331,8 @@ tasks.named("preBuild").configure {
 // This keeps debug/CI builds usable without a private release keystore.
 tasks.matching { it.name == "assembleProdRelease" || it.name == "bundleProdRelease" }.configureEach {
     doFirst {
-        if (signingConfigs.release.storeFile == null || !signingConfigs.release.storeFile.exists()) {
+        def releaseKeyFile = android.signingConfigs.getByName('release').storeFile
+        if (releaseKeyFile == null || !releaseKeyFile.exists()) {
             throw new GradleException("Configure APP_RELEASE_STORE_FILE, APP_RELEASE_STORE_PASSWORD, APP_RELEASE_KEY_ALIAS and APP_RELEASE_KEY_PASSWORD before building prodRelease.")
         }
     }
