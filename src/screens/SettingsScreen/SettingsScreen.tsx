@@ -61,7 +61,7 @@ export const SettingsScreen: React.FC = observer(() => {
   );
 
   const server = serverStore.servers.find(
-    item => item.url.replace(/\\/+$/, '') === 'https://d1c10as5tg10-d.space-z.ai',
+    item => item.url.replace(/\/+$/, '') === 'https://d1c10as5tg10-d.space-z.ai',
   );
   const remoteModels = server
     ? serverStore.serverModels.get(server.id) ?? []
