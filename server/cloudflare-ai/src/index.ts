@@ -139,8 +139,11 @@ export default {
       const declaredLength = Number(request.headers.get("Content-Length") || 0);
       if (declaredLength > MAX_BODY_BYTES) return json({error: {message: "Request body too large", type: "invalid_request_error"}}, 413);
 
+      let rawBody: string;
+      try { rawBody = await request.text(); } catch { return json({error: {message: "Could not read request body", type: "invalid_request_error"}}, 400); }
+      if (new TextEncoder().encode(rawBody).byteLength > MAX_BODY_BYTES) return json({error: {message: "Request body too large", type: "invalid_request_error"}}, 413);
       let body: any;
-      try { body = await request.json(); } catch { return json({error: {message: "Invalid JSON body", type: "invalid_request_error"}}, 400); }
+      try { body = JSON.parse(rawBody); } catch { return json({error: {message: "Invalid JSON body", type: "invalid_request_error"}}, 400); }
       if (!validMessages(body.messages)) return json({error: {message: "messages must contain 1–80 text messages with system, user or assistant roles", type: "invalid_request_error"}}, 400);
 
       const model = env.AI_MODEL || MODEL_DEFAULT;
