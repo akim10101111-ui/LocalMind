@@ -2769,7 +2769,10 @@ class ModelStore {
           serverId: selected.serverId,
           serverName: server.name,
           remoteModelId: selected.remoteModelId,
-          modelName: selected.remoteModelId,
+          modelName:
+            selected.remoteModelId === 'glm-4-plus'
+              ? 'SoRa'
+              : selected.remoteModelId,
         }),
       );
     }
