@@ -24,14 +24,14 @@ const FETCH_THROTTLE_MS = 60000;
 
 // First-party LocalMind inference endpoint. The server is keyless unless its
 // owner enables LOCALMIND_API_KEY; never ship a shared secret in the APK.
-const DEFAULT_LOCALMIND_SERVER = {
+const DEFAULT_SORA_SERVER = {
   id: 'localmind-zai-server',
-  name: 'LocalMind AI',
+  name: 'SoRa',
   url: 'https://d1c10as5tg10-d.space-z.ai',
   serverType: 'OpenAI' as const,
   requestTimeoutMs: 120000,
 };
-const DEFAULT_LOCALMIND_MODEL = 'glm-4-plus';
+const DEFAULT_SORA_MODEL = 'glm-4-plus';
 
 /**
  * The fields a `RemoteModelCaps` entry answers with — everything except the
@@ -105,6 +105,7 @@ class ServerStore {
   privacyNoticeAcknowledged = false;
   // Persisted so a user who removes the built-in server is not forced to add it again.
   defaultServerProvisioned = false;
+  isHydrated = false;
   listReads: Record<string, ListRead> = {};
   appActive = true;
 
@@ -128,8 +129,14 @@ class ServerStore {
         'remoteCaps',
       ],
       storage: AsyncStorage,
-    }).then(() => {
-      this.afterHydration();
+    }).then(async () => {
+      try {
+        await this.afterHydration();
+      } finally {
+        runInAction(() => {
+          this.isHydrated = true;
+        });
+      }
     });
 
     this.setupAppStateListener();
@@ -146,17 +153,30 @@ class ServerStore {
         server.serverType = toServerType(server.serverType);
       }
     }
-    if (!this.defaultServerProvisioned) {
-      const existing = this.servers.some(
-        server =>
-          server.url.replace(/\/+$/, '') === DEFAULT_LOCALMIND_SERVER.url,
-      );
-      if (!existing) {
-        this.servers.push({...DEFAULT_LOCALMIND_SERVER});
-      }
-      this.defaultServerProvisioned = true;
-    }
-    await this.fetchAllRemoteModels();
+    // SoRa is intentionally a single-provider client. Keep the existing
+    // server id when the endpoint is already configured so persisted model
+    // references continue to resolve, but remove obsolete provider/model
+    // choices from the active configuration.
+    const existing = this.servers.find(
+      server =>
+        server.url.replace(/\/+$/, '') === DEFAULT_SORA_SERVER.url,
+    );
+    const soraServer = existing
+      ? Object.assign(existing, {
+          name: DEFAULT_SORA_SERVER.name,
+          serverType: DEFAULT_SORA_SERVER.serverType,
+          requestTimeoutMs: DEFAULT_SORA_SERVER.requestTimeoutMs,
+        })
+      : {...DEFAULT_SORA_SERVER};
+    this.servers = [soraServer];
+    this.userSelectedModels = this.userSelectedModels.filter(
+      item =>
+        item.serverId === soraServer.id &&
+        item.remoteModelId === DEFAULT_SORA_MODEL,
+    );
+    this.defaultServerProvisioned = true;
+    // Do not block store hydration or the first screen on network I/O.
+    // SoRa performs the initial model discovery in its background initializer.
   }
 
   /** Counts every list read at its start, store-wide. */
@@ -374,12 +394,12 @@ class ServerStore {
         }
         this.serverModels.set(serverId, models);
         if (
-          url.replace(/\/+$/, '') === DEFAULT_LOCALMIND_SERVER.url &&
-          models.some(model => model.id === DEFAULT_LOCALMIND_MODEL)
+          url.replace(/\/+$/, '') === DEFAULT_SORA_SERVER.url &&
+          models.some(model => model.id === DEFAULT_SORA_MODEL)
         ) {
           // Make the built-in model visible in Models without asking users to
           // re-enter the endpoint or manually discover its model ID.
-          this.addUserSelectedModel(serverId, DEFAULT_LOCALMIND_MODEL);
+          this.addUserSelectedModel(serverId, DEFAULT_SORA_MODEL);
         }
         this.listReads[serverId] = {
           seq,

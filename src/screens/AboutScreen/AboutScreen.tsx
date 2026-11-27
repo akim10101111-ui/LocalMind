@@ -11,11 +11,10 @@ import DeviceInfo from 'react-native-device-info';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {Text, Button} from 'react-native-paper';
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
-import {BuildInfo} from 'llama.rn';
 
 import phononNotices from '../../assets/licenses/phononThirdPartyNotices.json';
 
-import {CopyIcon, ChevronRightIcon} from '../../assets/icons';
+import {CopyIcon, ChevronRightIcon, SoRaLogo} from '../../assets/icons';
 
 import {Sheet} from '../../components';
 import {useTheme} from '../../hooks';
@@ -82,11 +81,12 @@ export const AboutScreen: React.FC = () => {
         <View style={styles.card}>
           <View style={styles.header}>
             <View style={styles.headerContent}>
+              <SoRaLogo width={64} height={64} accessibilityLabel="SoRa" accessibilityRole="image" />
               <Text variant="titleLarge" style={styles.title}>
-                LocalMind
+                SoRa
               </Text>
               <Text variant="bodyMedium" style={styles.description}>
-                {l10n.about.description}
+                {uiStore.language === 'ru' ? 'Ваш персональный ИИ-помощник на базе SoRa.' : 'Your personal AI assistant powered by SoRa.'}
               </Text>
               <View style={styles.versionContainer}>
                 <TouchableOpacity
@@ -102,10 +102,6 @@ export const AboutScreen: React.FC = () => {
                   />
                 </TouchableOpacity>
               </View>
-              <Text style={styles.llamaBuildText}>
-                llama.cpp {BuildInfo.number} ({BuildInfo.commit.substring(0, 7)}
-                )
-              </Text>
             </View>
           </View>
 

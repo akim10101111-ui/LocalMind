@@ -20,8 +20,8 @@ import {
   GestureHandlerRootView,
 } from 'react-native-gesture-handler';
 
-import {asrStore, modelStore, ttsStore, uiStore} from './src/store';
-import {installLocalMind} from './src/services/localMindModel';
+import {asrStore, modelStore, serverStore, ttsStore, uiStore} from './src/store';
+import {initializeSoRa} from './src/services/soRa';
 import {useTheme} from './src/hooks';
 import {useDeepLinking} from './src/hooks/useDeepLinking';
 import {useNavigationBarAppearance} from './src/hooks/useNavigationBarAppearance';
@@ -33,7 +33,6 @@ import {ROUTES} from './src/utils/navigationConstants';
 
 import {
   SidebarContent,
-  ModelsHeaderRight,
   HeaderLeft,
   AppWithMigration,
   TTSSetupSheet,
@@ -44,17 +43,11 @@ import {
   AutomationBridge,
   BenchmarkRunnerScreen,
 } from './src/__automation__';
-import {
-  ChatScreen,
-  ModelsScreen,
-  SettingsScreen,
-  BenchmarkScreen,
-  AboutScreen,
-
-  // Dev tools screen. Only available in debug mode.
-  DevToolsScreen,
-} from './src/screens';
-import {OnboardingStack} from './src/screens/OnboardingScreens';
+import {ChatScreen} from './src/screens/ChatScreen/ChatScreen';
+import {SettingsScreen} from './src/screens/SettingsScreen/SettingsScreen';
+import {AboutScreen} from './src/screens/AboutScreen/AboutScreen';
+import {DevToolsScreen} from './src/screens/DevToolsScreen/DevToolsScreen';
+import {OnboardingStack} from './src/screens/OnboardingScreens/OnboardingStack';
 
 // Check if app is in debug mode
 const isDebugMode = __DEV__;
@@ -81,16 +74,17 @@ type SwitchPointProps = {drawer: React.ReactNode};
 const SwitchPoint: React.FC<SwitchPointProps> = observer(({drawer}) => {
   const isReady = isHydrated(uiStore) && isHydrated(modelStore);
   const onboarded = uiStore.hasCompletedOnboarding;
+  const serverHydrated = serverStore.isHydrated;
 
-  // Resume (or finish) the LocalMind install in the background after
-  // onboarding. The chat is never blocked by it: the input shows status.
+  // Connect the single SoRa cloud model after persisted server settings hydrate.
+  // No local GGUF model is registered or downloaded during startup.
   React.useEffect(() => {
-    if (isReady && onboarded) {
-      installLocalMind().catch(() => {
-        // Error is exposed via localMindInstallState for the UI.
+    if (isReady && onboarded && serverHydrated) {
+      initializeSoRa().catch(error => {
+        console.warn('[SoRa] Cloud initialization failed:', error);
       });
     }
-  }, [isReady, onboarded]);
+  }, [isReady, onboarded, serverHydrated]);
 
   if (!isHydrated(uiStore)) {
     return null;
@@ -156,23 +150,6 @@ const App = observer(() => {
                           name={ROUTES.CHAT}
                           component={gestureHandlerRootHOC(ChatScreen)}
                           options={{headerShown: false}}
-                        />
-                        <Drawer.Screen
-                          name={ROUTES.MODELS}
-                          component={gestureHandlerRootHOC(ModelsScreen)}
-                          options={{
-                            headerRight: () => <ModelsHeaderRight />,
-                            headerStyle: styles.headerWithoutDivider,
-                            title: currentL10n.screenTitles.models,
-                          }}
-                        />
-                        <Drawer.Screen
-                          name={ROUTES.BENCHMARK}
-                          component={gestureHandlerRootHOC(BenchmarkScreen)}
-                          options={{
-                            headerStyle: styles.headerWithoutDivider,
-                            title: currentL10n.screenTitles.benchmark,
-                          }}
                         />
                         <Drawer.Screen
                           name={ROUTES.SETTINGS}

@@ -19,7 +19,6 @@ import {extractTextFromImage, extractTextFromPdf} from '../../services/ocr';
 
 import {observer} from 'mobx-react';
 import {IconButton, Text} from 'react-native-paper';
-import {localMindInstallState} from '../../services/localMindModel';
 
 import {hasVideoCapability} from '../../utils/pal-capabilities';
 
@@ -38,10 +37,11 @@ import {
   chatSessionStore,
   modelStore,
   palStore,
+  serverStore,
   uiStore,
 } from '../../store';
 
-import {MessageType} from '../../utils/types';
+import {MessageType, ModelOrigin} from '../../utils/types';
 import {L10nContext, UserContext} from '../../utils';
 import {t} from '../../locales';
 
@@ -234,12 +234,19 @@ export const ChatInput = observer(
       }
     };
 
+    // Keep extracted attachment text in sync with ChatView's controlled composer.
+    const appendToComposer = (content: string) => {
+      const current = value.trim();
+      handleChangeText(current ? current + '\n\n' + content : content);
+    };
+
     // The text is cleared asynchronously, so a fast double tap could send the
     // same message twice. This lock ignores repeat taps for a short window.
     const sendLockRef = React.useRef(false);
     const handleSend = () => {
       const trimmedValue = value.trim();
-      if (trimmedValue) {
+      const hasPendingImages = selectedImages.length > 0;
+      if (trimmedValue || hasPendingImages) {
         if (sendLockRef.current) {
           return;
         }
@@ -298,8 +305,8 @@ export const ChatInput = observer(
         );
         return;
       }
-      setText(current =>
-        `${current.trim() ? `${current.trim()}\n\n` : ''}[Текст с изображений]\n${extracted.join('\n\n')}\n[/Текст с изображений]`,
+      appendToComposer(
+        `[Текст с изображений]\n${extracted.join('\n\n')}\n[/Текст с изображений]`,
       );
     };
 
@@ -339,7 +346,10 @@ export const ChatInput = observer(
           result.assets[0].uri
         ) {
           const uri = result.assets[0].uri;
-          if (modelStore.activeModelCaps?.visionActive) {
+          if (
+            modelStore.activeModelCaps?.visionActive ||
+            modelStore.activeModel?.origin === ModelOrigin.REMOTE
+          ) {
             setSelectedImages([...selectedImages, uri]);
           } else {
             await appendExtractedImageText([uri]);
@@ -377,7 +387,10 @@ export const ChatInput = observer(
             .map(asset => asset.uri as string);
 
           if (newUris.length > 0) {
-            if (modelStore.activeModelCaps?.visionActive) {
+            if (
+            modelStore.activeModelCaps?.visionActive ||
+            modelStore.activeModel?.origin === ModelOrigin.REMOTE
+          ) {
               setSelectedImages([...selectedImages, ...newUris]);
             } else {
               await appendExtractedImageText(newUris);
@@ -403,6 +416,9 @@ export const ChatInput = observer(
       try {
         setShowImageUploadMenu(false);
         const [picked] = await pick();
+        if (!picked) {
+          return;
+        }
         const fileName = picked.name ?? 'attachment.txt';
         const extension = fileName.split('.').pop()?.toLowerCase() ?? '';
         const supportedExtensions = new Set([
@@ -455,7 +471,7 @@ export const ChatInput = observer(
           '[/Файл]',
         ].filter(Boolean).join('\n');
 
-        setText(current => `${current.trim() ? `${current.trim()}\n\n` : ''}${block}`);
+        appendToComposer(block);
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         if (/cancel/i.test(message)) {
@@ -492,9 +508,13 @@ export const ChatInput = observer(
       !isStopVisible &&
       user &&
       !isVideoCapable && // Hide send button for video-capable pals
-      (sendButtonVisibilityMode === 'always' || value.trim());
+      (sendButtonVisibilityMode === 'always' ||
+        value.trim().length > 0 ||
+        selectedImages.length > 0);
     const isSendButtonEnabled =
-      value.trim().length > 0 && hasActiveModel && !isStopping;
+      (value.trim().length > 0 || selectedImages.length > 0) &&
+      hasActiveModel &&
+      !isStopping;
     const sendButtonOpacity = isSendButtonEnabled ? 1 : 0.4;
 
     // Preset colors are not theme-aware; keep composer text accessible in both themes.
@@ -512,11 +532,14 @@ export const ChatInput = observer(
         ? effortLevelLabels[reasoningEffort as keyof typeof effortLevelLabels]
         : reasoningEffort;
 
-    const installingNotice = localMindInstallState.isInstalling
-      ? uiStore.language === 'ru'
-        ? `Локальный ИИ ещё загружается… ${localMindInstallState.percent}%`
-        : `Local AI is still loading… ${localMindInstallState.percent}%`
-      : null;
+    const connectionNotice =
+      serverStore.error
+        ? uiStore.language === 'ru'
+          ? 'Нет соединения с SoRa. Проверьте интернет.'
+          : 'SoRa is offline. Check your internet connection.'
+        : uiStore.language === 'ru'
+          ? 'Подключаем SoRa…'
+          : 'Connecting to SoRa…';
 
     return (
       <View style={styles.container}>
@@ -653,7 +676,11 @@ export const ChatInput = observer(
                         onPress={
                           isPlusButtonEnabled ? handlePlusButtonPress : () => {}
                         }
-                        accessibilityLabel="Add image"
+                        accessibilityLabel={
+                          uiStore.language === 'ru'
+                            ? 'Добавить вложение'
+                            : 'Add attachment'
+                        }
                         accessibilityRole="button">
                         <PlusIcon width={20} height={20} stroke={plusColor} />
                       </TouchableOpacity>
@@ -741,7 +768,7 @@ export const ChatInput = observer(
                 {showModelWarning && !hasActiveModel && (
                   <View style={styles.helperTextContainer}>
                     <Text variant="bodySmall" style={styles.helperText}>
-                      {installingNotice ?? l10n.chat.cannotSendWithoutModel}
+                      {connectionNotice}
                     </Text>
                   </View>
                 )}

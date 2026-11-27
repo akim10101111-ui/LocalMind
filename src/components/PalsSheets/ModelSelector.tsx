@@ -1,5 +1,5 @@
 import React from 'react';
-import {observer} from 'mobx-react-lite';
+import {observer} from 'mobx-react';
 import {Selector, SelectorOption} from '../Selector';
 import {modelStore} from '../../store';
 import {Model} from '../../utils/types';
@@ -33,17 +33,20 @@ export const ModelSelector = observer(
     testID,
   }: ModelSelectorProps) => {
     // Convert models to selector options
-    const options: SelectorOption<string>[] = modelStore.availableModels
+    // SoRa is a single-model product. Keep the existing selector contract
+    // for assistant editors, but expose only the configured cloud model.
+    const soraModels = modelStore.remoteModels.filter(
+      model => model.remoteModelId === 'glm-4-plus',
+    );
+    const options: SelectorOption<string>[] = soraModels
       .filter(model => (filter ? filter(model) : true))
       .map(model => ({
-        label: model.name,
+        label: 'SoRa',
         value: model.id,
       }));
 
     const handleModelChange = (modelId: string) => {
-      const selectedModel = modelStore.availableModels.find(
-        model => model.id === modelId,
-      );
+      const selectedModel = soraModels.find(model => model.id === modelId);
       if (selectedModel) {
         onChange(selectedModel);
       }

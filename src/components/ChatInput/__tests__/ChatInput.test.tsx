@@ -14,8 +14,10 @@ import {
   palStore,
   chatSessionStore,
   modelStore,
+  uiStore,
 } from '../../../store';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import {ModelOrigin} from '../../../utils/types';
 
 // Mock react-native-image-picker
 jest.mock('react-native-image-picker', () => ({
@@ -26,6 +28,8 @@ jest.mock('react-native-image-picker', () => ({
 jest.spyOn(Alert, 'alert');
 
 const renderScrollable = () => <ScrollView />;
+const attachmentButtonLabel = () =>
+  uiStore.language === 'ru' ? 'Добавить вложение' : 'Add attachment';
 
 describe('input', () => {
   it('send button', () => {
@@ -313,7 +317,7 @@ describe('input', () => {
       </UserContext.Provider>,
     );
 
-    const plusButton = getByLabelText('Add image');
+    const plusButton = getByLabelText(attachmentButtonLabel());
     expect(plusButton).toBeDefined();
   });
 
@@ -332,7 +336,7 @@ describe('input', () => {
       </UserContext.Provider>,
     );
 
-    const plusButton = queryByLabelText('Add image');
+    const plusButton = queryByLabelText(attachmentButtonLabel());
     expect(plusButton).toBeNull();
   });
 
@@ -352,7 +356,7 @@ describe('input', () => {
       </UserContext.Provider>,
     );
 
-    const plusButton = getByLabelText('Add image');
+    const plusButton = getByLabelText(attachmentButtonLabel());
     expect(plusButton).toBeTruthy();
     expect(plusButton.props.accessibilityState.disabled).toBe(false);
   });
@@ -398,7 +402,7 @@ describe('input', () => {
 
       const shrinkOf = (testID: string) =>
         StyleSheet.flatten(getByTestId(testID).props.style).flexShrink;
-      expect(getByLabelText('Add image')).toBeTruthy();
+      expect(getByLabelText(attachmentButtonLabel())).toBeTruthy();
       expect(queryByTestId('pal-selector')).toBeNull();
       expect(getByTestId('thinking-toggle-label').props.numberOfLines).toBe(1);
       expect(shrinkOf('thinking-toggle')).toBeGreaterThan(0);
@@ -560,7 +564,7 @@ describe('input', () => {
     );
 
     // Text-only models: no image button at all (it would be a dead control).
-    expect(queryByLabelText('Add image')).toBeNull();
+    expect(queryByLabelText(attachmentButtonLabel())).toBeNull();
   });
 
   it('enables plus button when vision is enabled', () => {
@@ -579,7 +583,7 @@ describe('input', () => {
       </UserContext.Provider>,
     );
 
-    const plusButton = getByLabelText('Add image');
+    const plusButton = getByLabelText(attachmentButtonLabel());
     expect(plusButton.props.accessibilityState.disabled).toBe(false);
   });
 
@@ -657,7 +661,7 @@ describe('input', () => {
         </UserContext.Provider>,
       );
 
-      const plusButton = getByLabelText('Add image');
+      const plusButton = getByLabelText(attachmentButtonLabel());
       fireEvent.press(plusButton);
 
       // Menu should be visible after pressing plus button
@@ -684,7 +688,7 @@ describe('input', () => {
         </UserContext.Provider>,
       );
 
-      const plusButton = getByLabelText('Add image');
+      const plusButton = getByLabelText(attachmentButtonLabel());
       fireEvent.press(plusButton);
 
       // Since testing the menu interaction is complex, let's test that the camera function works
@@ -714,7 +718,7 @@ describe('input', () => {
         </UserContext.Provider>,
       );
 
-      const plusButton = getByLabelText('Add image');
+      const plusButton = getByLabelText(attachmentButtonLabel());
       fireEvent.press(plusButton);
 
       // Test that the component renders correctly even when camera errors are configured
@@ -739,20 +743,36 @@ describe('input', () => {
     const pressCameraMenuItem = async (
       screen: ReturnType<typeof renderWithImageUpload>,
     ) => {
-      fireEvent.press(screen.getByLabelText('Add image'));
+      fireEvent.press(screen.getByLabelText(attachmentButtonLabel()));
       fireEvent.press(await screen.findByText(l10n.en.camera.takePhoto));
     };
 
     it('adds the captured photo to the selection', async () => {
+      const previousModels = modelStore.models;
+      const previousActiveModelId = modelStore.activeModelId;
+      runInAction(() => {
+        modelStore.models = [
+          {id: 'test-sora-remote', origin: ModelOrigin.REMOTE} as any,
+        ];
+        modelStore.activeModelId = 'test-sora-remote';
+      });
       (launchCamera as jest.Mock).mockResolvedValue({
         assets: [{uri: 'file://test-photo.jpg'}],
       });
 
       const screen = renderWithImageUpload();
-      await pressCameraMenuItem(screen);
+      try {
+        await pressCameraMenuItem(screen);
 
-      expect(await screen.findByLabelText('Remove image 1')).toBeTruthy();
-      expect(Alert.alert).not.toHaveBeenCalled();
+        expect(await screen.findByLabelText('Remove image 1')).toBeTruthy();
+        expect(Alert.alert).not.toHaveBeenCalled();
+      } finally {
+        screen.unmount();
+        runInAction(() => {
+          modelStore.models = previousModels;
+          modelStore.activeModelId = previousActiveModelId;
+        });
+      }
     });
 
     it('alerts that no camera device was found when the camera is unavailable', async () => {
@@ -846,7 +866,7 @@ describe('input', () => {
         </UserContext.Provider>,
       );
 
-      const plusButton = getByLabelText('Add image');
+      const plusButton = getByLabelText(attachmentButtonLabel());
       fireEvent.press(plusButton);
 
       // Test that the component renders correctly with image library functionality
@@ -854,20 +874,18 @@ describe('input', () => {
       expect(launchImageLibrary).toHaveBeenCalledTimes(0); // Not called until menu interaction
     });
 
-    it('sends message with selected images', () => {
-      // Set up an active model for the test
+    it('sends selected images even when the text field is empty', () => {
       runInAction(() => {
         modelStore.activeModelId = 'test-model-id';
       });
       const onSendPress = jest.fn();
       const defaultImages = ['file://image1.jpg', 'file://image2.jpg'];
-      const {getByPlaceholderText, getByLabelText} = render(
+      const {getByLabelText} = render(
         <UserContext.Provider value={user}>
           <ChatInput
             {...{
               onSendPress,
               showImageUpload: true,
-              isVisionEnabled: true,
               sendButtonVisibilityMode: 'editing',
               defaultImages,
             }}
@@ -875,18 +893,44 @@ describe('input', () => {
         </UserContext.Provider>,
       );
 
-      const textInput = getByPlaceholderText(
-        l10n.en.components.chatInput.inputPlaceholder,
-      );
-      fireEvent.changeText(textInput, 'test with images');
-
       const sendButton = getByLabelText(
         l10n.en.components.sendButton.accessibilityLabel,
       );
       fireEvent.press(sendButton);
 
       expect(onSendPress).toHaveBeenCalledWith({
-        text: 'test with images',
+        text: '',
+        type: 'text',
+        imageUris: defaultImages,
+      });
+    });
+
+    it('sends selected images together with text in the controlled composer', () => {
+      runInAction(() => {
+        modelStore.activeModelId = 'test-model-id';
+      });
+      const onSendPress = jest.fn();
+      const onChangeText = jest.fn();
+      const defaultImages = ['file://image1.jpg'];
+      const {getByPlaceholderText, getByLabelText} = render(
+        <UserContext.Provider value={user}>
+          <ChatInput
+            {...{
+              onSendPress,
+              showImageUpload: true,
+              sendButtonVisibilityMode: 'editing',
+              defaultImages,
+              textInputProps: {value: 'Describe this picture', onChangeText},
+            }}
+          />
+        </UserContext.Provider>,
+      );
+
+      fireEvent.press(
+        getByLabelText(l10n.en.components.sendButton.accessibilityLabel),
+      );
+      expect(onSendPress).toHaveBeenCalledWith({
+        text: 'Describe this picture',
         type: 'text',
         imageUris: defaultImages,
       });
@@ -991,7 +1035,13 @@ describe('input', () => {
       });
 
       // Verify helper text is displayed
-      expect(getByText(l10n.en.chat.cannotSendWithoutModel)).toBeTruthy();
+      expect(
+        getByText(
+          uiStore.language === 'ru'
+            ? 'Подключаем SoRa…'
+            : 'Connecting to SoRa…',
+        ),
+      ).toBeTruthy();
 
       // Verify onSendPress was NOT called
       expect(onSendPress).not.toHaveBeenCalled();

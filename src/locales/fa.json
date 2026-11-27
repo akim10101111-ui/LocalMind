@@ -165,7 +165,7 @@
     "serverTypeHelp": "به‌صورت خودکار تشخیص داده می‌شود؛ اگر درست نیست تغییرش بدهید.",
     "internetSearch": {
       "title": "جستجوی اینترنتی",
-      "description": "بگذارید پَل‌ها با ابزارهای خودشان در وب جستجو کنند. کلید API خودتان را بیاورید — LocalMind هرگز کلیدهای شما را نگه نمی‌دارد و درخواست‌هایتان را هدایت نمی‌کند.",
+      "description": "بگذارید پَل‌ها با ابزارهای خودشان در وب جستجو کنند. کلید API خودتان را بیاورید — SoRa هرگز کلیدهای شما را نگه نمی‌دارد و درخواست‌هایتان را هدایت نمی‌کند.",
       "providerLabel": "ارائه‌دهنده جستجو",
       "providerGated": "به‌زودی",
       "keyLabel": "کلید API",
@@ -181,7 +181,7 @@
       "resultCountLabel": "تعداد نتایج در هر جستجو",
       "resultCountDescription": "نتایج کمتر فضای بیشتری در context مدل باقی می‌گذارد.",
       "consentTitle": "جستجوها از دستگاه شما خارج می‌شوند",
-      "consentDescription": "وقتی یک پَل در وب جستجو می‌کند، درخواست شما از طریق اینترنت به ارائه‌دهنده انتخاب‌شده ارسال می‌شود. وقتی یک پَل صفحه‌ای را می‌خواند، اگر ارائه‌دهنده انتخاب‌شده خواننده اختصاصی نداشته باشد، ممکن است به‌جای آن آدرس و محتوای صفحه به یک سرویس خواننده پیش‌فرض (r.jina.ai) ارسال شود. کلیدها و درخواست‌ها هرگز به LocalMind ارسال نمی‌شوند.",
+      "consentDescription": "وقتی یک پَل در وب جستجو می‌کند، درخواست شما از طریق اینترنت به ارائه‌دهنده انتخاب‌شده ارسال می‌شود. وقتی یک پَل صفحه‌ای را می‌خواند، اگر ارائه‌دهنده انتخاب‌شده خواننده اختصاصی نداشته باشد، ممکن است به‌جای آن آدرس و محتوای صفحه به یک سرویس خواننده پیش‌فرض (r.jina.ai) ارسال شود. کلیدها و درخواست‌ها هرگز به SoRa ارسال نمی‌شوند.",
       "consentAccept": "متوجه شدم",
       "consentRequired": "برای تنظیم کلید و فعال‌سازی جستجو، توضیحات بالا را بپذیرید.",
       "consentGivenTitle": "جستجوی وب فعال است",
@@ -563,21 +563,21 @@
     "screenTitle": "درباره برنامه",
     "description": "برنامه‌ای که مدل‌های زبانی را مستقیماً به گوشی شما می‌آورد. بر پایه llama.cpp و llama.rn ساخته شده.",
     "supportProject": "حمایت از پروژه",
-    "supportProjectDescription": "اگر از استفاده LocalMind لذت می‌برید، لطفاً حمایت از پروژه را در نظر بگیرید:",
+    "supportProjectDescription": "اگر از استفاده SoRa لذت می‌برید، لطفاً حمایت از پروژه را در نظر بگیرید:",
     "versionCopiedTitle": "نسخه کپی شد",
     "versionCopiedDescription": "اطلاعات نسخه در کلیپ‌بورد کپی شد",
     "tour": "تور معرفی",
-    "tourDescription": "صفحه‌های خوش‌آمدگویی را دوباره ببینید تا با امکانات LocalMind آشنا شوید.",
+    "tourDescription": "صفحه‌های خوش‌آمدگویی را دوباره ببینید تا با امکانات SoRa آشنا شوید.",
     "showIntroButton": "نمایش دوباره معرفی",
     "openSourceNotices": "مجوزهای متن‌باز",
     "phononNoticesCredit": "مدل صوتی و صداهای Phonon از Gradium، با مجوز Apache-2.0. بر پایه Pocket TTS و کدک Mimi از Kyutai ساخته شده."
   },
   "feedback": {
     "title": "ارسال بازخورد",
-    "description": "نظر شما مهم است! به ما بگویید LocalMind چطور به شما کمک می‌کند و چه کاری می‌توانیم انجام دهیم تا مفیدتر شود.",
+    "description": "نظر شما مهم است! به ما بگویید SoRa چطور به شما کمک می‌کند و چه کاری می‌توانیم انجام دهیم تا مفیدتر شود.",
     "shareThoughtsButton": "نظرات خود را به اشتراک بگذارید",
     "useCase": {
-      "label": "LocalMind را برای چه کاری استفاده می‌کنید؟",
+      "label": "SoRa را برای چه کاری استفاده می‌کنید؟",
       "placeholder": "مثلاً خلاصه‌سازی، ایفای نقش و غیره"
     },
     "featureRequests": {
@@ -589,7 +589,7 @@
       "placeholder": "هر نظر دیگری دارید با ما به اشتراک بگذارید."
     },
     "usageFrequency": {
-      "label": "چقدر از LocalMind استفاده می‌کنید؟ (اختیاری)",
+      "label": "چقدر از SoRa استفاده می‌کنید؟ (اختیاری)",
       "options": {
         "daily": "روزانه",
         "weekly": "هفتگی",
@@ -639,7 +639,7 @@
     },
     "chatEmptyPlaceholder": {
       "noModelsTitle": "مدلی موجود نیست",
-      "noModelsDescription": "یک مدل دانلود کنید تا گفتگو با LocalMind را شروع کنید",
+      "noModelsDescription": "یک مدل دانلود کنید تا گفتگو با SoRa را شروع کنید",
       "noModelsButton": "دانلود مدل",
       "activateModelTitle": "برای شروع یک مدل را فعال کنید",
       "activateModelDescription": "مدل را انتخاب و دانلود کنید. بعد از دانلود، روی بارگذاری کنار مدل بزنید و گفتگو را شروع کنید.",
@@ -692,7 +692,7 @@
     },
     "modelErrorReportSheet": {
       "title": "گزارش مشکل بارگذاری مدل",
-      "privacyNote": "با اشتراک‌گذاری جزئیات این خطا به بهبود LocalMind کمک کنید. موارد زیر را بررسی کنید — می‌توانید هر موردی که نمی‌خواهید ارسال شود را غیرفعال کنید.",
+      "privacyNote": "با اشتراک‌گذاری جزئیات این خطا به بهبود SoRa کمک کنید. موارد زیر را بررسی کنید — می‌توانید هر موردی که نمی‌خواهید ارسال شود را غیرفعال کنید.",
       "errorMessage": "پیام خطا",
       "modelInfo": "اطلاعات مدل",
       "modelName": "نام",
@@ -710,7 +710,7 @@
       "submit": "ارسال گزارش",
       "success": {
         "title": "گزارش ارسال شد",
-        "message": "ممنون که به بهبود LocalMind کمک می‌کنید. گزارش شما به رفع این مشکل کمک خواهد کرد."
+        "message": "ممنون که به بهبود SoRa کمک می‌کنید. گزارش شما به رفع این مشکل کمک خواهد کرد."
       },
       "error": {
         "title": "ارسال گزارش ناموفق بود",
@@ -1133,7 +1133,7 @@
   },
   "camera": {
     "permissionTitle": "دسترسی به دوربین لازم است",
-    "permissionMessage": "LocalMind برای تحلیل تصاویر به دسترسی دوربین نیاز دارد",
+    "permissionMessage": "SoRa برای تحلیل تصاویر به دسترسی دوربین نیاز دارد",
     "requestingPermission": "درخواست دسترسی به دوربین...",
     "noDevice": "دوربینی یافت نشد",
     "errorTitle": "خطای دوربین",
@@ -1147,7 +1147,7 @@
   },
   "video": {
     "permissionTitle": "دسترسی به دوربین لازم است",
-    "permissionMessage": "LocalMind برای تحلیل ویدیو به دسترسی دوربین نیاز دارد",
+    "permissionMessage": "SoRa برای تحلیل ویدیو به دسترسی دوربین نیاز دارد",
     "requestingPermission": "درخواست دسترسی به دوربین...",
     "noDevice": "دوربینی یافت نشد",
     "errorTitle": "خطای دوربین",
@@ -1495,7 +1495,7 @@
     "systemIosSettingsHint": "صداها را از مسیر Settings > Accessibility > Spoken Content > Voices اضافه کنید.",
     "systemLanguageSheetTitle": "زبان صدا",
     "systemLanguageSearchPlaceholder": "جستجوی زبان‌ها",
-    "speakingNotificationTitle": "LocalMind در حال صحبت است",
+    "speakingNotificationTitle": "SoRa در حال صحبت است",
     "speakingNotificationStop": "توقف",
     "speakingNotificationChannel": "گفتار",
     "systemIosReadAndSpeakHint": "صداها را از مسیر Settings > Accessibility > Read & Speak > Voices اضافه کنید."
@@ -1513,14 +1513,14 @@
     "skip": "رد کردن",
     "skipForNow": "فعلاً رد کن",
     "splash": {
-      "brand": "LocalMind"
+      "brand": "SoRa"
     },
     "screen1": {
       "title": "با پَل‌هایت آشنا شو.",
       "titleAccent": "پَل‌هایت.",
       "body": "دوستان کوچک و باهوشی که داخل گوشی تو زندگی می‌کنند.\nبیا با هم آماده‌ات کنیم - فقط یک دقیقه طول می‌کشد.",
       "cta": "بگرد و نشانم بده",
-      "eyebrow": "به LocalMind خوش آمدی"
+      "eyebrow": "به SoRa خوش آمدی"
     },
     "screen2": {
       "title": "هر زمان،\nهر جا.",

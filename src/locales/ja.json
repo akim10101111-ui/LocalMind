@@ -165,7 +165,7 @@
     "serverTypeHelp": "自動検出されます。誤っている場合は変更してください。",
     "internetSearch": {
       "title": "インターネット検索",
-      "description": "Palが自分のツールでウェブを検索できるようにします。APIキーはご自身のものをご用意ください。LocalMindがキーを保持したり、クエリを中継したりすることは一切ありません。",
+      "description": "Palが自分のツールでウェブを検索できるようにします。APIキーはご自身のものをご用意ください。SoRaがキーを保持したり、クエリを中継したりすることは一切ありません。",
       "providerLabel": "検索プロバイダー",
       "providerGated": "近日公開",
       "keyLabel": "APIキー",
@@ -181,7 +181,7 @@
       "resultCountLabel": "検索ごとの結果数",
       "resultCountDescription": "結果数を減らすと、モデルのコンテキストに余裕が生まれます。",
       "consentTitle": "検索はデバイスの外に送信されます",
-      "consentDescription": "Palがウェブを検索すると、クエリはインターネット経由で選択したプロバイダーに送信されます。Palがページを読み取る際、選択したプロバイダーに独自のリーダーがない場合は、代わりにURLとページの内容がデフォルトのリーダーサービス（r.jina.ai）に送信されることがあります。キーとクエリがLocalMindに送信されることは一切ありません。",
+      "consentDescription": "Palがウェブを検索すると、クエリはインターネット経由で選択したプロバイダーに送信されます。Palがページを読み取る際、選択したプロバイダーに独自のリーダーがない場合は、代わりにURLとページの内容がデフォルトのリーダーサービス（r.jina.ai）に送信されることがあります。キーとクエリがSoRaに送信されることは一切ありません。",
       "consentAccept": "理解しました",
       "consentRequired": "キーを設定して検索を有効にするには、上記の説明に同意してください。",
       "consentGivenTitle": "ウェブ検索が有効になっています",
@@ -563,21 +563,21 @@
     "screenTitle": "アプリ情報",
     "description": "言語モデルをスマートフォンで直接利用できるアプリです、llama.cppとllama.rnをベースに開発されています",
     "supportProject": "プロジェクトを応援する",
-    "supportProjectDescription": "LocalMindをご利用いただき楽しんでいただけているなら、以下の方法でプロジェクトを応援いただけると幸いです：",
+    "supportProjectDescription": "SoRaをご利用いただき楽しんでいただけているなら、以下の方法でプロジェクトを応援いただけると幸いです：",
     "versionCopiedTitle": "バージョンをコピーしました",
     "versionCopiedDescription": "バージョン情報がクリップボードにコピーされました",
     "tour": "ツアー",
-    "tourDescription": "ウェルカム画面をもう一度見て、LocalMindでできることを確認しましょう。",
+    "tourDescription": "ウェルカム画面をもう一度見て、SoRaでできることを確認しましょう。",
     "showIntroButton": "イントロをもう一度見る",
     "openSourceNotices": "オープンソースライセンス",
     "phononNoticesCredit": "Phononの音声モデルと音声はGradium製で、Apache-2.0ライセンスで提供されています。Pocket TTSとKyutaiのMimiコーデックを基盤としています。"
   },
   "feedback": {
     "title": "フィードバックを送信",
-    "description": "ご意見をお聞かせください！LocalMindの使い心地やより便利にするためのアイデアをお寄せください",
+    "description": "ご意見をお聞かせください！SoRaの使い心地やより便利にするためのアイデアをお寄せください",
     "shareThoughtsButton": "ご意見を共有する",
     "useCase": {
-      "label": "LocalMindをどのように使っていますか？",
+      "label": "SoRaをどのように使っていますか？",
       "placeholder": "例：要約、ロールプレイなど"
     },
     "featureRequests": {
@@ -639,7 +639,7 @@
     },
     "chatEmptyPlaceholder": {
       "noModelsTitle": "利用可能なモデルがありません",
-      "noModelsDescription": "LocalMindとチャットを始めるにはモデルをダウンロードしてください",
+      "noModelsDescription": "SoRaとチャットを始めるにはモデルをダウンロードしてください",
       "noModelsButton": "モデルをダウンロード",
       "activateModelTitle": "開始するにはモデルを有効化してください",
       "activateModelDescription": "モデルを選択してダウンロードしてください、ダウンロード後、モデルの横にある読み込みをタップしてチャットを開始します",
@@ -692,7 +692,7 @@
     },
     "modelErrorReportSheet": {
       "title": "モデル読み込みエラーを報告",
-      "privacyNote": "このエラーの詳細を共有してLocalMindの改善にご協力ください。以下の共有内容を確認し、含めたくない項目は選択解除できます。",
+      "privacyNote": "このエラーの詳細を共有してSoRaの改善にご協力ください。以下の共有内容を確認し、含めたくない項目は選択解除できます。",
       "errorMessage": "エラーメッセージ",
       "modelInfo": "モデル情報",
       "modelName": "名前",
@@ -710,7 +710,7 @@
       "submit": "報告を送信",
       "success": {
         "title": "報告が送信されました",
-        "message": "LocalMindの改善にご協力いただきありがとうございます。この問題の修正に役立てます。"
+        "message": "SoRaの改善にご協力いただきありがとうございます。この問題の修正に役立てます。"
       },
       "error": {
         "title": "報告に失敗しました",
@@ -1133,7 +1133,7 @@
   },
   "camera": {
     "permissionTitle": "カメラ許可が必要",
-    "permissionMessage": "LocalMindが画像を分析するにはカメラへのアクセスが必要です",
+    "permissionMessage": "SoRaが画像を分析するにはカメラへのアクセスが必要です",
     "requestingPermission": "カメラの許可をリクエスト中...",
     "noDevice": "カメラデバイスが見つかりません",
     "errorTitle": "カメラエラー",
@@ -1147,7 +1147,7 @@
   },
   "video": {
     "permissionTitle": "カメラ許可が必要",
-    "permissionMessage": "LocalMindが動画を分析するにはカメラへのアクセスが必要です",
+    "permissionMessage": "SoRaが動画を分析するにはカメラへのアクセスが必要です",
     "requestingPermission": "カメラの許可をリクエスト中...",
     "noDevice": "カメラデバイスが見つかりません",
     "errorTitle": "カメラエラー",
@@ -1503,7 +1503,7 @@
     "systemIosSettingsHint": "「設定 > アクセシビリティ > 読み上げコンテンツ > 声」で音声を追加できます。",
     "systemLanguageSheetTitle": "音声の言語",
     "systemLanguageSearchPlaceholder": "言語を検索",
-    "speakingNotificationTitle": "LocalMindが読み上げ中",
+    "speakingNotificationTitle": "SoRaが読み上げ中",
     "speakingNotificationStop": "停止",
     "speakingNotificationChannel": "読み上げ",
     "systemIosReadAndSpeakHint": "「設定 > アクセシビリティ > リーダーと読み上げ > 声」で音声を追加できます。"
@@ -1513,14 +1513,14 @@
     "skip": "スキップ",
     "skipForNow": "今はスキップ",
     "splash": {
-      "brand": "LocalMind"
+      "brand": "SoRa"
     },
     "screen1": {
       "title": "あなたのパルに会いましょう。",
       "titleAccent": "パルに。",
       "body": "あなたのスマホの中に住む、賢くて小さな友だち。\nセットアップを始めましょう。すぐに終わります。",
       "cta": "案内してもらう",
-      "eyebrow": "LocalMindへようこそ"
+      "eyebrow": "SoRaへようこそ"
     },
     "screen2": {
       "title": "いつでも、\nどこでも。",

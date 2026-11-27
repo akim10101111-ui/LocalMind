@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>LocalMind</string>
+	<string>SoRa</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -47,17 +47,17 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>LocalMind uses your camera to capture images and video for local AI analysis only. All processing happens on your device and no images are transmitted to external servers.</string>
+	<string>SoRa uses your camera to capture images or video you choose to attach. Attached media may be sent to the SoRa API for AI analysis.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>LocalMind uses your microphone for on-device voice input. Speech is transcribed locally on your device and is never transmitted to external servers.</string>
+	<string>SoRa uses your microphone for voice input. Speech is transcribed on-device where supported; submitted text is sent to the SoRa API to generate a reply.</string>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>LocalMind connects to AI servers you run on your own network (like Ollama or llama.cpp) when you add them as remote endpoints, and, when you turn on its local API server, serves the loaded model to apps you point at it on your network.</string>
+	<string>SoRa connects to AI servers you run on your own network (like Ollama or llama.cpp) when you add them as remote endpoints, and, when you turn on its local API server, serves the loaded model to apps you point at it on your network.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>LocalMind never requests or collects your location. A bundled camera library references the system location API to offer optional photo geotagging, which LocalMind leaves turned off.</string>
+	<string>SoRa never requests or collects your location. A bundled camera library references the system location API to offer optional photo geotagging, which SoRa leaves turned off.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>LocalMind accesses your photo library to select images for local AI analysis only. Selected images are processed entirely on your device and are never transmitted to external servers.</string>
+	<string>SoRa accesses your photo library so you can attach images to a conversation. Attached images may be sent to the SoRa API for AI analysis.</string>
 	<key>NSSiriUsageDescription</key>
-	<string>LocalMind uses Siri to let you start voice conversations with your local assistant.</string>
+	<string>SoRa uses Siri to let you start voice conversations with your AI assistant.</string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
 	<key>UIAppFonts</key>

@@ -90,7 +90,7 @@ android {
         applicationId "ai.localmind.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 165
+        versionCode 166
         versionName "1.24.2"
         missingDimensionStrategy 'parallelization', 'standard'
         ndk {

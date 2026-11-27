@@ -165,7 +165,7 @@
     "serverTypeHelp": "Terdeteksi otomatis; ubah jika keliru.",
     "internetSearch": {
       "title": "Pencarian Internet",
-      "description": "Izinkan Assistant mencari di web dengan alat mereka sendiri. Bawa kunci API Anda sendiri — LocalMind tidak pernah menyimpan kunci Anda atau merutekan kueri Anda.",
+      "description": "Izinkan Assistant mencari di web dengan alat mereka sendiri. Bawa kunci API Anda sendiri — SoRa tidak pernah menyimpan kunci Anda atau merutekan kueri Anda.",
       "providerLabel": "Penyedia pencarian",
       "providerGated": "Segera hadir",
       "keyLabel": "Kunci API",
@@ -181,7 +181,7 @@
       "resultCountLabel": "Hasil per pencarian",
       "resultCountDescription": "Lebih sedikit hasil menyisakan lebih banyak ruang dalam konteks model.",
       "consentTitle": "Pencarian meninggalkan perangkat Anda",
-      "consentDescription": "Saat Assistant mencari di web, kueri Anda dikirim ke penyedia yang dipilih melalui internet. Saat Assistant membaca halaman, URL dan konten halaman dapat dikirim ke layanan pembaca default (r.jina.ai) jika penyedia yang dipilih tidak memiliki pembaca bawaan. Kunci dan kueri tidak pernah dikirim ke LocalMind.",
+      "consentDescription": "Saat Assistant mencari di web, kueri Anda dikirim ke penyedia yang dipilih melalui internet. Saat Assistant membaca halaman, URL dan konten halaman dapat dikirim ke layanan pembaca default (r.jina.ai) jika penyedia yang dipilih tidak memiliki pembaca bawaan. Kunci dan kueri tidak pernah dikirim ke SoRa.",
       "consentAccept": "Saya mengerti",
       "consentRequired": "Terima pengungkapan di atas untuk mengatur kunci dan mengaktifkan pencarian.",
       "consentGivenTitle": "Pencarian web diaktifkan",
@@ -563,21 +563,21 @@
     "screenTitle": "Info Aplikasi",
     "description": "Aplikasi yang membawa model bahasa langsung ke ponsel Anda. Dibangun di atas llama.cpp dan llama.rn.",
     "supportProject": "Dukung Proyek Ini",
-    "supportProjectDescription": "Jika Anda menikmati menggunakan LocalMind, pertimbangkan untuk mendukung proyek ini dengan:",
+    "supportProjectDescription": "Jika Anda menikmati menggunakan SoRa, pertimbangkan untuk mendukung proyek ini dengan:",
     "versionCopiedTitle": "Versi disalin",
     "versionCopiedDescription": "Informasi versi telah disalin ke papan klip",
     "tour": "Tur",
-    "tourDescription": "Putar ulang layar selamat datang untuk melihat apa yang ditawarkan LocalMind.",
+    "tourDescription": "Putar ulang layar selamat datang untuk melihat apa yang ditawarkan SoRa.",
     "showIntroButton": "Tampilkan intro lagi",
     "openSourceNotices": "Pemberitahuan open source",
     "phononNoticesCredit": "Model dan suara Phonon oleh Gradium, dilisensikan di bawah Apache-2.0. Dibangun di atas Pocket TTS dan codec Mimi dari Kyutai."
   },
   "feedback": {
     "title": "Kirim Masukan",
-    "description": "Suara Anda penting! Ceritakan bagaimana LocalMind membantu Anda dan apa yang bisa kami lakukan agar lebih bermanfaat.",
+    "description": "Suara Anda penting! Ceritakan bagaimana SoRa membantu Anda dan apa yang bisa kami lakukan agar lebih bermanfaat.",
     "shareThoughtsButton": "Bagikan pikiran Anda",
     "useCase": {
-      "label": "Untuk apa Anda menggunakan LocalMind?",
+      "label": "Untuk apa Anda menggunakan SoRa?",
       "placeholder": "misalnya, merangkum, bermain peran, dll."
     },
     "featureRequests": {
@@ -589,7 +589,7 @@
       "placeholder": "Bagikan pikiran lain yang Anda miliki."
     },
     "usageFrequency": {
-      "label": "Seberapa sering Anda menggunakan LocalMind? (Opsional)",
+      "label": "Seberapa sering Anda menggunakan SoRa? (Opsional)",
       "options": {
         "daily": "Setiap hari",
         "weekly": "Mingguan",
@@ -639,7 +639,7 @@
     },
     "chatEmptyPlaceholder": {
       "noModelsTitle": "Tidak Ada Model Tersedia",
-      "noModelsDescription": "Unduh model untuk mulai mengobrol dengan LocalMind",
+      "noModelsDescription": "Unduh model untuk mulai mengobrol dengan SoRa",
       "noModelsButton": "Unduh Model",
       "activateModelTitle": "Aktifkan Model untuk Memulai",
       "activateModelDescription": "Pilih model dan unduh. Setelah diunduh, ketuk Muat di sebelah model dan mulai mengobrol.",
@@ -692,7 +692,7 @@
     },
     "modelErrorReportSheet": {
       "title": "Laporkan Masalah Pemuatan Model",
-      "privacyNote": "Bantu kami meningkatkan LocalMind dengan membagikan detail tentang kesalahan ini. Tinjau di bawah ini apa yang akan dibagikan – Anda dapat membatalkan item apa pun yang tidak ingin disertakan.",
+      "privacyNote": "Bantu kami meningkatkan SoRa dengan membagikan detail tentang kesalahan ini. Tinjau di bawah ini apa yang akan dibagikan – Anda dapat membatalkan item apa pun yang tidak ingin disertakan.",
       "errorMessage": "Pesan kesalahan",
       "modelInfo": "Informasi Model",
       "modelName": "Nama",
@@ -710,7 +710,7 @@
       "submit": "Kirim Laporan",
       "success": {
         "title": "Laporan Dikirim",
-        "message": "Terima kasih telah membantu kami meningkatkan LocalMind. Laporan Anda akan membantu kami memperbaiki masalah ini."
+        "message": "Terima kasih telah membantu kami meningkatkan SoRa. Laporan Anda akan membantu kami memperbaiki masalah ini."
       },
       "error": {
         "title": "Gagal Mengirim Laporan",
@@ -1133,7 +1133,7 @@
   },
   "camera": {
     "permissionTitle": "Izin Kamera Diperlukan",
-    "permissionMessage": "LocalMind memerlukan akses kamera untuk menganalisis gambar",
+    "permissionMessage": "SoRa memerlukan akses kamera untuk menganalisis gambar",
     "requestingPermission": "Meminta izin kamera...",
     "noDevice": "Tidak ditemukan perangkat kamera",
     "errorTitle": "Kesalahan Kamera",
@@ -1147,7 +1147,7 @@
   },
   "video": {
     "permissionTitle": "Izin Kamera Diperlukan",
-    "permissionMessage": "LocalMind memerlukan akses kamera untuk analisis video",
+    "permissionMessage": "SoRa memerlukan akses kamera untuk analisis video",
     "requestingPermission": "Meminta izin kamera...",
     "noDevice": "Tidak ditemukan perangkat kamera",
     "errorTitle": "Kesalahan Kamera",
@@ -1495,7 +1495,7 @@
     "systemIosSettingsHint": "Tambahkan suara di Pengaturan > Aksesibilitas > Konten Terucap > Suara.",
     "systemLanguageSheetTitle": "Bahasa suara",
     "systemLanguageSearchPlaceholder": "Cari bahasa",
-    "speakingNotificationTitle": "LocalMind sedang berbicara",
+    "speakingNotificationTitle": "SoRa sedang berbicara",
     "speakingNotificationStop": "Hentikan",
     "speakingNotificationChannel": "Ucapan",
     "systemIosReadAndSpeakHint": "Tambahkan suara di Pengaturan > Aksesibilitas > Baca & Ucapkan > Suara."
@@ -1513,14 +1513,14 @@
     "skip": "Lewati",
     "skipForNow": "Lewati untuk sekarang",
     "splash": {
-      "brand": "LocalMind"
+      "brand": "SoRa"
     },
     "screen1": {
       "title": "Temui para Assistant Anda.",
       "titleAccent": "Assistant.",
       "body": "Teman-teman kecil pintar yang tinggal di dalam ponsel Anda.\nMari kita siapkan - akan memakan waktu sebentar.",
       "cta": "Ajak Berkeliling",
-      "eyebrow": "Selamat Datang di LocalMind"
+      "eyebrow": "Selamat Datang di SoRa"
     },
     "screen2": {
       "title": "Kapan Saja,\nDi Mana Saja.",

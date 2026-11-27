@@ -1,15 +1,36 @@
 import React from 'react';
-import {render} from '../../../../jest/test-utils';
+import {fireEvent, render} from '../../../../jest/test-utils';
 import {ModelSelector} from '../ModelSelector';
-import {modelsList} from '../../../../jest/fixtures/models';
 
-// Mock the modelStore
+const soraModel = {
+  id: 'localmind-zai-server/glm-4-plus',
+  remoteModelId: 'glm-4-plus',
+  serverId: 'localmind-zai-server',
+  name: 'SoRa',
+  origin: 'remote',
+};
+
+// The store fixture includes a legacy local model to prove it is not exposed.
 jest.mock('../../../store', () => ({
   modelStore: {
+    remoteModels: [
+      {
+        id: 'localmind-zai-server/glm-4-plus',
+        remoteModelId: 'glm-4-plus',
+        serverId: 'localmind-zai-server',
+        name: 'SoRa',
+        origin: 'remote',
+      },
+    ],
     availableModels: [
-      {id: 'model-1', name: 'basic model'},
-      {id: 'model-2', name: 'downloaded model'},
-      {id: 'model-3', name: 'downloading model'},
+      {
+        id: 'localmind-zai-server/glm-4-plus',
+        remoteModelId: 'glm-4-plus',
+        serverId: 'localmind-zai-server',
+        name: 'SoRa',
+        origin: 'remote',
+      },
+      {id: 'deepseek-local', name: 'DeepSeek', origin: 'local'},
     ],
   },
 }));
@@ -24,33 +45,32 @@ describe('ModelSelector', () => {
     jest.clearAllMocks();
   });
 
-  it('renders with required props', () => {
-    const {getByText} = render(<ModelSelector {...defaultProps} />);
-
+  it('renders the single SoRa cloud model', () => {
+    const {getByText} = render(
+      <ModelSelector {...defaultProps} value={soraModel as any} />,
+    );
     expect(getByText('Select Model')).toBeDefined();
-    expect(getByText('Select model')).toBeDefined(); // This is now the button text, not placeholder
+    expect(getByText('SoRa')).toBeDefined();
+  });
+
+  it('does not expose local models as selectable options', () => {
+    const {getByTestId, queryByText} = render(
+      <ModelSelector {...defaultProps} testID="sora-model-selector" />,
+    );
+    fireEvent.press(getByTestId('sora-model-selector-button'));
+    expect(queryByText('SoRa')).toBeTruthy();
+    expect(queryByText('DeepSeek')).toBeNull();
   });
 
   it('shows required asterisk when required prop is true', () => {
     const {getByText} = render(<ModelSelector {...defaultProps} required />);
-
     expect(getByText('Select Model*')).toBeDefined();
-  });
-
-  it('displays selected model name when value is provided', () => {
-    const {getByText} = render(
-      <ModelSelector {...defaultProps} value={modelsList[0]} />,
-    );
-
-    // The selected model name should be displayed as button text
-    expect(getByText(modelsList[0].name)).toBeDefined();
   });
 
   it('displays helper text when provided', () => {
     const {getByText} = render(
       <ModelSelector {...defaultProps} helperText="Helper message" />,
     );
-
     expect(getByText('Helper message')).toBeDefined();
   });
 
@@ -58,37 +78,18 @@ describe('ModelSelector', () => {
     const {getByText} = render(
       <ModelSelector {...defaultProps} placeholder="Custom placeholder" />,
     );
-
     expect(getByText('Custom placeholder')).toBeDefined();
   });
 
-  it('applies filter when provided', () => {
-    const filter = (model: any) => model.name.includes('basic');
+  it('passes through disabled and error props', () => {
     const {getByTestId} = render(
       <ModelSelector
         {...defaultProps}
-        filter={filter}
+        disabled
+        error
         testID="model-selector"
       />,
     );
-
-    // The component should render (filter is applied internally)
-    expect(getByTestId('model-selector')).toBeDefined();
-  });
-
-  it('passes through disabled prop', () => {
-    const {getByTestId} = render(
-      <ModelSelector {...defaultProps} disabled testID="model-selector" />,
-    );
-
-    expect(getByTestId('model-selector')).toBeDefined();
-  });
-
-  it('passes through error prop', () => {
-    const {getByTestId} = render(
-      <ModelSelector {...defaultProps} error testID="model-selector" />,
-    );
-
     expect(getByTestId('model-selector')).toBeDefined();
   });
 });
