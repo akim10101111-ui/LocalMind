@@ -10,11 +10,11 @@ describe('SoRa SettingsScreen', () => {
   it('shows cloud-only SoRa controls and app preferences', () => {
     const {getByText, getByTestId, queryByText} = render(<SettingsScreen />);
 
-    expect(getByText('Настройки SoRa')).toBeTruthy();
+    expect(getByText(uiStore.language === 'ru' ? 'Настройки SoRa' : 'SoRa settings')).toBeTruthy();
     expect(getByText('SoRa AI')).toBeTruthy();
-    expect(getByText('Внешний вид')).toBeTruthy();
-    expect(getByText('Голос и диктовка')).toBeTruthy();
-    expect(getByText('История и конфиденциальность')).toBeTruthy();
+    expect(getByText(uiStore.language === 'ru' ? 'Внешний вид' : 'Appearance')).toBeTruthy();
+    expect(getByText(uiStore.language === 'ru' ? 'Голос и диктовка' : 'Voice and dictation')).toBeTruthy();
+    expect(getByText(uiStore.language === 'ru' ? 'История и конфиденциальность' : 'History and privacy')).toBeTruthy();
     expect(getByTestId('sora-check-connection')).toBeTruthy();
     expect(queryByText('Model Initialization Settings')).toBeNull();
     expect(queryByText('GPU layers')).toBeNull();
