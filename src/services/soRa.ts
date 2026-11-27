@@ -9,7 +9,6 @@ const SORA_SYSTEM_PROMPT =
 
 const OBSOLETE_LOCAL_MODEL_IDS = [
   'bartowski/DeepSeek-R1-Distill-Qwen-1.5B-GGUF/DeepSeek-R1-Distill-Qwen-1.5B-Q4_K_S.gguf',
-  'bartowski/DeepSeek-R1-Distill-Qwen-1.5B-GGUF/DeepSeek-R1-Distill-Qwen-1.5B-Q4_K_M.gguf',
 ];
 
 const removeBundledDeepSeek = async (): Promise<void> => {
@@ -84,9 +83,13 @@ export async function initializeSoRa(): Promise<void> {
         ? {
             name: 'SoRa',
             description: 'Your personal AI assistant, powered by SoRa cloud AI.',
-            systemPrompt: SORA_SYSTEM_PROMPT,
-            originalSystemPrompt: SORA_SYSTEM_PROMPT,
-            isSystemPromptChanged: false,
+            ...(assistant.isSystemPromptChanged
+              ? {}
+              : {
+                  systemPrompt: SORA_SYSTEM_PROMPT,
+                  originalSystemPrompt: SORA_SYSTEM_PROMPT,
+                  isSystemPromptChanged: false,
+                }),
           }
         : {}),
       defaultModel: model,
