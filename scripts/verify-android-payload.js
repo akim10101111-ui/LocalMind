@@ -232,21 +232,10 @@ function loadManifest(manifestPath) {
       `${manifestPath} declares no symbol rules, so no backend would be checked.`,
     );
   }
-  // Every accelerator floor below is conditional on an ABI declaring an
-  // accelerator library, so a manifest declaring none would satisfy all of
-  // them vacuously — and the ABI enumeration only compares against what the
-  // manifest names, so a tree carrying no ladder at all would pass.
-  if (
-    !manifest.abis.some(abi =>
-      abi.requiredLibs.some(
-        lib => /_hexagon/.test(lib) && !/^librnllama_jni/.test(lib),
-      ),
-    )
-  ) {
-    throw new Error(
-      `${manifestPath} declares no accelerator library for any ABI, so no backend would be checked.`,
-    );
-  }
+  // Hexagon/QNN is optional. CPU-only ARM64 builds are valid for devices
+  // without a Qualcomm DSP (including the MediaTek target phone). If an ABI
+  // explicitly declares Hexagon, assertAcceleratorFloors still enforces its
+  // backend symbols and DSP assets below.
   for (const abi of manifest.abis) {
     assertAcceleratorFloors(abi, manifestPath);
   }
