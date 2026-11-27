@@ -68,6 +68,8 @@ jobs:
             src/components/HeaderRight/HeaderRight.tsx \
             src/components/PalsSheets/ModelSelector.tsx \
             src/components/PalsSheets/__tests__/ModelSelector.test.tsx \
+            src/components/ChatView/ChatView.tsx \
+            src/components/ChatInput/ChatInput.tsx \
             src/components/SidebarContent/SidebarContent.tsx \
             src/components/SidebarContent/styles.ts \
             src/screens/AboutScreen/AboutScreen.tsx \
@@ -77,6 +79,7 @@ jobs:
       - name: Focused UI tests
         run: |
           yarn jest \
+            src/components/ChatInput/__tests__/ChatInput.test.tsx \
             src/screens/SettingsScreen/__tests__/SettingsScreen.test.tsx \
             src/screens/ChatScreen/ModelNotLoadedMessage/__tests__/ModelNotLoadedMessage.test.tsx \
             src/components/PalsSheets/__tests__/ModelSelector.test.tsx \
