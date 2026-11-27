@@ -20,9 +20,9 @@ export const createStyles = (theme: MD3Theme) =>
       flexDirection: 'column',
     },
     sessionDrawerItem: {
-      height: 42,
+      height: 44,
       marginHorizontal: 10,
-      borderRadius: 12,
+      borderRadius: 14,
     },
     menuDrawerItem: {
       height: 44,
@@ -64,10 +64,10 @@ export const createStyles = (theme: MD3Theme) =>
       gap: 12,
     },
     brandMark: {
-      width: 44,
-      height: 44,
-      borderRadius: 14,
-      backgroundColor: theme.colors.secondaryContainer,
+      width: 48,
+      height: 48,
+      borderRadius: 16,
+      backgroundColor: '#000000',
       alignItems: 'center',
       justifyContent: 'center',
       overflow: 'hidden',
@@ -78,11 +78,11 @@ export const createStyles = (theme: MD3Theme) =>
     },
     brandTitle: {
       color: theme.colors.onSurface,
-      fontFamily: 'serif',
-      fontSize: 26,
+      fontFamily: 'Inter-SemiBold',
+      fontSize: 25,
       lineHeight: 32,
       fontWeight: '400',
-      letterSpacing: -0.3,
+      letterSpacing: -0.6,
     },
     brandSubtitle: {
       color: theme.colors.onSurfaceVariant,
@@ -97,7 +97,9 @@ export const createStyles = (theme: MD3Theme) =>
       alignItems: 'center',
       gap: 10,
       borderRadius: 23,
-      backgroundColor: theme.colors.surfaceVariant,
+      backgroundColor: theme.dark ? '#171717' : '#F0EEE8',
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: theme.colors.outlineVariant,
     },
     searchInput: {
       flex: 1,
