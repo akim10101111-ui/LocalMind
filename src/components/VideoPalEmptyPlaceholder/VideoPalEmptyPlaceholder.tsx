@@ -6,7 +6,7 @@ import {observer} from 'mobx-react';
 import {useTheme} from '../../hooks';
 import {createStyles} from './styles';
 import {L10nContext} from '../../utils';
-import {LocalMindLogo} from '../../assets/icons';
+import {SoRaLogo} from '../../assets/icons';
 
 interface VideoPalEmptyPlaceholderProps {
   bottomComponentHeight: number;
@@ -22,7 +22,7 @@ export const VideoPalEmptyPlaceholder = observer(
       <View
         style={[styles.container, {paddingBottom: bottomComponentHeight + 20}]}>
         <View style={styles.logo}>
-          <LocalMindLogo width={96} height={96} />
+          <SoRaLogo width={96} height={96} />
         </View>
 
         <View style={styles.content}>
