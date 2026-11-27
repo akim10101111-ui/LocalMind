@@ -165,7 +165,7 @@
     "serverTypeHelp": "Detectado automaticamente; altere se estiver errado.",
     "internetSearch": {
       "title": "Busca na internet",
-      "description": "Deixe os Assistants pesquisarem na web com as próprias ferramentas. Use sua própria chave de API — o LocalMind nunca guarda suas chaves nem encaminha suas consultas.",
+      "description": "Deixe os Assistants pesquisarem na web com as próprias ferramentas. Use sua própria chave de API — o SoRa nunca guarda suas chaves nem encaminha suas consultas.",
       "providerLabel": "Provedor de busca",
       "providerGated": "Em breve",
       "keyLabel": "Chave de API",
@@ -181,7 +181,7 @@
       "resultCountLabel": "Resultados por busca",
       "resultCountDescription": "Menos resultados deixam mais espaço no contexto do modelo.",
       "consentTitle": "As buscas saem do seu dispositivo",
-      "consentDescription": "Quando um Assistant faz uma busca na web, sua consulta é enviada ao provedor selecionado pela internet. Quando um Assistant lê uma página, a URL e o conteúdo da página podem, em vez disso, ser enviados a um serviço de leitura padrão (r.jina.ai) caso o provedor selecionado não tenha um leitor nativo. Chaves e consultas nunca são enviadas ao LocalMind.",
+      "consentDescription": "Quando um Assistant faz uma busca na web, sua consulta é enviada ao provedor selecionado pela internet. Quando um Assistant lê uma página, a URL e o conteúdo da página podem, em vez disso, ser enviados a um serviço de leitura padrão (r.jina.ai) caso o provedor selecionado não tenha um leitor nativo. Chaves e consultas nunca são enviadas ao SoRa.",
       "consentAccept": "Entendi",
       "consentRequired": "Aceite o aviso acima para definir uma chave e ativar a busca.",
       "consentGivenTitle": "A busca na web está ativada",
@@ -563,21 +563,21 @@
     "screenTitle": "Sobre o App",
     "description": "Um app que traz modelos de linguagem diretamente para o seu celular. Construído sobre o llama.cpp e o llama.rn.",
     "supportProject": "Apoie o Projeto",
-    "supportProjectDescription": "Se você gosta de usar o LocalMind, considere apoiar o projeto:",
+    "supportProjectDescription": "Se você gosta de usar o SoRa, considere apoiar o projeto:",
     "versionCopiedTitle": "Versão copiada",
     "versionCopiedDescription": "As informações de versão foram copiadas para a área de transferência",
     "tour": "Tour",
-    "tourDescription": "Reveja as telas de boas-vindas para ver o que o LocalMind oferece.",
+    "tourDescription": "Reveja as telas de boas-vindas para ver o que o SoRa oferece.",
     "showIntroButton": "Mostrar introdução novamente",
     "openSourceNotices": "Avisos de código aberto",
     "phononNoticesCredit": "Modelo de voz e vozes Phonon, da Gradium, licenciados sob Apache-2.0. Construídos sobre o Pocket TTS e o codec Mimi da Kyutai."
   },
   "feedback": {
     "title": "Enviar Feedback",
-    "description": "Sua opinião importa! Conte-nos como o LocalMind está te ajudando e o que podemos fazer para torná-lo ainda mais útil.",
+    "description": "Sua opinião importa! Conte-nos como o SoRa está te ajudando e o que podemos fazer para torná-lo ainda mais útil.",
     "shareThoughtsButton": "Compartilhando suas ideias",
     "useCase": {
-      "label": "Para que você usa o LocalMind?",
+      "label": "Para que você usa o SoRa?",
       "placeholder": "ex.: resumo, interpretação de personagem, etc."
     },
     "featureRequests": {
@@ -589,7 +589,7 @@
       "placeholder": "Compartilhe quaisquer outras ideias que você tenha."
     },
     "usageFrequency": {
-      "label": "Com que frequência você usa o LocalMind? (Opcional)",
+      "label": "Com que frequência você usa o SoRa? (Opcional)",
       "options": {
         "daily": "Diariamente",
         "weekly": "Semanalmente",
@@ -660,7 +660,7 @@
     },
     "chatEmptyPlaceholder": {
       "noModelsTitle": "Nenhum Modelo Disponível",
-      "noModelsDescription": "Baixe um modelo para começar a conversar com o LocalMind",
+      "noModelsDescription": "Baixe um modelo para começar a conversar com o SoRa",
       "noModelsButton": "Baixar Modelo",
       "activateModelTitle": "Ative um Modelo para Começar",
       "activateModelDescription": "Selecione o modelo e baixe-o. Após o download, toque em Carregar ao lado do modelo e comece a conversar.",
@@ -713,7 +713,7 @@
     },
     "modelErrorReportSheet": {
       "title": "Denunciar Problema ao Carregar Modelo",
-      "privacyNote": "Ajude-nos a melhorar o LocalMind compartilhando detalhes sobre este erro. Revise abaixo o que será compartilhado - você pode desmarcar qualquer item que preferir não incluir.",
+      "privacyNote": "Ajude-nos a melhorar o SoRa compartilhando detalhes sobre este erro. Revise abaixo o que será compartilhado - você pode desmarcar qualquer item que preferir não incluir.",
       "errorMessage": "Mensagem de erro",
       "modelInfo": "Informações do Modelo",
       "modelName": "Nome",
@@ -731,7 +731,7 @@
       "submit": "Enviar Denúncia",
       "success": {
         "title": "Denúncia Enviada",
-        "message": "Obrigado por nos ajudar a melhorar o LocalMind. Sua denúncia nos ajudará a corrigir este problema."
+        "message": "Obrigado por nos ajudar a melhorar o SoRa. Sua denúncia nos ajudará a corrigir este problema."
       },
       "error": {
         "title": "Falha na Denúncia",
@@ -1133,7 +1133,7 @@
   },
   "camera": {
     "permissionTitle": "Permissão de Câmera Necessária",
-    "permissionMessage": "O LocalMind precisa de acesso à câmera para analisar imagens",
+    "permissionMessage": "O SoRa precisa de acesso à câmera para analisar imagens",
     "requestingPermission": "Solicitando permissão de câmera...",
     "noDevice": "Nenhum dispositivo de câmera encontrado",
     "errorTitle": "Erro de Câmera",
@@ -1147,7 +1147,7 @@
   },
   "video": {
     "permissionTitle": "Permissão de Câmera Necessária",
-    "permissionMessage": "O LocalMind precisa de acesso à câmera para análise de vídeo",
+    "permissionMessage": "O SoRa precisa de acesso à câmera para análise de vídeo",
     "requestingPermission": "Solicitando permissão de câmera...",
     "noDevice": "Nenhum dispositivo de câmera encontrado",
     "errorTitle": "Erro de Câmera",
@@ -1503,7 +1503,7 @@
     "systemIosSettingsHint": "Adicione vozes em Ajustes > Acessibilidade > Conteúdo Falado > Vozes.",
     "systemLanguageSheetTitle": "Idioma da voz",
     "systemLanguageSearchPlaceholder": "Pesquisar idiomas",
-    "speakingNotificationTitle": "O LocalMind está falando",
+    "speakingNotificationTitle": "O SoRa está falando",
     "speakingNotificationStop": "Parar",
     "speakingNotificationChannel": "Fala",
     "systemIosReadAndSpeakHint": "Adicione vozes em Ajustes > Acessibilidade > Leitura e Fala > Vozes."
@@ -1513,14 +1513,14 @@
     "skip": "Pular",
     "skipForNow": "Pular por agora",
     "splash": {
-      "brand": "LocalMind"
+      "brand": "SoRa"
     },
     "screen1": {
       "title": "Conheça seus Assistants.",
       "titleAccent": "Assistants.",
       "body": "Pequenos amigos inteligentes que vivem dentro do seu celular.\nVamos te ajudar a configurar - vai levar só um minuto.",
       "cta": "Me Mostre Como Funciona",
-      "eyebrow": "Bem-vindo ao LocalMind"
+      "eyebrow": "Bem-vindo ao SoRa"
     },
     "screen2": {
       "title": "A Qualquer Hora,\nEm Qualquer Lugar.",
