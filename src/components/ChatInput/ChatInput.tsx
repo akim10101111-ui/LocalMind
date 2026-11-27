@@ -19,7 +19,6 @@ import {extractTextFromImage, extractTextFromPdf} from '../../services/ocr';
 
 import {observer} from 'mobx-react';
 import {IconButton, Text} from 'react-native-paper';
-import {localMindInstallState} from '../../services/localMindModel';
 
 import {hasVideoCapability} from '../../utils/pal-capabilities';
 
@@ -38,6 +37,7 @@ import {
   chatSessionStore,
   modelStore,
   palStore,
+  serverStore,
   uiStore,
 } from '../../store';
 
@@ -512,11 +512,14 @@ export const ChatInput = observer(
         ? effortLevelLabels[reasoningEffort as keyof typeof effortLevelLabels]
         : reasoningEffort;
 
-    const installingNotice = localMindInstallState.isInstalling
-      ? uiStore.language === 'ru'
-        ? `Локальный ИИ ещё загружается… ${localMindInstallState.percent}%`
-        : `Local AI is still loading… ${localMindInstallState.percent}%`
-      : null;
+    const connectionNotice =
+      serverStore.error
+        ? uiStore.language === 'ru'
+          ? 'Нет соединения с SoRa. Проверьте интернет.'
+          : 'SoRa is offline. Check your internet connection.'
+        : uiStore.language === 'ru'
+          ? 'Подключаем SoRa…'
+          : 'Connecting to SoRa…';
 
     return (
       <View style={styles.container}>
@@ -741,7 +744,7 @@ export const ChatInput = observer(
                 {showModelWarning && !hasActiveModel && (
                   <View style={styles.helperTextContainer}>
                     <Text variant="bodySmall" style={styles.helperText}>
-                      {installingNotice ?? l10n.chat.cannotSendWithoutModel}
+                      {connectionNotice}
                     </Text>
                   </View>
                 )}
