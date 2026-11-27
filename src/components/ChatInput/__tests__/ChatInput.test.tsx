@@ -17,6 +17,7 @@ import {
   uiStore,
 } from '../../../store';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import {ModelOrigin} from '../../../utils/types';
 
 // Mock react-native-image-picker
 jest.mock('react-native-image-picker', () => ({
@@ -747,6 +748,9 @@ describe('input', () => {
     };
 
     it('adds the captured photo to the selection', async () => {
+      const activeModelSpy = jest
+        .spyOn(modelStore, 'activeModel', 'get')
+        .mockReturnValue({origin: ModelOrigin.REMOTE} as any);
       (launchCamera as jest.Mock).mockResolvedValue({
         assets: [{uri: 'file://test-photo.jpg'}],
       });
@@ -756,6 +760,7 @@ describe('input', () => {
 
       expect(await screen.findByLabelText('Remove image 1')).toBeTruthy();
       expect(Alert.alert).not.toHaveBeenCalled();
+      activeModelSpy.mockRestore();
     });
 
     it('alerts that no camera device was found when the camera is unavailable', async () => {
