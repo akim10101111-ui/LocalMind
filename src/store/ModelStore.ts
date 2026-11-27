@@ -329,6 +329,9 @@ class ModelStore {
         await this.initializeDownloadStatus();
       } catch (refreshError) {
         console.error('[ModelStore] Fallback file-status scan failed:', refreshError);
+        // Never let an installer interpret an unverified store as an empty
+        // model library; failing closed is safer than downloading a duplicate.
+        throw refreshError;
       }
     });
 
