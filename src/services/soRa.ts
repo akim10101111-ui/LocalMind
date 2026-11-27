@@ -25,7 +25,7 @@ export async function initializeSoRa(): Promise<void> {
   }
 
   const server = serverStore.servers.find(
-    item => item.url.replace(/\\/+$/, '') === SORA_SERVER_URL,
+    item => item.url.replace(/\/+$/, '') === SORA_SERVER_URL,
   );
   if (!server) {
     throw new Error('SoRa server configuration is missing.');
