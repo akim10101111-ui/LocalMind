@@ -6,7 +6,7 @@ import {useTheme} from '../../../hooks';
 import {L10nContext} from '../../../utils';
 import {ROUTES} from '../../../utils/navigationConstants';
 import {createStyles} from './styles';
-import {LocalMindLogo} from '../../../assets/icons';
+import {SoRaLogo} from '../../../assets/icons';
 
 const SPLASH_MIN_DWELL_MS = 600;
 
@@ -30,7 +30,7 @@ export const SplashScreen: React.FC = () => {
 
   return (
     <View testID="onboarding-splash" style={styles.root}>
-      <LocalMindLogo
+      <SoRaLogo
         width={112}
         height={112}
         accessibilityLabel={l10n.onboarding.splash.brand}
