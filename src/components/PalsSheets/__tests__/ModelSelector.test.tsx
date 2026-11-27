@@ -10,17 +10,18 @@ const soraModel = {
   origin: 'remote',
 };
 
-// Mock the model store with both the single supported remote model and a
-// legacy local entry. The selector must expose only SoRa.
+// The store fixture includes a legacy local model to prove it is not exposed.
 jest.mock('../../../store', () => ({
   modelStore: {
-    remoteModels: [{
-      id: 'localmind-zai-server/glm-4-plus',
-      remoteModelId: 'glm-4-plus',
-      serverId: 'localmind-zai-server',
-      name: 'SoRa',
-      origin: 'remote',
-    }],
+    remoteModels: [
+      {
+        id: 'localmind-zai-server/glm-4-plus',
+        remoteModelId: 'glm-4-plus',
+        serverId: 'localmind-zai-server',
+        name: 'SoRa',
+        origin: 'remote',
+      },
+    ],
     availableModels: [
       {
         id: 'localmind-zai-server/glm-4-plus',
@@ -34,8 +35,20 @@ jest.mock('../../../store', () => ({
   },
 }));
 
+describe('ModelSelector', () => {
+  const defaultProps = {
+    label: 'Select Model',
+    onChange: jest.fn(),
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('renders the single SoRa cloud model', () => {
-    const {getByText} = render(<ModelSelector {...defaultProps} value={soraModel as any} />);
+    const {getByText} = render(
+      <ModelSelector {...defaultProps} value={soraModel as any} />,
+    );
     expect(getByText('Select Model')).toBeDefined();
     expect(getByText('SoRa')).toBeDefined();
   });
@@ -55,17 +68,28 @@ jest.mock('../../../store', () => ({
   });
 
   it('displays helper text when provided', () => {
-    const {getByText} = render(<ModelSelector {...defaultProps} helperText="Helper message" />);
+    const {getByText} = render(
+      <ModelSelector {...defaultProps} helperText="Helper message" />,
+    );
     expect(getByText('Helper message')).toBeDefined();
   });
 
   it('uses custom placeholder when provided', () => {
-    const {getByText} = render(<ModelSelector {...defaultProps} placeholder="Custom placeholder" />);
+    const {getByText} = render(
+      <ModelSelector {...defaultProps} placeholder="Custom placeholder" />,
+    );
     expect(getByText('Custom placeholder')).toBeDefined();
   });
 
   it('passes through disabled and error props', () => {
-    const {getByTestId} = render(<ModelSelector {...defaultProps} disabled error testID="model-selector" />);
+    const {getByTestId} = render(
+      <ModelSelector
+        {...defaultProps}
+        disabled
+        error
+        testID="model-selector"
+      />,
+    );
     expect(getByTestId('model-selector')).toBeDefined();
   });
 });
