@@ -261,24 +261,21 @@ jobs:
           fi
           APKSIGNER="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n 1)"
           test -n "$APKSIGNER"
-          # Re-sign the generated debug APK explicitly with both legacy V1 and V2 schemes.
-          # Gradle's enableV1Signing flag is not reflected in the packaged APK on this CI toolchain.
+          # Re-sign with APK Signature Scheme V2/V3. The app minSdk is 24,
+          # so legacy JAR/V1 signing is not required for supported Android versions.
           SIGNED_APK="${APK%.apk}-signed.apk"
           "$APKSIGNER" sign \
             --ks android/app/debug.keystore \
             --ks-key-alias androiddebugkey \
             --ks-pass pass:android \
             --key-pass pass:android \
-            --v1-signing-enabled true \
+            --v1-signing-enabled false \
             --v2-signing-enabled true \
+            --v3-signing-enabled true \
             --out "$SIGNED_APK" "$APK"
           mv "$SIGNED_APK" "$APK"
           SIGNATURE_REPORT="$("$APKSIGNER" verify --verbose --print-certs "$APK" 2>&1)"
           printf '%s\n' "$SIGNATURE_REPORT"
-          echo "$SIGNATURE_REPORT" | grep -q 'Verified using v1 scheme (JAR signing): true' || {
-            echo "::error::APK V1 signature verification failed or V1 signing is disabled."
-            exit 1
-          }
           echo "$SIGNATURE_REPORT" | grep -q 'Verified using v2 scheme (APK Signature Scheme v2): true' || {
             echo "::error::APK V2 signature verification failed."
             exit 1
