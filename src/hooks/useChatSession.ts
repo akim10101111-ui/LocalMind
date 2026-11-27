@@ -773,7 +773,12 @@ export const useChatSession = (
     const imageUris = message.imageUris;
     const hasImages = !!(imageUris && imageUris.length > 0);
 
-    const isMultimodalEnabled = modelStore.activeModelCaps.visionActive;
+    // SoRa is a single remote cloud endpoint. Keep image attachments intact
+    // for the server to route through its verified vision path instead of
+    // degrading every remote photo to OCR-only text when /props is absent.
+    const isMultimodalEnabled =
+      modelStore.activeModelCaps.visionActive ||
+      modelStore.activeModel?.origin === ModelOrigin.REMOTE;
 
     const currentMessages = toJS(chatSessionStore.currentSessionMessages);
 
