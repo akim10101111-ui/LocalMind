@@ -6,7 +6,7 @@ import type {AsrTier, AsrTierManifest} from './types';
  * default. Below these the feature is hidden unless the user opts in via
  * Settings (see ASRStore availability gate).
  */
-export const ASR_DEVICE_TIERS: Tier[] = ['high', 'flagship'];
+export const ASR_DEVICE_TIERS: Tier[] = ['medium', 'high', 'flagship'];
 
 /**
  * Android warns when the loaded chat model plus whisper pass this share of

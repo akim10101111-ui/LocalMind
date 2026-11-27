@@ -442,7 +442,7 @@ export const ChatInput = observer(
         if (!contents.trim()) {
           throw new Error('ATTACHMENT_EMPTY');
         }
-        if (contents.includes('\u0000')) {
+        if (!isPdf && contents.includes('\u0000')) {
           throw new Error('ATTACHMENT_NOT_TEXT');
         }
         const maxChars = 40_000;
