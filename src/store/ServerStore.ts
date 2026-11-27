@@ -22,6 +22,17 @@ const KEYCHAIN_SERVICE_PREFIX = 'pocketpal-server-';
 /** Minimum interval between auto-fetch cycles (ms) */
 const FETCH_THROTTLE_MS = 60000;
 
+// First-party LocalMind inference endpoint. The server is keyless unless its
+// owner enables LOCALMIND_API_KEY; never ship a shared secret in the APK.
+const DEFAULT_LOCALMIND_SERVER = {
+  id: 'localmind-zai-server',
+  name: 'LocalMind AI',
+  url: 'https://d1c10as5tg10-d.space-z.ai',
+  serverType: 'OpenAI' as const,
+  requestTimeoutMs: 120000,
+};
+const DEFAULT_LOCALMIND_MODEL = 'glm-4-plus';
+
 /**
  * The fields a `RemoteModelCaps` entry answers with — everything except the
  * provenance it carries. A probe that resolves none of them said nothing.
@@ -92,6 +103,8 @@ class ServerStore {
   isLoading = false;
   error: string | null = null;
   privacyNoticeAcknowledged = false;
+  // Persisted so a user who removes the built-in server is not forced to add it again.
+  defaultServerProvisioned = false;
   listReads: Record<string, ListRead> = {};
   appActive = true;
 
@@ -109,6 +122,7 @@ class ServerStore {
       properties: [
         'servers',
         'privacyNoticeAcknowledged',
+        'defaultServerProvisioned',
         'userSelectedModels',
         'remoteReasoning',
         'remoteCaps',
@@ -131,6 +145,15 @@ class ServerStore {
       if (server.serverType !== undefined) {
         server.serverType = toServerType(server.serverType);
       }
+    }
+    if (!this.defaultServerProvisioned) {
+      const existing = this.servers.some(
+        server => server.url.replace(/\\/+$/, '') === DEFAULT_LOCALMIND_SERVER.url,
+      );
+      if (!existing) {
+        this.servers.push({...DEFAULT_LOCALMIND_SERVER});
+      }
+      this.defaultServerProvisioned = true;
     }
     await this.fetchAllRemoteModels();
   }
@@ -349,6 +372,14 @@ class ServerStore {
           return;
         }
         this.serverModels.set(serverId, models);
+        if (
+          url.replace(/\\/+$/, '') === DEFAULT_LOCALMIND_SERVER.url &&
+          models.some(model => model.id === DEFAULT_LOCALMIND_MODEL)
+        ) {
+          // Make the built-in model visible in Models without asking users to
+          // re-enter the endpoint or manually discover its model ID.
+          this.addUserSelectedModel(serverId, DEFAULT_LOCALMIND_MODEL);
+        }
         this.listReads[serverId] = {
           seq,
           hasModelsKey: hasModelsKey === true,
