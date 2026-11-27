@@ -83,10 +83,10 @@ export const AboutScreen: React.FC = () => {
           <View style={styles.header}>
             <View style={styles.headerContent}>
               <Text variant="titleLarge" style={styles.title}>
-                LocalMind
+                SoRa
               </Text>
               <Text variant="bodyMedium" style={styles.description}>
-                {l10n.about.description}
+                {uiStore.language === 'ru' ? 'Ваш персональный ИИ-помощник на базе SoRa.' : 'Your personal AI assistant powered by SoRa.'}
               </Text>
               <View style={styles.versionContainer}>
                 <TouchableOpacity
