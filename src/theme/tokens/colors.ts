@@ -103,8 +103,8 @@ export const lightColors: TokenColors = {
 };
 
 const DARK_PRIMARY = '#FF7600';
-const DARK_BACKGROUND = '#1E1E1B';
-const DARK_SURFACE = '#272723';
+const DARK_BACKGROUND = '#000000';
+const DARK_SURFACE = '#111111';
 const DARK_TEXT = '#F0EEE7';
 const DARK_SECONDARY = '#C1A58D';
 const DARK_ERROR = '#F18A78';
@@ -116,7 +116,7 @@ export const darkColors: TokenColors = {
   onPrimaryContainer: '#FFE3CE',
   secondary: DARK_SECONDARY,
   onSecondary: '#261F19',
-  secondaryContainer: '#403A33',
+  secondaryContainer: '#202020',
   onSecondaryContainer: '#E9DFD4',
   tertiary: '#D9A287',
   onTertiary: '#35231B',
@@ -130,10 +130,10 @@ export const darkColors: TokenColors = {
   onBackground: DARK_TEXT,
   surface: DARK_SURFACE,
   onSurface: DARK_TEXT,
-  surfaceVariant: '#34342F',
+  surfaceVariant: '#1C1C1C',
   onSurfaceVariant: '#B8B4AA',
-  outline: '#57554D',
-  outlineVariant: '#3D3C36',
+  outline: '#3B3B3B',
+  outlineVariant: '#292929',
   mutedLight: '#302F2A',
   secondaryDefault: '#34332E',
   surfaceDisabled: withOpacity('#F0EEE7', 0.12),
@@ -145,13 +145,13 @@ export const darkColors: TokenColors = {
   shadow: '#000000',
   scrim: 'rgba(0, 0, 0, 0.48)',
   backdrop: 'rgba(0, 0, 0, 0.72)',
-  surfaceContainerHighest: '#3A3934',
-  surfaceContainerHigh: '#33332E',
-  surfaceContainer: '#2E2E29',
-  surfaceContainerLow: '#2A2A25',
-  surfaceContainerLowest: '#23231F',
-  surfaceDim: '#1B1B18',
-  surfaceBright: '#3B3A34',
+  surfaceContainerHighest: '#252525',
+  surfaceContainerHigh: '#1F1F1F',
+  surfaceContainer: '#191919',
+  surfaceContainerLow: '#141414',
+  surfaceContainerLowest: '#0A0A0A',
+  surfaceDim: '#090909',
+  surfaceBright: '#2A2A2A',
   text: DARK_TEXT,
   textSecondary: '#AAA69C',
   inverseText: '#302F2A',
@@ -163,10 +163,10 @@ export const darkColors: TokenColors = {
   pressedStateOpacity: stateLayerOpacity.pressed,
   draggedStateOpacity: stateLayerOpacity.dragged,
   focusStateOpacity: stateLayerOpacity.focus,
-  menuBackground: '#2C2C27',
+  menuBackground: '#151515',
   menuBackgroundDimmed: withOpacity(DARK_SURFACE, 0.92),
   menuBackgroundActive: withOpacity(DARK_PRIMARY, 0.13),
-  menuSeparator: '#44433D',
+  menuSeparator: '#303030',
   menuGroupSeparator: withOpacity('#F0EEE7', 0.08),
   menuText: DARK_TEXT,
   menuDangerText: DARK_ERROR,
