@@ -44,7 +44,7 @@ The app will request `GET /v1/models`, then send chat turns to `POST /v1/chat/co
 
 ## Change the model
 
-Change `AI_MODEL` in `wrangler.toml` to a Workers AI model enabled for your Cloudflare account, then deploy again. Model availability, free quota, context limits, and streaming support depend on Cloudflare's current plan and model catalog; verify them in the Cloudflare dashboard before relying on a model.
+Change `AI_MODEL` in `wrangler.toml` to a Workers AI model enabled for your Cloudflare account, then deploy again. Model availability, included free allocation, metered pricing, context limits, and streaming support depend on Cloudflare's current plan and model catalog. GLM-4.7-Flash is listed with per-token pricing, so do not assume unlimited free use; verify the current account quota and estimated cost in the Cloudflare dashboard before enabling it for users.
 
 ## Smoke test
 
