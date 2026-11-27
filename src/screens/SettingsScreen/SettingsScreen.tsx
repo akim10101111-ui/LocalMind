@@ -6,6 +6,7 @@ import {Button, Card, Divider, Switch, Text} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {LanguageSelector} from '../../components';
+import {SoRaLogo} from '../../assets/icons';
 import {useTheme} from '../../hooks';
 import {
   asrStore,
@@ -27,7 +28,10 @@ export const SettingsScreen: React.FC = observer(() => {
       StyleSheet.create({
         root: {flex: 1, backgroundColor: theme.colors.background},
         content: {padding: 18, paddingBottom: 36, gap: 14},
-        heading: {color: theme.colors.onBackground, marginBottom: 2},
+        brandHeader: {flexDirection: 'row', alignItems: 'center', gap: 14, marginBottom: 4},
+        brandMark: {width: 54, height: 54, borderRadius: 16, overflow: 'hidden', backgroundColor: '#000000'},
+        brandCopy: {flex: 1, gap: 2},
+        heading: {color: theme.colors.onBackground, marginBottom: 0, fontWeight: '700'},
         card: {
           borderRadius: 20,
           backgroundColor: theme.colors.surface,
@@ -84,7 +88,11 @@ export const SettingsScreen: React.FC = observer(() => {
   return (
     <SafeAreaView style={styles.root} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.content}>
-        <View>
+        <View style={styles.brandHeader}>
+          <View style={styles.brandMark}>
+            <SoRaLogo width={54} height={54} accessibilityLabel="SoRa" accessibilityRole="image" />
+          </View>
+          <View style={styles.brandCopy}>
           <Text variant="headlineMedium" style={styles.heading}>
             {isRu ? 'Настройки SoRa' : 'SoRa settings'}
           </Text>
@@ -93,6 +101,7 @@ export const SettingsScreen: React.FC = observer(() => {
               ? 'Управляйте приложением и подключением к вашему ИИ.'
               : 'Manage the app and your AI connection.'}
           </Text>
+          </View>
         </View>
 
         <Card style={styles.card} mode="contained">
@@ -204,7 +213,7 @@ export const SettingsScreen: React.FC = observer(() => {
 
         <Card style={styles.card} mode="contained">
           <Card.Title
-            title={isRu ? 'История и конфиденциальность' : 'History and privacy'}
+            title={isRu ? 'История и память' : 'History and memory'}
             titleStyle={styles.cardTitle}
           />
           <Card.Content>
@@ -215,8 +224,8 @@ export const SettingsScreen: React.FC = observer(() => {
                 </Text>
                 <Text variant="bodySmall" style={styles.rowDescription}>
                   {isRu
-                    ? 'История хранится в базе приложения на этом устройстве и не удаляется при закрытии.'
-                    : 'Chat history is stored in the app database on this device and remains after closing the app.'}
+                    ? 'История хранится в базе SoRa на этом устройстве. После перезапуска приложения диалоги остаются доступны.'
+                    : 'Chat history is stored in SoRa's on-device database and remains available after app restarts.'}
                 </Text>
               </View>
               <Text variant="titleMedium" style={styles.value}>
@@ -226,8 +235,8 @@ export const SettingsScreen: React.FC = observer(() => {
             <Divider style={styles.divider} />
             <Text variant="bodySmall" style={styles.rowDescription}>
               {isRu
-                ? 'Чтобы сформировать ответ, текст отправленного сообщения и нужный контекст передаются серверу SoRa через Z.AI. История чатов остаётся в приложении.'
-                : 'To generate a reply, your message and relevant context are sent to the SoRa server through Z.AI. Chat history remains in the app.'}
+                ? 'Для ответа SoRa передаёт Z.AI сообщения текущего диалога как контекст. Полная история остаётся в базе приложения на устройстве.'
+                : 'To generate a reply, SoRa sends the current conversation context to Z.AI. The full chat history remains in the app database on this device.'}
             </Text>
           </Card.Content>
         </Card>
