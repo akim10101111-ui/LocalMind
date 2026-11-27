@@ -748,9 +748,14 @@ describe('input', () => {
     };
 
     it('adds the captured photo to the selection', async () => {
-      const activeModelSpy = jest
-        .spyOn(modelStore, 'activeModel', 'get')
-        .mockReturnValue({origin: ModelOrigin.REMOTE} as any);
+      const previousModels = modelStore.models;
+      const previousActiveModelId = modelStore.activeModelId;
+      runInAction(() => {
+        modelStore.models = [
+          {id: 'test-sora-remote', origin: ModelOrigin.REMOTE} as any,
+        ];
+        modelStore.activeModelId = 'test-sora-remote';
+      });
       (launchCamera as jest.Mock).mockResolvedValue({
         assets: [{uri: 'file://test-photo.jpg'}],
       });
@@ -763,7 +768,10 @@ describe('input', () => {
         expect(Alert.alert).not.toHaveBeenCalled();
       } finally {
         screen.unmount();
-        activeModelSpy.mockRestore();
+        runInAction(() => {
+          modelStore.models = previousModels;
+          modelStore.activeModelId = previousActiveModelId;
+        });
       }
     });
 
