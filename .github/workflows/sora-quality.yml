@@ -1,0 +1,91 @@
+name: SoRa source checks
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "App.tsx"
+      - "src/**"
+      - "scripts/**"
+      - "android/app/src/main/res/**"
+      - "android/app/build.gradle"
+      - "app.json"
+      - "package.json"
+      - "yarn.lock"
+      - ".github/workflows/sora-quality.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sora-quality-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  source-checks:
+    name: TypeScript, lint, focused tests and assets
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      CI: "true"
+      NODE_OPTIONS: "--max-old-space-size=4096"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+          cache-dependency-path: yarn.lock
+
+      - name: Install Yarn Classic
+        run: npm install --global yarn@1.22.22
+
+      - name: Install JavaScript dependencies without native build hooks
+        run: |
+          yarn install --frozen-lockfile --ignore-scripts --network-timeout 600000
+          npx patch-package --error-on-fail
+
+      - name: TypeScript
+        run: yarn typecheck
+
+      - name: Lint changed SoRa files
+        run: |
+          yarn eslint App.tsx \
+            src/store/ServerStore.ts \
+            src/store/PalStore.ts \
+            src/store/ModelStore.ts \
+            src/services/soRa.ts \
+            src/screens/SettingsScreen/SettingsScreen.tsx \
+            src/screens/SettingsScreen/__tests__/SettingsScreen.test.tsx \
+            src/screens/ChatScreen/ModelNotLoadedMessage/ModelNotLoadedMessage.tsx \
+            src/screens/ChatScreen/ModelNotLoadedMessage/__tests__/ModelNotLoadedMessage.test.tsx \
+            src/components/ChatInput/ChatInput.tsx \
+            src/components/HeaderRight/HeaderRight.tsx \
+            src/components/SidebarContent/SidebarContent.tsx \
+            src/components/SidebarContent/styles.ts \
+            src/screens/AboutScreen/AboutScreen.tsx \
+            src/theme/tokens/colors.ts
+
+      - name: Focused UI tests
+        run: |
+          yarn jest \
+            src/screens/SettingsScreen/__tests__/SettingsScreen.test.tsx \
+            src/screens/ChatScreen/ModelNotLoadedMessage/__tests__/ModelNotLoadedMessage.test.tsx \
+            --runInBand
+
+      - name: Validate translations and fonts
+        run: |
+          node scripts/validate-l10n.js
+          node scripts/verify-fonts.js
+
+      - name: Verify SoRa launcher icon sources
+        run: node scripts/generate-app-icons.js --preview /tmp/sora-app-icons
+
+      - name: Confirm no model selector or legacy installer remains in active app entry points
+        run: |
+          ! grep -n "installLocalMind\|localMindInstallState" App.tsx src/components/ChatInput/ChatInput.tsx src/screens/ChatScreen/ModelNotLoadedMessage/ModelNotLoadedMessage.tsx
+          ! grep -n "ModelsScreen\|ModelsHeaderRight\|BenchmarkScreen" App.tsx
