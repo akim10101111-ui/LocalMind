@@ -286,7 +286,7 @@ class PalStore {
       }
 
       const existing = this.pals.find(
-        p => p.name === 'Pip' && p.source === 'local',
+        p => (p.name === 'SoRa' || p.name === 'Pip') && p.source === 'local',
       );
       if (existing) {
         await AsyncStorage.setItem(PIP_SEEDED_KEY, 'true');
@@ -295,18 +295,18 @@ class PalStore {
 
       const palData: Omit<Pal, 'id' | 'created_at' | 'updated_at'> = {
         type: 'local',
-        name: 'Pip',
+        name: 'SoRa',
         description:
-          'A friendly general-purpose pal that runs entirely on your phone.',
+          'Your personal AI assistant, powered by SoRa cloud AI.',
         systemPrompt:
-          'You are Pip, a friendly and helpful assistant who runs locally on the user’s phone. Keep replies concise and warm.',
+          'You are SoRa, a helpful, capable AI assistant. Reply in the user’s language. Be clear, accurate, thoughtful, and honest about uncertainty. Do not invent facts, sources, or actions.',
         isSystemPromptChanged: false,
         useAIPrompt: false,
         defaultModel: undefined,
         parameters: {},
         parameterSchema: [],
         capabilities: {},
-        color: ['#0E0D0C', '#FAFAFA'],
+        color: ['#FF7600', '#090909'],
         source: 'local',
       };
 
