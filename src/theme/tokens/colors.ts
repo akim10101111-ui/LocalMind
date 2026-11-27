@@ -1,7 +1,7 @@
 import {withOpacity, stateLayerOpacity} from '../../utils/colorUtils';
 import {TokenColors} from './types';
 
-const LIGHT_PRIMARY = '#C87554';
+const LIGHT_PRIMARY = '#FF7600';
 const LIGHT_BACKGROUND = '#F4F2EC';
 const LIGHT_SURFACE = '#FBFAF6';
 const LIGHT_TEXT = '#292823';
@@ -10,9 +10,9 @@ const LIGHT_ERROR = '#B94C3D';
 
 export const lightColors: TokenColors = {
   primary: LIGHT_PRIMARY,
-  onPrimary: '#211A16',
-  primaryContainer: '#F2DED2',
-  onPrimaryContainer: '#4A2B1E',
+  onPrimary: '#241105',
+  primaryContainer: '#FFE3CE',
+  onPrimaryContainer: '#6A2B00',
   secondary: LIGHT_SECONDARY,
   onSecondary: '#FFFFFF',
   secondaryContainer: '#EDE5DB',
@@ -102,7 +102,7 @@ export const lightColors: TokenColors = {
   },
 };
 
-const DARK_PRIMARY = '#D88968';
+const DARK_PRIMARY = '#FF7600';
 const DARK_BACKGROUND = '#1E1E1B';
 const DARK_SURFACE = '#272723';
 const DARK_TEXT = '#F0EEE7';
@@ -111,9 +111,9 @@ const DARK_ERROR = '#F18A78';
 
 export const darkColors: TokenColors = {
   primary: DARK_PRIMARY,
-  onPrimary: '#211A16',
-  primaryContainer: '#50382F',
-  onPrimaryContainer: '#F5D7C8',
+  onPrimary: '#241105',
+  primaryContainer: '#572700',
+  onPrimaryContainer: '#FFE3CE',
   secondary: DARK_SECONDARY,
   onSecondary: '#261F19',
   secondaryContainer: '#403A33',
