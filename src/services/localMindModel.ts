@@ -71,16 +71,32 @@ class LocalMindInstallState {
 /** Observed by the chat input and the setup screen. */
 export const localMindInstallState = new LocalMindInstallState();
 
-export const findLocalMindModel = (): Model | undefined =>
-  modelStore.models.find(m => m.id === LOCALMIND_MODEL_ID);
+export const findLocalMindModel = (): Model | undefined => {
+  const currentQuant = modelStore.models.find(
+    m => m.id === LOCALMIND_MODEL_ID,
+  );
+  // Q4_K_M was shipped by the previous LocalMind APK. Reuse it when present
+  // instead of downloading Q4_K_S again just because the quantization changed.
+  const previouslyInstalledQuant = modelStore.models.find(
+    m => m.id === LEGACY_LOCALMIND_MODEL_ID && m.isDownloaded,
+  );
+  return currentQuant?.isDownloaded
+    ? currentQuant
+    : previouslyInstalledQuant ?? currentQuant;
+};
 
 /**
- * Ready = file present AND verified. `hash` is only written by a successful
- * verification, so its presence is the persisted "already checked" marker.
+ * A downloaded current quant is ready after a successful integrity check
+ * (persisted hash). A Q4_K_M file from the prior LocalMind release is reused
+ * in place: do not force a second multi-gigabyte download on app update.
  */
 export const isLocalMindReady = (): boolean => {
   const model = findLocalMindModel();
-  return !!model && model.isDownloaded && !!model.hash;
+  return (
+    !!model &&
+    model.isDownloaded &&
+    (!!model.hash || model.id === LEGACY_LOCALMIND_MODEL_ID)
+  );
 };
 
 const setPhase = (phase: LocalMindInstallPhase, error: string | null = null) =>
@@ -190,13 +206,6 @@ const activateLocalMind = async (model: Model): Promise<void> => {
   setPhase('ready');
 };
 
-const removePreviousLocalMindQuant = async (): Promise<void> => {
-  const previous = modelStore.models.find(m => m.id === LEGACY_LOCALMIND_MODEL_ID);
-  if (previous && previous.id !== LOCALMIND_MODEL_ID) {
-    await modelStore.deleteModel(previous).catch(() => {});
-  }
-};
-
 const runInstall = async (): Promise<void> => {
   try {
     const model: Model | undefined =
@@ -215,13 +224,15 @@ const runInstall = async (): Promise<void> => {
 
     // `hash` is written only after a successful check, so a set hash means
     // this exact file was already verified and needs no second pass.
-    if (!model.hash) {
+    // The previous Q4_K_M file was already installed by an older LocalMind
+    // release. Keep it in place and do not make an update depend on network
+    // metadata just to reuse a valid local model.
+    if (!model.hash && model.id !== LEGACY_LOCALMIND_MODEL_ID) {
       setPhase('verifying');
       await verifyLocalMindModel(model);
     }
 
     await activateLocalMind(model);
-    await removePreviousLocalMindQuant();
   } catch (error) {
     setPhase(
       'failed',
@@ -240,25 +251,28 @@ let inFlight: Promise<void> | null = null;
  */
 export const installLocalMind = (): Promise<void> => {
   if (!inFlight) {
-    if (isLocalMindReady()) {
-      const model = findLocalMindModel();
-      if (!model) {
-        setPhase('failed', LOCALMIND_ERROR.registerFailed);
-        return Promise.reject(new Error(LOCALMIND_ERROR.registerFailed));
+    inFlight = (async () => {
+      // isHydrated() only signals AsyncStorage hydration. Wait for
+      // initializeStore() so an existing model file isn't mistaken for a
+      // missing download during an app update.
+      await modelStore.waitForInitialization();
+
+      const existingModel = findLocalMindModel();
+      if (existingModel?.isDownloaded &&
+          (!!existingModel.hash || existingModel.id === LEGACY_LOCALMIND_MODEL_ID)) {
+        await activateLocalMind(existingModel);
+        return;
       }
-      inFlight = activateLocalMind(model)
-        .catch(error => {
-          setPhase('failed', error instanceof Error ? error.message : String(error));
-          throw error;
-        })
-        .finally(() => {
-          inFlight = null;
-        });
-    } else {
-      inFlight = runInstall().finally(() => {
+
+      await runInstall();
+    })()
+      .catch(error => {
+        setPhase('failed', error instanceof Error ? error.message : String(error));
+        throw error;
+      })
+      .finally(() => {
         inFlight = null;
       });
-    }
   }
   return inFlight;
 };

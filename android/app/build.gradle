@@ -90,8 +90,8 @@ android {
         applicationId "ai.localmind.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 164
-        versionName "1.24.2"
+        versionCode 165
+        versionName "1.24.3"
         missingDimensionStrategy 'parallelization', 'standard'
         ndk {
             abiFilters "arm64-v8a"

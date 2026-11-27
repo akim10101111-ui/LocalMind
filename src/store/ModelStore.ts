@@ -276,12 +276,20 @@ class ModelStore {
   // every launch (see drainPendingProjectionCleanup).
   pendingProjectionCleanupIds: string[] = [];
 
+  // Hydration alone is not enough: installers must wait until file statuses
+  // and native background downloads have been reconciled.
+  private initializationPromise: Promise<void> = Promise.resolve();
+
   constructor() {
     makeAutoObservable<
       ModelStore,
-      'postCompletionProbeFor' | 'generationSlot' | 'isReleasingContext'
+      | 'postCompletionProbeFor'
+      | 'generationSlot'
+      | 'isReleasingContext'
+      | 'initializationPromise'
     >(this, {
       postCompletionProbeFor: false,
+      initializationPromise: false,
       generationSlot: false,
       isReleasingContext: false,
       isGenerationBusy: false,
@@ -293,7 +301,7 @@ class ModelStore {
       remoteModels: computed,
       activeDownloads: computed,
     });
-    makePersistable(this, {
+    this.initializationPromise = makePersistable(this, {
       name: 'ModelStore',
       properties: [
         'models',
@@ -312,7 +320,16 @@ class ModelStore {
       storage: AsyncStorage,
     }).then(async () => {
       await this.initializeThreadCount();
-      this.initializeStore();
+      await this.initializeStore();
+    }).catch(async error => {
+      // Even if rules or device-specific setup fails, reconcile persisted file
+      // state before an installer can decide that a large model is missing.
+      console.error('[ModelStore] Store initialization failed:', error);
+      try {
+        await this.initializeDownloadStatus();
+      } catch (refreshError) {
+        console.error('[ModelStore] Fallback file-status scan failed:', refreshError);
+      }
     });
 
     this.setupAppStateListener();
@@ -363,6 +380,11 @@ class ModelStore {
       },
     });
   }
+
+  /** Resolves only after persisted models and native downloads are reconciled. */
+  waitForInitialization = async (): Promise<void> => {
+    await this.initializationPromise;
+  };
 
   private async initializeThreadCount() {
     try {

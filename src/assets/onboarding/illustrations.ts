@@ -6,10 +6,8 @@
  * component (default export) that accepts `width` / `height` / `fill`
  * / `stroke` props.
  *
- *  - `SplashMark`    — splash mark inner artwork (Figma `884:28352`).
- *  - `Screen1Hero`   — same flat SVG artwork as the splash mark,
- *                      sized to 112×112 on the welcome screen
- *                      (Figma `884:29310`).
+ *  - `SplashMark` / `Screen1Hero` — the canonical LocalMind mark used
+ *                      by the launcher icon, splash screen and welcome screen.
  *  - `ShieldGlyph`   — privacy-shield vector used inside screen 4's
  *                      phone-outline composite (Figma `885:29695`).
  *  - `chipIcons`     — per-topic vector glyphs for screen 5 chips,
@@ -21,7 +19,7 @@
  *                      Figma button instances; matched 1:1 to avoid
  *                      hand-drawing.
  */
-import SplashMark from './splash-mark.svg';
+import SplashMark from '../icons/localmind-logo.svg';
 import ShieldGlyph from './shield.svg';
 import ArrowRightGlyph from './arrow-right.svg';
 import HeadphonesGlyph from './headphones.svg';
@@ -36,9 +34,7 @@ import type {TopicKey} from '../../store/onboarding/types';
 
 export {SplashMark, ShieldGlyph, ArrowRightGlyph, HeadphonesGlyph};
 
-// Screen 1 hero is the same flat SVG as the splash mark — verified
-// against Figma node equality (`884:28352` interior matches
-// `884:29310` Visual).
+// Welcome and splash surfaces reuse the canonical app mark.
 export const Screen1Hero = SplashMark;
 
 type SvgComponent = React.ComponentType<{

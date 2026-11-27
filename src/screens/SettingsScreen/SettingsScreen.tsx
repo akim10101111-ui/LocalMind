@@ -111,6 +111,7 @@ export const SettingsScreen: React.FC = observer(() => {
   );
   const [isValidInput, setIsValidInput] = useState(true);
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
+  const [showNetworkSettings, setShowNetworkSettings] = useState(false);
   const inputRef = useRef<TextInputInstance>(null);
   const keyCacheMenu = useMenuAnchor();
   const valueCacheMenu = useMenuAnchor();
@@ -1335,6 +1336,11 @@ export const SettingsScreen: React.FC = observer(() => {
             </Card.Content>
           </Card>
 
+          <List.Accordion
+            title={uiStore.language === 'ru' ? 'Дополнительные подключения' : 'Additional connections'}
+            expanded={showNetworkSettings}
+            onPress={() => setShowNetworkSettings(!showNetworkSettings)}
+            testID="additional-network-settings-accordion">
           {/* Internet Search */}
           <Card elevation={0} style={styles.card} testID="internet-search-card">
             <Card.Title title={l10n.settings.internetSearch.title} />
@@ -1555,6 +1561,9 @@ export const SettingsScreen: React.FC = observer(() => {
             </Card.Content>
           </Card>
 
+            <LocalApiServerCard />
+          </List.Accordion>
+
           {/* Cache & Storage Settings - iOS only (for Shortcuts) */}
           {Platform.OS === 'ios' && (
             <Card elevation={0} style={styles.card}>
@@ -1649,8 +1658,6 @@ export const SettingsScreen: React.FC = observer(() => {
               </Card.Content>
             </Card>
           )}
-
-          <LocalApiServerCard />
 
           <Card elevation={0} style={styles.card}>
             <Card.Title title={uiStore.language === 'ru' ? 'Диагностика и информация' : 'Diagnostics & info'} />
