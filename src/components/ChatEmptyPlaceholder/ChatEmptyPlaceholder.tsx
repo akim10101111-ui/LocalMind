@@ -9,7 +9,7 @@ import {modelStore, palStore} from '../../store';
 import {useNavigation} from '@react-navigation/native';
 import {NavigationProp} from '@react-navigation/native';
 import {L10nContext} from '../../utils';
-import {LocalMindLogo} from '../../assets/icons';
+import {SoRaLogo} from '../../assets/icons';
 
 interface ChatEmptyPlaceholderProps {
   bottomComponentHeight: number;
@@ -85,7 +85,7 @@ export const ChatEmptyPlaceholder = observer(
       <View
         style={[styles.container, {marginBottom: bottomComponentHeight + 100}]}>
         <View style={styles.logo}>
-          <LocalMindLogo width={44} height={44} />
+          <SoRaLogo width={44} height={44} />
         </View>
         <View>
           <Text style={styles.title}>{title}</Text>
