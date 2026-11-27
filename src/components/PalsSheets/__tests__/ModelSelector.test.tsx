@@ -1,5 +1,5 @@
 import React from 'react';
-import {render} from '../../../../jest/test-utils';
+import {fireEvent, render} from '../../../../jest/test-utils';
 import {ModelSelector} from '../ModelSelector';
 
 const soraModel = {
@@ -47,7 +47,11 @@ jest.mock('../../../store', () => ({
   });
 
   it('does not expose local models as selectable options', () => {
-    const {queryByText} = render(<ModelSelector {...defaultProps} />);
+    const {getByTestId, queryByText} = render(
+      <ModelSelector {...defaultProps} testID="sora-model-selector" />,
+    );
+    fireEvent.press(getByTestId('sora-model-selector-button'));
+    expect(queryByText('SoRa')).toBeTruthy();
     expect(queryByText('DeepSeek')).toBeNull();
   });
 
