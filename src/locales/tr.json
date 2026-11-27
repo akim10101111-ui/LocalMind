@@ -129,7 +129,7 @@
     "importError": "Sohbet oturumları içe aktarılamadı. Lütfen dosya biçimini denetleyin.",
     "internetSearch": {
       "title": "İnternette Arama",
-      "description": "Assistant'lerin kendi araçlarıyla web'de arama yapmasına izin verin. Kendi API anahtarınızı kullanın — LocalMind anahtarlarınızı tutmaz ve sorgularınızı yönlendirmez.",
+      "description": "Assistant'lerin kendi araçlarıyla web'de arama yapmasına izin verin. Kendi API anahtarınızı kullanın — SoRa anahtarlarınızı tutmaz ve sorgularınızı yönlendirmez.",
       "providerLabel": "Arama sağlayıcısı",
       "providerGated": "Yakında",
       "keyLabel": "API anahtarı",
@@ -146,7 +146,7 @@
       "resultCountLabel": "Arama başına sonuç sayısı",
       "resultCountDescription": "Daha az sonuç, modelin bağlamında daha çok yer bırakır.",
       "consentTitle": "Aramalar cihazınızdan çıkar",
-      "consentDescription": "Bir Assistant web'de arama yaptığında, sorgunuz internet üzerinden seçtiğiniz sağlayıcıya gönderilir. Bir Assistant bir sayfayı okuduğunda, seçtiğiniz sağlayıcının kendi okuyucusu yoksa URL ve sayfa içeriği öntanımlı bir okuyucu hizmetine (r.jina.ai) gönderilebilir. Anahtarlar ve sorgular hiçbir zaman LocalMind'a gönderilmez.",
+      "consentDescription": "Bir Assistant web'de arama yaptığında, sorgunuz internet üzerinden seçtiğiniz sağlayıcıya gönderilir. Bir Assistant bir sayfayı okuduğunda, seçtiğiniz sağlayıcının kendi okuyucusu yoksa URL ve sayfa içeriği öntanımlı bir okuyucu hizmetine (r.jina.ai) gönderilebilir. Anahtarlar ve sorgular hiçbir zaman SoRa'a gönderilmez.",
       "consentAccept": "Anladım",
       "consentRequired": "Anahtar ayarlamak ve aramayı etkinleştirmek için yukarıdaki bilgilendirmeyi kabul edin.",
       "consentGivenTitle": "Web'de arama etkin",
@@ -563,21 +563,21 @@
     "screenTitle": "Uygulama Bilgisi",
     "description": "Dil modellerini doğrudan telefonunuza getiren bir uygulama. llama.cpp ve llama.rn omuzlarında yükseliyor.",
     "supportProject": "Projeye Destek Olun",
-    "supportProjectDescription": "LocalMind'yı kullanmaktan memnunsanız, projeye şu yollarla destek olmayı düşünebilirsiniz:",
+    "supportProjectDescription": "SoRa'yı kullanmaktan memnunsanız, projeye şu yollarla destek olmayı düşünebilirsiniz:",
     "versionCopiedTitle": "Sürüm kopyalandı",
     "versionCopiedDescription": "Sürüm bilgisi panoya kopyalandı",
     "tour": "Tanıtım",
-    "tourDescription": "LocalMind'nın neler sunduğunu görmek için karşılama ekranlarını yeniden oynatın.",
+    "tourDescription": "SoRa'nın neler sunduğunu görmek için karşılama ekranlarını yeniden oynatın.",
     "showIntroButton": "Tanıtımı yeniden göster",
     "openSourceNotices": "Açık kaynak bildirimleri",
     "phononNoticesCredit": "Phonon ses modeli ve sesleri Gradium tarafından hazırlanmıştır, Apache-2.0 ile lisanslanmıştır. Kyutai'nin Pocket TTS ve Mimi kodeki üzerine kuruludur."
   },
   "feedback": {
     "title": "Geri Bildirim Gönder",
-    "description": "Sesiniz önemli! LocalMind'nın size nasıl yardımcı olduğunu ve onu daha da kullanışlı kılmak için ne yapabileceğimizi anlatın.",
+    "description": "Sesiniz önemli! SoRa'nın size nasıl yardımcı olduğunu ve onu daha da kullanışlı kılmak için ne yapabileceğimizi anlatın.",
     "shareThoughtsButton": "Düşüncelerinizi paylaşarak",
     "useCase": {
-      "label": "LocalMind'yı ne için kullanıyorsunuz?",
+      "label": "SoRa'yı ne için kullanıyorsunuz?",
       "placeholder": "örn. özetleme, rol yapma vb."
     },
     "featureRequests": {
@@ -589,7 +589,7 @@
       "placeholder": "Aklınızdaki diğer düşünceleri paylaşın."
     },
     "usageFrequency": {
-      "label": "LocalMind'yı ne sıklıkla kullanıyorsunuz? (İsteğe bağlı)",
+      "label": "SoRa'yı ne sıklıkla kullanıyorsunuz? (İsteğe bağlı)",
       "options": {
         "daily": "Her gün",
         "weekly": "Her hafta",
@@ -660,7 +660,7 @@
     },
     "chatEmptyPlaceholder": {
       "noModelsTitle": "Kullanılabilir Model Yok",
-      "noModelsDescription": "LocalMind ile sohbete başlamak için bir model indirin",
+      "noModelsDescription": "SoRa ile sohbete başlamak için bir model indirin",
       "noModelsButton": "Model İndir",
       "activateModelTitle": "Başlamak için bir model etkinleştirin",
       "activateModelDescription": "Modeli seçip indirin. İndirdikten sonra modelin yanındaki Yükle düğmesine dokunup sohbete başlayın.",
@@ -713,7 +713,7 @@
     },
     "modelErrorReportSheet": {
       "title": "Model Yükleme Sorununu Bildir",
-      "privacyNote": "Bu hatayla ilgili ayrıntıları paylaşarak LocalMind'ı iyileştirmemize yardımcı olun. Paylaşılacakları aşağıda inceleyin — eklemek istemediğiniz öğelerin seçimini kaldırabilirsiniz.",
+      "privacyNote": "Bu hatayla ilgili ayrıntıları paylaşarak SoRa'ı iyileştirmemize yardımcı olun. Paylaşılacakları aşağıda inceleyin — eklemek istemediğiniz öğelerin seçimini kaldırabilirsiniz.",
       "errorMessage": "Hata iletisi",
       "modelInfo": "Model Bilgisi",
       "modelName": "Ad",
@@ -731,7 +731,7 @@
       "submit": "Bildirimi Gönder",
       "success": {
         "title": "Bildirim Gönderildi",
-        "message": "LocalMind'ı iyileştirmemize yardımcı olduğunuz için teşekkürler. Bildiriminiz bu sorunu gidermemize yardımcı olacak."
+        "message": "SoRa'ı iyileştirmemize yardımcı olduğunuz için teşekkürler. Bildiriminiz bu sorunu gidermemize yardımcı olacak."
       },
       "error": {
         "title": "Bildirim Başarısız",
@@ -1109,7 +1109,7 @@
   },
   "camera": {
     "permissionTitle": "Kamera İzni Gerekli",
-    "permissionMessage": "LocalMind'ın görselleri çözümleyebilmesi için kamera erişimine ihtiyacı var",
+    "permissionMessage": "SoRa'ın görselleri çözümleyebilmesi için kamera erişimine ihtiyacı var",
     "requestingPermission": "Kamera izni isteniyor...",
     "noDevice": "Kamera aygıtı bulunamadı",
     "errorTitle": "Kamera Hatası",
@@ -1123,7 +1123,7 @@
   },
   "video": {
     "permissionTitle": "Kamera İzni Gerekli",
-    "permissionMessage": "LocalMind'ın video çözümlemesi için kamera erişimine ihtiyacı var",
+    "permissionMessage": "SoRa'ın video çözümlemesi için kamera erişimine ihtiyacı var",
     "requestingPermission": "Kamera izni isteniyor...",
     "noDevice": "Kamera aygıtı bulunamadı",
     "errorTitle": "Kamera Hatası",
@@ -1575,14 +1575,14 @@
     "skip": "Atla",
     "skipForNow": "Şimdilik atla",
     "splash": {
-      "brand": "LocalMind"
+      "brand": "SoRa"
     },
     "screen1": {
       "title": "Assistant'lerinizle tanışın.",
       "titleAccent": "Assistant'lerinizle",
       "body": "Telefonunuzun içinde yaşayan küçük, akıllı arkadaşlar.\nHadi kurulumu yapalım - bir dakikanızı alacak.",
       "cta": "Beni gezdir",
-      "eyebrow": "LocalMind'a hoş geldiniz"
+      "eyebrow": "SoRa'a hoş geldiniz"
     },
     "screen2": {
       "title": "Her zaman,\nher yerde.",
