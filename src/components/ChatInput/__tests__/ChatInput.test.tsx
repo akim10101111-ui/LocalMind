@@ -756,11 +756,15 @@ describe('input', () => {
       });
 
       const screen = renderWithImageUpload();
-      await pressCameraMenuItem(screen);
+      try {
+        await pressCameraMenuItem(screen);
 
-      expect(await screen.findByLabelText('Remove image 1')).toBeTruthy();
-      expect(Alert.alert).not.toHaveBeenCalled();
-      activeModelSpy.mockRestore();
+        expect(await screen.findByLabelText('Remove image 1')).toBeTruthy();
+        expect(Alert.alert).not.toHaveBeenCalled();
+      } finally {
+        screen.unmount();
+        activeModelSpy.mockRestore();
+      }
     });
 
     it('alerts that no camera device was found when the camera is unavailable', async () => {
