@@ -148,7 +148,8 @@ class ServerStore {
     }
     if (!this.defaultServerProvisioned) {
       const existing = this.servers.some(
-        server => server.url.replace(/\\/+$/, '') === DEFAULT_LOCALMIND_SERVER.url,
+        server =>
+          server.url.replace(/\/+$/, '') === DEFAULT_LOCALMIND_SERVER.url,
       );
       if (!existing) {
         this.servers.push({...DEFAULT_LOCALMIND_SERVER});
@@ -373,7 +374,7 @@ class ServerStore {
         }
         this.serverModels.set(serverId, models);
         if (
-          url.replace(/\\/+$/, '') === DEFAULT_LOCALMIND_SERVER.url &&
+          url.replace(/\/+$/, '') === DEFAULT_LOCALMIND_SERVER.url &&
           models.some(model => model.id === DEFAULT_LOCALMIND_MODEL)
         ) {
           // Make the built-in model visible in Models without asking users to
