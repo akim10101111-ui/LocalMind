@@ -41,7 +41,7 @@ import {
   uiStore,
 } from '../../store';
 
-import {MessageType} from '../../utils/types';
+import {MessageType, ModelOrigin} from '../../utils/types';
 import {L10nContext, UserContext} from '../../utils';
 import {t} from '../../locales';
 
@@ -346,7 +346,10 @@ export const ChatInput = observer(
           result.assets[0].uri
         ) {
           const uri = result.assets[0].uri;
-          if (modelStore.activeModelCaps?.visionActive) {
+          if (
+            modelStore.activeModelCaps?.visionActive ||
+            modelStore.activeModel?.origin === ModelOrigin.REMOTE
+          ) {
             setSelectedImages([...selectedImages, uri]);
           } else {
             await appendExtractedImageText([uri]);
@@ -384,7 +387,10 @@ export const ChatInput = observer(
             .map(asset => asset.uri as string);
 
           if (newUris.length > 0) {
-            if (modelStore.activeModelCaps?.visionActive) {
+            if (
+            modelStore.activeModelCaps?.visionActive ||
+            modelStore.activeModel?.origin === ModelOrigin.REMOTE
+          ) {
               setSelectedImages([...selectedImages, ...newUris]);
             } else {
               await appendExtractedImageText(newUris);
