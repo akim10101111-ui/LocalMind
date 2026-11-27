@@ -30,8 +30,16 @@ import {
 
 jest.useFakeTimers();
 
-const render = (ui: React.ReactElement, options: any = {}) =>
-  baseRender(ui, {withBottomSheetProvider: true, ...options});
+const render = (ui: React.ReactElement, options: any = {}) => {
+  const result = baseRender(ui, {withBottomSheetProvider: true, ...options});
+  const networkSettings = result.queryByTestId(
+    'additional-network-settings-accordion',
+  );
+  if (networkSettings) {
+    act(() => fireEvent.press(networkSettings));
+  }
+  return result;
+};
 
 describe('SettingsScreen', () => {
   beforeEach(() => {

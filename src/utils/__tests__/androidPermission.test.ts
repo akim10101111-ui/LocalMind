@@ -85,8 +85,20 @@ describe('ensureNotificationPermission', () => {
     expect(request).toHaveBeenCalledTimes(1);
   });
 
-  it('does not ask below Android 14', async () => {
+  it('asks on Android 13 when notification permission is not granted', async () => {
     platform.Version = 33;
+    check.mockResolvedValue(false);
+    request.mockResolvedValue('granted');
+
+    await ensureNotificationPermission();
+
+    expect(request).toHaveBeenCalledWith(
+      permissions.PERMISSIONS.POST_NOTIFICATIONS,
+    );
+  });
+
+  it('does not ask below Android 13', async () => {
+    platform.Version = 32;
 
     await ensureNotificationPermission();
 

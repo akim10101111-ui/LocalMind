@@ -111,6 +111,7 @@ export const SettingsScreen: React.FC = observer(() => {
   );
   const [isValidInput, setIsValidInput] = useState(true);
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
+  const [showNetworkSettings, setShowNetworkSettings] = useState(false);
   const inputRef = useRef<TextInputInstance>(null);
   const keyCacheMenu = useMenuAnchor();
   const valueCacheMenu = useMenuAnchor();
@@ -1335,225 +1336,237 @@ export const SettingsScreen: React.FC = observer(() => {
             </Card.Content>
           </Card>
 
-          {/* Internet Search */}
-          <Card elevation={0} style={styles.card} testID="internet-search-card">
-            <Card.Title title={l10n.settings.internetSearch.title} />
-            <Card.Content>
-              <View style={styles.settingItemContainer}>
-                <Text variant="labelSmall" style={styles.textDescription}>
-                  {l10n.settings.internetSearch.description}
-                </Text>
-
-                {/* First-enable consent gate / revoke affordance */}
-                {!searchHasConsent ? (
-                  <View
-                    testID="internet-search-consent"
-                    style={styles.consentContainer}>
-                    <Text variant="titleMedium" style={styles.textLabel}>
-                      {l10n.settings.internetSearch.consentTitle}
-                    </Text>
-                    <Text variant="labelSmall" style={styles.textDescription}>
-                      {l10n.settings.internetSearch.consentDescription}
-                    </Text>
-                    <Button
-                      testID="internet-search-consent-accept"
-                      mode="contained"
-                      onPress={() => searchProviderStore.setConsent(true)}
-                      style={styles.consentButton}>
-                      {l10n.settings.internetSearch.consentAccept}
-                    </Button>
+          <List.Accordion
+            title={
+              uiStore.language === 'ru'
+                ? 'Дополнительные подключения'
+                : 'Additional connections'
+            }
+            expanded={showNetworkSettings}
+            onPress={() => setShowNetworkSettings(!showNetworkSettings)}
+            testID="additional-network-settings-accordion">
+            {/* Internet Search */}
+            <Card elevation={0} style={styles.card} testID="internet-search-card">
+              <Card.Title title={l10n.settings.internetSearch.title} />
+              <Card.Content>
+                <View style={styles.settingItemContainer}>
+                  <Text variant="labelSmall" style={styles.textDescription}>
+                    {l10n.settings.internetSearch.description}
+                  </Text>
+  
+                  {/* First-enable consent gate / revoke affordance */}
+                  {!searchHasConsent ? (
+                    <View
+                      testID="internet-search-consent"
+                      style={styles.consentContainer}>
+                      <Text variant="titleMedium" style={styles.textLabel}>
+                        {l10n.settings.internetSearch.consentTitle}
+                      </Text>
+                      <Text variant="labelSmall" style={styles.textDescription}>
+                        {l10n.settings.internetSearch.consentDescription}
+                      </Text>
+                      <Button
+                        testID="internet-search-consent-accept"
+                        mode="contained"
+                        onPress={() => searchProviderStore.setConsent(true)}
+                        style={styles.consentButton}>
+                        {l10n.settings.internetSearch.consentAccept}
+                      </Button>
+                    </View>
+                  ) : (
+                    <View
+                      testID="internet-search-consent-given"
+                      style={styles.consentContainer}>
+                      <Text variant="titleMedium" style={styles.textLabel}>
+                        {l10n.settings.internetSearch.consentGivenTitle}
+                      </Text>
+                      <Text variant="labelSmall" style={styles.textDescription}>
+                        {l10n.settings.internetSearch.consentGivenDescription}
+                      </Text>
+                      <Button
+                        testID="internet-search-consent-revoke"
+                        mode="outlined"
+                        onPress={() => searchProviderStore.setConsent(false)}
+                        style={styles.consentButton}>
+                        {l10n.settings.internetSearch.consentRevoke}
+                      </Button>
+                    </View>
+                  )}
+  
+                  {/* Provider picker */}
+                  <Divider style={styles.divider} />
+                  <View style={styles.switchContainer}>
+                    <View style={styles.textContainer}>
+                      <Text variant="titleMedium" style={styles.textLabel}>
+                        {l10n.settings.internetSearch.providerLabel}
+                      </Text>
+                    </View>
+                    <View style={styles.menuContainer}>
+                      <Button
+                        ref={searchProviderMenu.buttonRef}
+                        testID="search-provider-selector-button"
+                        mode="outlined"
+                        onPress={searchProviderMenu.open}
+                        style={styles.menuButton}
+                        contentStyle={styles.buttonContent}
+                        icon={({size, color}) => (
+                          <Icon source="chevron-down" size={size} color={color} />
+                        )}>
+                        {activeSearchProvider?.label ?? activeSearchProviderId}
+                      </Button>
+                      <Menu
+                        visible={searchProviderMenu.visible}
+                        onDismiss={searchProviderMenu.close}
+                        anchor={searchProviderMenu.anchor}
+                        selectable>
+                        {searchProviderStore.providers.map(provider => (
+                          <Menu.Item
+                            key={provider.id}
+                            testID={`search-provider-option-${provider.id}`}
+                            disabled={!provider.selectable}
+                            style={styles.menu}
+                            label={
+                              provider.selectable
+                                ? provider.label
+                                : `${provider.label} (${l10n.settings.internetSearch.providerGated})`
+                            }
+                            selected={provider.id === activeSearchProviderId}
+                            onPress={() => {
+                              searchProviderStore.setActiveProvider(
+                                provider.id as SearchProviderId,
+                              );
+                              searchProviderMenu.close();
+                            }}
+                          />
+                        ))}
+                      </Menu>
+                    </View>
                   </View>
-                ) : (
-                  <View
-                    testID="internet-search-consent-given"
-                    style={styles.consentContainer}>
-                    <Text variant="titleMedium" style={styles.textLabel}>
-                      {l10n.settings.internetSearch.consentGivenTitle}
-                    </Text>
-                    <Text variant="labelSmall" style={styles.textDescription}>
-                      {l10n.settings.internetSearch.consentGivenDescription}
-                    </Text>
-                    <Button
-                      testID="internet-search-consent-revoke"
-                      mode="outlined"
-                      onPress={() => searchProviderStore.setConsent(false)}
-                      style={styles.consentButton}>
-                      {l10n.settings.internetSearch.consentRevoke}
-                    </Button>
-                  </View>
-                )}
-
-                {/* Provider picker */}
-                <Divider style={styles.divider} />
-                <View style={styles.switchContainer}>
-                  <View style={styles.textContainer}>
-                    <Text variant="titleMedium" style={styles.textLabel}>
-                      {l10n.settings.internetSearch.providerLabel}
-                    </Text>
-                  </View>
-                  <View style={styles.menuContainer}>
-                    <Button
-                      ref={searchProviderMenu.buttonRef}
-                      testID="search-provider-selector-button"
-                      mode="outlined"
-                      onPress={searchProviderMenu.open}
-                      style={styles.menuButton}
-                      contentStyle={styles.buttonContent}
-                      icon={({size, color}) => (
-                        <Icon source="chevron-down" size={size} color={color} />
-                      )}>
-                      {activeSearchProvider?.label ?? activeSearchProviderId}
-                    </Button>
-                    <Menu
-                      visible={searchProviderMenu.visible}
-                      onDismiss={searchProviderMenu.close}
-                      anchor={searchProviderMenu.anchor}
-                      selectable>
-                      {searchProviderStore.providers.map(provider => (
-                        <Menu.Item
-                          key={provider.id}
-                          testID={`search-provider-option-${provider.id}`}
-                          disabled={!provider.selectable}
-                          style={styles.menu}
-                          label={
-                            provider.selectable
-                              ? provider.label
-                              : `${provider.label} (${l10n.settings.internetSearch.providerGated})`
-                          }
-                          selected={provider.id === activeSearchProviderId}
-                          onPress={() => {
-                            searchProviderStore.setActiveProvider(
-                              provider.id as SearchProviderId,
-                            );
-                            searchProviderMenu.close();
-                          }}
-                        />
-                      ))}
-                    </Menu>
-                  </View>
-                </View>
-
-                {/* Per-provider BYOK key entry */}
-                <Divider style={styles.divider} />
-                <View style={styles.switchContainer}>
-                  <View style={styles.textContainer}>
-                    <Text variant="titleMedium" style={styles.textLabel}>
-                      {l10n.settings.internetSearch.keyLabel}
-                    </Text>
-                    <Text variant="labelSmall" style={styles.textDescription}>
-                      {searchProviderStore.hasKey(activeSearchProviderId)
-                        ? t(l10n.settings.internetSearch.keyIsSet, {
-                            provider:
-                              activeSearchProvider?.label ??
-                              activeSearchProviderId,
-                          })
-                        : searchProviderStore.isKeyOptional(
-                              activeSearchProviderId,
-                            )
-                          ? t(l10n.settings.internetSearch.keyOptional, {
+  
+                  {/* Per-provider BYOK key entry */}
+                  <Divider style={styles.divider} />
+                  <View style={styles.switchContainer}>
+                    <View style={styles.textContainer}>
+                      <Text variant="titleMedium" style={styles.textLabel}>
+                        {l10n.settings.internetSearch.keyLabel}
+                      </Text>
+                      <Text variant="labelSmall" style={styles.textDescription}>
+                        {searchProviderStore.hasKey(activeSearchProviderId)
+                          ? t(l10n.settings.internetSearch.keyIsSet, {
                               provider:
                                 activeSearchProvider?.label ??
                                 activeSearchProviderId,
                             })
-                          : t(l10n.settings.internetSearch.keyNotSet, {
-                              provider:
-                                activeSearchProvider?.label ??
+                          : searchProviderStore.isKeyOptional(
                                 activeSearchProviderId,
-                            })}
-                    </Text>
-                    {!searchHasConsent && (
-                      <Text variant="labelSmall" style={styles.textDescription}>
-                        {l10n.settings.internetSearch.consentRequired}
+                              )
+                            ? t(l10n.settings.internetSearch.keyOptional, {
+                                provider:
+                                  activeSearchProvider?.label ??
+                                  activeSearchProviderId,
+                              })
+                            : t(l10n.settings.internetSearch.keyNotSet, {
+                                provider:
+                                  activeSearchProvider?.label ??
+                                  activeSearchProviderId,
+                              })}
                       </Text>
-                    )}
+                      {!searchHasConsent && (
+                        <Text variant="labelSmall" style={styles.textDescription}>
+                          {l10n.settings.internetSearch.consentRequired}
+                        </Text>
+                      )}
+                    </View>
+                    <Button
+                      testID="search-provider-key-button"
+                      mode="outlined"
+                      disabled={!searchHasConsent}
+                      onPress={() => setShowSearchKeySheet(true)}
+                      style={styles.menuButton}>
+                      {searchProviderStore.hasKey(activeSearchProviderId)
+                        ? l10n.settings.internetSearch.updateKeyButton
+                        : l10n.settings.internetSearch.setKeyButton}
+                    </Button>
                   </View>
-                  <Button
-                    testID="search-provider-key-button"
-                    mode="outlined"
-                    disabled={!searchHasConsent}
-                    onPress={() => setShowSearchKeySheet(true)}
-                    style={styles.menuButton}>
-                    {searchProviderStore.hasKey(activeSearchProviderId)
-                      ? l10n.settings.internetSearch.updateKeyButton
-                      : l10n.settings.internetSearch.setKeyButton}
-                  </Button>
-                </View>
-
-                {/* Result-count control */}
-                <Divider style={styles.divider} />
-                <View style={styles.textContainer}>
-                  <Text variant="titleMedium" style={styles.textLabel}>
-                    {l10n.settings.internetSearch.resultCountLabel}
-                  </Text>
-                  <InputSlider
-                    testID="search-result-count-slider"
-                    accessibilityLabel={
-                      l10n.settings.internetSearch.resultCountLabel
-                    }
-                    value={searchProviderStore.resultCount}
-                    onValueChange={value =>
-                      searchProviderStore.setResultCount(Math.round(value))
-                    }
-                    min={1}
-                    max={8}
-                    step={1}
-                  />
-                  <Text variant="labelSmall" style={styles.textDescription}>
-                    {l10n.settings.internetSearch.resultCountDescription}
-                  </Text>
-                </View>
-              </View>
-            </Card.Content>
-          </Card>
-
-          {/* API Settings */}
-          <Card elevation={0} style={styles.card}>
-            <Card.Title title={l10n.settings.apiSettingsTitle} />
-            <Card.Content>
-              <View style={styles.settingItemContainer}>
-                {/* Hugging Face Token */}
-                <View style={styles.switchContainer}>
+  
+                  {/* Result-count control */}
+                  <Divider style={styles.divider} />
                   <View style={styles.textContainer}>
                     <Text variant="titleMedium" style={styles.textLabel}>
-                      {l10n.settings.huggingFaceTokenLabel}
+                      {l10n.settings.internetSearch.resultCountLabel}
                     </Text>
+                    <InputSlider
+                      testID="search-result-count-slider"
+                      accessibilityLabel={
+                        l10n.settings.internetSearch.resultCountLabel
+                      }
+                      value={searchProviderStore.resultCount}
+                      onValueChange={value =>
+                        searchProviderStore.setResultCount(Math.round(value))
+                      }
+                      min={1}
+                      max={8}
+                      step={1}
+                    />
                     <Text variant="labelSmall" style={styles.textDescription}>
+                      {l10n.settings.internetSearch.resultCountDescription}
+                    </Text>
+                  </View>
+                </View>
+              </Card.Content>
+            </Card>
+  
+            {/* API Settings */}
+            <Card elevation={0} style={styles.card}>
+              <Card.Title title={l10n.settings.apiSettingsTitle} />
+              <Card.Content>
+                <View style={styles.settingItemContainer}>
+                  {/* Hugging Face Token */}
+                  <View style={styles.switchContainer}>
+                    <View style={styles.textContainer}>
+                      <Text variant="titleMedium" style={styles.textLabel}>
+                        {l10n.settings.huggingFaceTokenLabel}
+                      </Text>
+                      <Text variant="labelSmall" style={styles.textDescription}>
+                        {hfStore.isTokenPresent
+                          ? l10n.settings.tokenIsSetDescription
+                          : l10n.settings.setTokenDescription}
+                      </Text>
+                    </View>
+                    <Button
+                      mode="outlined"
+                      onPress={() => setShowHfTokenDialog(true)}
+                      style={styles.menuButton}>
                       {hfStore.isTokenPresent
-                        ? l10n.settings.tokenIsSetDescription
-                        : l10n.settings.setTokenDescription}
-                    </Text>
+                        ? l10n.common.update
+                        : l10n.settings.setTokenButton}
+                    </Button>
                   </View>
-                  <Button
-                    mode="outlined"
-                    onPress={() => setShowHfTokenDialog(true)}
-                    style={styles.menuButton}>
-                    {hfStore.isTokenPresent
-                      ? l10n.common.update
-                      : l10n.settings.setTokenButton}
-                  </Button>
-                </View>
-
-                {/* Use HF Token Switch */}
-                <Divider style={styles.divider} />
-                <View style={styles.switchContainer}>
-                  <View style={styles.textContainer}>
-                    <Text variant="titleMedium" style={styles.textLabel}>
-                      {l10n.settings.useHfTokenLabel}
-                    </Text>
-                    <Text variant="labelSmall" style={styles.textDescription}>
-                      {l10n.settings.useHfTokenDescription}
-                    </Text>
+  
+                  {/* Use HF Token Switch */}
+                  <Divider style={styles.divider} />
+                  <View style={styles.switchContainer}>
+                    <View style={styles.textContainer}>
+                      <Text variant="titleMedium" style={styles.textLabel}>
+                        {l10n.settings.useHfTokenLabel}
+                      </Text>
+                      <Text variant="labelSmall" style={styles.textDescription}>
+                        {l10n.settings.useHfTokenDescription}
+                      </Text>
+                    </View>
+                    <Switch
+                      testID="use-hf-token-switch"
+                      value={hfStore.useHfToken}
+                      disabled={!hfStore.isTokenPresent}
+                      onValueChange={value => hfStore.setUseHfToken(value)}
+                    />
                   </View>
-                  <Switch
-                    testID="use-hf-token-switch"
-                    value={hfStore.useHfToken}
-                    disabled={!hfStore.isTokenPresent}
-                    onValueChange={value => hfStore.setUseHfToken(value)}
-                  />
                 </View>
-              </View>
-            </Card.Content>
-          </Card>
+              </Card.Content>
+            </Card>
+  
+              <LocalApiServerCard />
+            </List.Accordion>
 
           {/* Cache & Storage Settings - iOS only (for Shortcuts) */}
           {Platform.OS === 'ios' && (
@@ -1649,8 +1662,6 @@ export const SettingsScreen: React.FC = observer(() => {
               </Card.Content>
             </Card>
           )}
-
-          <LocalApiServerCard />
 
           <Card elevation={0} style={styles.card}>
             <Card.Title title={uiStore.language === 'ru' ? 'Диагностика и информация' : 'Diagnostics & info'} />
