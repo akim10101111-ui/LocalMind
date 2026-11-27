@@ -14,7 +14,7 @@ import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import phononNotices from '../../assets/licenses/phononThirdPartyNotices.json';
 
-import {CopyIcon, ChevronRightIcon} from '../../assets/icons';
+import {CopyIcon, ChevronRightIcon, SoRaLogo} from '../../assets/icons';
 
 import {Sheet} from '../../components';
 import {useTheme} from '../../hooks';
@@ -81,6 +81,7 @@ export const AboutScreen: React.FC = () => {
         <View style={styles.card}>
           <View style={styles.header}>
             <View style={styles.headerContent}>
+              <SoRaLogo width={64} height={64} accessibilityLabel="SoRa" accessibilityRole="image" />
               <Text variant="titleLarge" style={styles.title}>
                 SoRa
               </Text>
