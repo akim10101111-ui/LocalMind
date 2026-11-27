@@ -1,5 +1,6 @@
 import React, {useRef} from 'react';
 import {AccessibilityInfo} from 'react-native';
+import * as RNFS from '@dr.pogodin/react-native-fs';
 
 import {toJS} from 'mobx';
 import type {JinjaFormattedChatResult} from 'llama.rn';
@@ -73,6 +74,31 @@ import {
 // messages API. Creates the empty `assistant_turn` row up-front so the
 // active-vs-persisted predicate sees the right "last message" before the
 // run flips to `preparing`.
+const imageUriToDataUrl = async (uri: string): Promise<string> => {
+  if (/^data:image\//i.test(uri) || /^https?:\/\//i.test(uri)) {
+    return uri;
+  }
+
+  // Image picker returns an app-readable file:// URI on Android. A local
+  // filesystem URI is never meaningful to the remote Z.AI server, so inline
+  // the image bytes as an OpenAI-compatible data URL before sending.
+  const path = decodeURIComponent(uri.replace(/^file:\/\//, ''));
+  const stat = await RNFS.stat(path);
+  const size = Number(stat.size);
+  if (!Number.isFinite(size) || size <= 0 || size > 5_000_000) {
+    throw new Error('IMAGE_ATTACHMENT_SIZE_LIMIT');
+  }
+
+  const extension = path.split('.').pop()?.toLowerCase().split('?')[0] ?? '';
+  const mime =
+    extension === 'png' ? 'image/png' :
+    extension === 'webp' ? 'image/webp' :
+    extension === 'gif' ? 'image/gif' :
+    'image/jpeg';
+  const base64 = await RNFS.readFile(path, 'base64');
+  return `data:${mime};base64,${base64}`;
+};
+
 const prepareCompletion = async ({
   imageUris,
   message,
@@ -108,14 +134,15 @@ const prepareCompletion = async ({
   let userMessageContent: any;
 
   if (hasImages && isMultimodalEnabled) {
+    const inlineImageUris = await Promise.all(imageUris.map(imageUriToDataUrl));
     userMessageContent = [
       {
         type: 'text',
         text: message.text,
       },
-      ...imageUris.map(path => ({
+      ...inlineImageUris.map(uri => ({
         type: 'image_url',
-        image_url: {url: path},
+        image_url: {url: uri},
       })),
     ];
   } else {
@@ -133,8 +160,26 @@ const prepareCompletion = async ({
   // their images via imageUris on the Text row, not a separate Image
   // message). AssistantTurn rows pass through to convertToChatMessages,
   // which expands each step into assistant + tool API messages.
+  const messagesWithInlineImages = isMultimodalEnabled
+    ? await Promise.all(
+        currentMessages.map(async item => {
+          if (
+            item.type !== 'text' ||
+            !item.imageUris ||
+            item.imageUris.length === 0
+          ) {
+            return item;
+          }
+          return {
+            ...item,
+            imageUris: await Promise.all(item.imageUris.map(imageUriToDataUrl)),
+          };
+        }),
+      )
+    : currentMessages;
+
   let chatMessages = convertToChatMessages(
-    currentMessages.filter(msg => msg.type !== 'image'),
+    messagesWithInlineImages.filter(msg => msg.type !== 'image'),
     isMultimodalEnabled,
   );
 
