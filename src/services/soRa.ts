@@ -113,6 +113,15 @@ export async function initializeSoRa(): Promise<void> {
     });
   }
 
+  // Existing custom assistants keep their names and system prompts, but
+  // all of them now use the single SoRa cloud model instead of stale local
+  // or removed server model references.
+  for (const pal of [...palStore.pals]) {
+    if (pal.defaultModel && pal.defaultModel.id !== model.id) {
+      await palStore.updatePal(pal.id, {defaultModel: model});
+    }
+  }
+
   if (!chatSessionStore.activeSessionId && !chatSessionStore.newChatPalId) {
     runInAction(() => {
       chatSessionStore.newChatPalId = assistant!.id;
