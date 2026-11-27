@@ -3,7 +3,10 @@ import {
   installLocalMind,
   isLocalMindReady,
 } from '../localMindModel';
-import {LOCALMIND_MODEL_ID, LOCALMIND_MODEL_REPO} from '../../config/localMindModel';
+import {
+  LOCALMIND_MODEL_ID,
+  LOCALMIND_MODEL_REPO,
+} from '../../config/localMindModel';
 import {modelStore} from '../../store';
 
 jest.mock('../../store', () => {
@@ -52,7 +55,7 @@ describe('LocalMind model upgrade compatibility', () => {
     });
   });
 
-  it('prefers an already-downloaded previous quant when the new quant is only a stub', () => {
+  it('reuses the downloaded previous quant when the new quant is only a stub', () => {
     const legacy = downloadedLegacyModel();
     const current = {
       id: LOCALMIND_MODEL_ID,
@@ -78,7 +81,7 @@ describe('LocalMind model upgrade compatibility', () => {
     expect(isLocalMindReady()).toBe(true);
   });
 
-  it('waits for persisted models to reconcile before deciding to download', async () => {
+  it('waits for model reconciliation before deciding whether to download', async () => {
     const legacy = downloadedLegacyModel();
     store.waitForInitialization.mockImplementation(async () => {
       store.models = [legacy];

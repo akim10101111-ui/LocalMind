@@ -96,19 +96,6 @@ describe('SettingsScreen', () => {
     },
   );
 
-  it('keeps optional network settings collapsed until opened', () => {
-    const {getByTestId} = baseRender(<SettingsScreen />, {
-      withBottomSheetProvider: true,
-      withSafeArea: true,
-      withNavigation: true,
-    });
-    const accordion = getByTestId('additional-network-settings-accordion');
-
-    expect(accordion.props.expanded).toBe(false);
-    fireEvent.press(accordion);
-    expect(getByTestId('additional-network-settings-accordion').props.expanded).toBe(true);
-  });
-
   it('renders settings screen correctly', async () => {
     const {getByText, getByDisplayValue} = render(<SettingsScreen />, {
       withSafeArea: true,

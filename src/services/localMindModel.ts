@@ -258,8 +258,10 @@ export const installLocalMind = (): Promise<void> => {
       await modelStore.waitForInitialization();
 
       const existingModel = findLocalMindModel();
-      if (existingModel?.isDownloaded &&
-          (!!existingModel.hash || existingModel.id === LEGACY_LOCALMIND_MODEL_ID)) {
+      if (
+        existingModel?.isDownloaded &&
+        (!!existingModel.hash || existingModel.id === LEGACY_LOCALMIND_MODEL_ID)
+      ) {
         await activateLocalMind(existingModel);
         return;
       }
@@ -267,7 +269,10 @@ export const installLocalMind = (): Promise<void> => {
       await runInstall();
     })()
       .catch(error => {
-        setPhase('failed', error instanceof Error ? error.message : String(error));
+        setPhase(
+          'failed',
+          error instanceof Error ? error.message : String(error),
+        );
         throw error;
       })
       .finally(() => {
