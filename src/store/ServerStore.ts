@@ -398,7 +398,7 @@ class ServerStore {
         ) {
           // Make the built-in model visible in Models without asking users to
           // re-enter the endpoint or manually discover its model ID.
-          this.addUserSelectedModel(serverId, DEFAULT_LOCALMIND_MODEL);
+          this.addUserSelectedModel(serverId, DEFAULT_SORA_MODEL);
         }
         this.listReads[serverId] = {
           seq,
