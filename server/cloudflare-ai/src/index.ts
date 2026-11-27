@@ -1,6 +1,6 @@
 export interface Env {
   AI: {
-    run(model: string, input: Record<string, unknown>, options?: {stream?: boolean}): Promise<any>;
+    run(model: string, input: Record<string, unknown>): Promise<any>;
   };
   LOCALMIND_API_KEY: string;
   AI_MODEL?: string;
@@ -156,7 +156,7 @@ export default {
 
       try {
         if (body.stream === true) {
-          const result = await env.AI.run(model, input, {stream: true});
+          const result = await env.AI.run(model, {...input, stream: true});
           if (result instanceof ReadableStream) return streamAsOpenAI(result as ReadableStream<Uint8Array>, model);
           if (result?.getReader) return streamAsOpenAI(result as ReadableStream<Uint8Array>, model);
           return json({error: {message: "Selected AI model does not provide streaming output", type: "server_error"}}, 502);
