@@ -16,7 +16,6 @@ import {
 } from '../../store';
 import {ROUTES} from '../../utils/navigationConstants';
 
-const SORA_SERVER_ID = 'localmind-zai-server';
 const SORA_MODEL_ID = 'glm-4-plus';
 
 export const SettingsScreen: React.FC = observer(() => {
@@ -61,7 +60,9 @@ export const SettingsScreen: React.FC = observer(() => {
     [theme],
   );
 
-  const server = serverStore.servers.find(item => item.id === SORA_SERVER_ID);
+  const server = serverStore.servers.find(
+    item => item.url.replace(/\\/+$/, '') === 'https://d1c10as5tg10-d.space-z.ai',
+  );
   const remoteModels = server
     ? serverStore.serverModels.get(server.id) ?? []
     : [];
