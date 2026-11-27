@@ -158,14 +158,21 @@ const discardCorruptFile = async (model: Model): Promise<void> => {
   });
 };
 
-/** Makes LocalMind the default model of the built-in assistant (Pip). */
+/** Makes LocalMind the identity and default model of the built-in assistant. */
 export const bindLocalMindToAssistant = async (model: Model): Promise<void> => {
-  const assistantName = resolvePalForTopic(null).name;
+  const definition = resolvePalForTopic(null);
   const assistant = palStore.pals.find(
-    p => p.name === assistantName && p.source === 'local',
+    p => p.source === 'local' && (p.name === definition.name || p.name === 'Pip'),
   );
   if (assistant) {
-    await palStore.updatePal(assistant.id, {defaultModel: model});
+    await palStore.updatePal(assistant.id, {
+      name: definition.name,
+      description: definition.description,
+      systemPrompt: definition.systemPrompt,
+      originalSystemPrompt: definition.systemPrompt,
+      isSystemPromptChanged: false,
+      defaultModel: model,
+    });
   }
 };
 
@@ -175,6 +182,9 @@ const activateLocalMind = async (model: Model): Promise<void> => {
   // or a model switch instead of treating the file hash as runtime readiness.
   if (modelStore.activeModelId !== model.id || !modelStore.context) {
     await modelStore.selectModel(model);
+  }
+  if (modelStore.activeModelId !== model.id || !modelStore.context) {
+    throw new Error('LocalMind could not load on this device. Check available memory and try again.');
   }
   await bindLocalMindToAssistant(model);
   setPhase('ready');

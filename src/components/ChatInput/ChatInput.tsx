@@ -15,6 +15,7 @@ import {useCameraPermission} from 'react-native-vision-camera';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import * as RNFS from '@dr.pogodin/react-native-fs';
 import {pick, keepLocalCopy} from '@react-native-documents/picker';
+import {extractTextFromImage, extractTextFromPdf} from '../../services/ocr';
 
 import {observer} from 'mobx-react';
 import {IconButton, Text} from 'react-native-paper';
@@ -282,6 +283,26 @@ export const ChatInput = observer(
     // Need to figure this out:
     // Handle taking a photo with the camera using react-native-image-picker
     // but with permission checking from react-native-vision-camera
+    const appendExtractedImageText = async (uris: string[]) => {
+      const extracted: string[] = [];
+      for (let index = 0; index < uris.length; index++) {
+        const recognized = (await extractTextFromImage(uris[index])).trim();
+        if (recognized) extracted.push(`Фото ${index + 1}:\n${recognized}`);
+      }
+      if (extracted.length === 0) {
+        Alert.alert(
+          uiStore.language === 'ru' ? 'Текст не найден' : 'No text found',
+          uiStore.language === 'ru'
+            ? 'На изображении не удалось распознать текст.'
+            : 'No readable text was found in the image.',
+        );
+        return;
+      }
+      setText(current =>
+        `${current.trim() ? `${current.trim()}\n\n` : ''}[Текст с изображений]\n${extracted.join('\n\n')}\n[/Текст с изображений]`,
+      );
+    };
+
     const handleTakePhoto = async () => {
       try {
         if (!hasPermission) {
@@ -317,8 +338,12 @@ export const ChatInput = observer(
           result.assets.length > 0 &&
           result.assets[0].uri
         ) {
-          const newImages = [...selectedImages, result.assets[0].uri];
-          setSelectedImages(newImages);
+          const uri = result.assets[0].uri;
+          if (modelStore.activeModelCaps?.visionActive) {
+            setSelectedImages([...selectedImages, uri]);
+          } else {
+            await appendExtractedImageText([uri]);
+          }
         }
         setShowImageUploadMenu(false);
       } catch (error) {
@@ -352,8 +377,11 @@ export const ChatInput = observer(
             .map(asset => asset.uri as string);
 
           if (newUris.length > 0) {
-            const newImages = [...selectedImages, ...newUris];
-            setSelectedImages(newImages);
+            if (modelStore.activeModelCaps?.visionActive) {
+              setSelectedImages([...selectedImages, ...newUris]);
+            } else {
+              await appendExtractedImageText(newUris);
+            }
           }
         }
         setShowImageUploadMenu(false);
@@ -380,14 +408,14 @@ export const ChatInput = observer(
         const supportedExtensions = new Set([
           'txt', 'md', 'markdown', 'csv', 'json', 'xml', 'html', 'log',
           'yaml', 'yml', 'js', 'ts', 'tsx', 'jsx', 'py', 'java', 'kt',
-          'c', 'cpp', 'h', 'hpp', 'sql', 'ini', 'toml',
+          'c', 'cpp', 'h', 'hpp', 'sql', 'ini', 'toml', 'pdf',
         ]);
         if (!supportedExtensions.has(extension)) {
           Alert.alert(
             uiStore.language === 'ru' ? 'Формат не поддерживается' : 'Unsupported file',
             uiStore.language === 'ru'
-              ? 'Пока можно прикреплять текстовые файлы TXT, MD, CSV, JSON, XML и исходный код.'
-              : 'For now, attach text files such as TXT, MD, CSV, JSON, XML, and source code.',
+              ? 'Можно прикреплять текстовые файлы, исходный код и PDF.'
+              : 'Attach text files, source code, or PDF documents.',
           );
           return;
         }
@@ -402,12 +430,18 @@ export const ChatInput = observer(
 
         const localPath = decodeURIComponent(copy.localUri.replace(/^file:\/\//, ''));
         const stat = await RNFS.stat(localPath);
-        const maxBytes = 1_500_000;
+        const isPdf = extension === 'pdf';
+        const maxBytes = isPdf ? 20_000_000 : 1_500_000;
         if (Number(stat.size) > maxBytes) {
           throw new Error('ATTACHMENT_TOO_LARGE');
         }
 
-        const contents = await RNFS.readFile(localPath, 'utf8');
+        const contents = isPdf
+          ? await extractTextFromPdf(copy.localUri)
+          : await RNFS.readFile(localPath, 'utf8');
+        if (!contents.trim()) {
+          throw new Error('ATTACHMENT_EMPTY');
+        }
         if (contents.includes('\u0000')) {
           throw new Error('ATTACHMENT_NOT_TEXT');
         }
@@ -431,11 +465,11 @@ export const ChatInput = observer(
           uiStore.language === 'ru' ? 'Не удалось прочитать файл' : 'Could not read file',
           uiStore.language === 'ru'
             ? message === 'ATTACHMENT_TOO_LARGE'
-              ? 'Файл слишком большой. Максимальный размер — 1,5 МБ.'
-              : 'Выберите текстовый файл размером до 1,5 МБ.'
+              ? 'Для PDF максимум 20 МБ, для текстовых файлов — 1,5 МБ.'
+              : message === 'ATTACHMENT_EMPTY' ? 'Не удалось извлечь текст из документа.' : 'Выберите текстовый файл или PDF.'
             : message === 'ATTACHMENT_TOO_LARGE'
-              ? 'The file is too large. Maximum size is 1.5 MB.'
-              : 'Choose a text file up to 1.5 MB.',
+              ? 'PDF maximum is 20 MB; text files maximum is 1.5 MB.'
+              : message === 'ATTACHMENT_EMPTY' ? 'No text could be extracted from this document.' : 'Choose a text file or PDF.',
         );
       }
     };

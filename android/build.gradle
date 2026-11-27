@@ -45,6 +45,7 @@ allprojects {
         // Mirror Maven Central for Android app and test dependencies; retain Central as fallback.
         maven { url "https://maven-central.storage-download.googleapis.com/maven2/" }
         mavenCentral()
+        maven { url "https://jitpack.io" }
     }
     configurations.all {
         resolutionStrategy {

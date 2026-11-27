@@ -90,10 +90,17 @@ android {
         applicationId "ai.localmind.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 163
-        versionName "1.24.1"
+        versionCode 164
+        versionName "1.24.2"
+        missingDimensionStrategy 'parallelization', 'standard'
         ndk {
             abiFilters "arm64-v8a"
+        }
+    }
+
+    sourceSets {
+        main {
+            assets.srcDir("$buildDir/generated/localMindOcrAssets")
         }
     }
 
@@ -124,13 +131,15 @@ android {
         }
         release {
             // Read signing credentials from .env file or environment variables
+            def releaseStoreFile = project.env.get("APP_RELEASE_STORE_FILE") ?: System.getenv("APP_RELEASE_STORE_FILE")
             def releaseStorePassword = project.env.get("APP_RELEASE_STORE_PASSWORD") ?: System.getenv("APP_RELEASE_STORE_PASSWORD")
+            def releaseKeyAlias = project.env.get("APP_RELEASE_KEY_ALIAS") ?: System.getenv("APP_RELEASE_KEY_ALIAS")
             def releaseKeyPassword = project.env.get("APP_RELEASE_KEY_PASSWORD") ?: System.getenv("APP_RELEASE_KEY_PASSWORD")
 
-            if (releaseStorePassword && releaseKeyPassword) {
-                storeFile file("pocketpal-release-key.keystore")
+            if (releaseStoreFile && releaseStorePassword && releaseKeyAlias && releaseKeyPassword) {
+                storeFile file(releaseStoreFile)
                 storePassword releaseStorePassword
-                keyAlias "pocketpal_key_alias"
+                keyAlias releaseKeyAlias
                 keyPassword releaseKeyPassword
             }
         }
@@ -146,13 +155,11 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            // Only use release signing config if credentials are available, otherwise use debug
-            if (signingConfigs.release.storeFile != null) {
+            // Never create a store-uploadable release signed with the debug key.
+            if (signingConfigs.release.storeFile != null && signingConfigs.release.storeFile.exists()) {
                 signingConfig signingConfigs.release
             } else {
-                // Fall back to debug signing for CI builds without credentials
-                signingConfig signingConfigs.debug
-                println "Warning: Release signing credentials not found, using debug keystore"
+                throw new GradleException("Configure APP_RELEASE_STORE_FILE, APP_RELEASE_STORE_PASSWORD, APP_RELEASE_KEY_ALIAS and APP_RELEASE_KEY_PASSWORD before building prodRelease.")
             }
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
@@ -219,6 +226,7 @@ tasks.withType(com.facebook.react.tasks.BundleHermesCTask).configureEach {
 }
 
 dependencies {
+    implementation "cz.adaptech.tesseract4android:tesseract4android:4.9.0"
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 
@@ -282,3 +290,40 @@ project.ext.vectoricons = [
 
 apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
 
+
+
+// Download compact Russian/English OCR data at build time and bundle it into the APK.
+// The generated files live under build/ and are not committed; OCR works offline after install.
+def localMindOcrLanguages = ['rus', 'eng']
+def localMindOcrTessdataDir = file("$buildDir/generated/localMindOcrAssets/tessdata")
+tasks.register("downloadLocalMindOcrData") {
+    outputs.files(localMindOcrLanguages.collect { language ->
+        new File(localMindOcrTessdataDir, "${language}.traineddata")
+    })
+    doLast {
+        localMindOcrLanguages.each { language ->
+            def target = new File(localMindOcrTessdataDir, "${language}.traineddata")
+            if (!target.exists() || target.length() < 1_000_000L) {
+                localMindOcrTessdataDir.mkdirs()
+                def temporary = new File(localMindOcrTessdataDir, "${language}.traineddata.part")
+                def connection = new URL("https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/main/${language}.traineddata").openConnection()
+                connection.setConnectTimeout(20000)
+                connection.setReadTimeout(120000)
+                connection.getInputStream().withCloseable { input ->
+                    temporary.withOutputStream { output -> output << input }
+                }
+                if (temporary.length() < 1_000_000L) {
+                    temporary.delete()
+                    throw new GradleException("Downloaded OCR data for ${language} is incomplete.")
+                }
+                if (target.exists()) target.delete()
+                if (!temporary.renameTo(target)) {
+                    throw new GradleException("Could not install OCR data for ${language}.")
+                }
+            }
+        }
+    }
+}
+tasks.named("preBuild").configure {
+    dependsOn("downloadLocalMindOcrData")
+}
