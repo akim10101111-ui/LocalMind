@@ -20,20 +20,25 @@ const localDeepSeek = {
 // legacy local entry. The selector must expose only SoRa.
 jest.mock('../../../store', () => ({
   modelStore: {
-    remoteModels: [soraModel],
-    availableModels: [soraModel, localDeepSeek],
+    remoteModels: [{
+      id: 'localmind-zai-server/glm-4-plus',
+      remoteModelId: 'glm-4-plus',
+      serverId: 'localmind-zai-server',
+      name: 'SoRa',
+      origin: 'remote',
+    }],
+    availableModels: [
+      {
+        id: 'localmind-zai-server/glm-4-plus',
+        remoteModelId: 'glm-4-plus',
+        serverId: 'localmind-zai-server',
+        name: 'SoRa',
+        origin: 'remote',
+      },
+      {id: 'deepseek-local', name: 'DeepSeek', origin: 'local'},
+    ],
   },
 }));
-
-describe('ModelSelector', () => {
-  const defaultProps = {
-    label: 'Select Model',
-    onChange: jest.fn(),
-  };
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
 
   it('renders the single SoRa cloud model', () => {
     const {getByText} = render(<ModelSelector {...defaultProps} value={soraModel as any} />);
