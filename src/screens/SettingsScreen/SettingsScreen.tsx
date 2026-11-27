@@ -1,6 +1,6 @@
 import React, {useMemo} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
-import {observer} from 'mobx-react-lite';
+import {observer} from 'mobx-react';
 import {useNavigation} from '@react-navigation/native';
 import {Button, Card, Divider, Switch, Text} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
