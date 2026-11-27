@@ -10,12 +10,6 @@ const soraModel = {
   origin: 'remote',
 };
 
-const localDeepSeek = {
-  id: 'deepseek-local',
-  name: 'DeepSeek',
-  origin: 'local',
-};
-
 // Mock the model store with both the single supported remote model and a
 // legacy local entry. The selector must expose only SoRa.
 jest.mock('../../../store', () => ({
