@@ -225,7 +225,7 @@ export const SettingsScreen: React.FC = observer(() => {
                 <Text variant="bodySmall" style={styles.rowDescription}>
                   {isRu
                     ? 'История хранится в базе SoRa на этом устройстве. После перезапуска приложения диалоги остаются доступны.'
-                    : 'Chat history is stored in SoRa's on-device database and remains available after app restarts.'}
+                    : "Chat history is stored in SoRa's on-device database and remains available after app restarts."}
                 </Text>
               </View>
               <Text variant="titleMedium" style={styles.value}>
