@@ -165,7 +165,7 @@
     "serverTypeHelp": "已自动检测；如有误请手动更改。",
     "internetSearch": {
       "title": "联网搜索",
-      "description": "让 Assistant 用自己的工具搜索网络。需自备 API 密钥——LocalMind 绝不保存您的密钥，也不会转发您的查询。",
+      "description": "让 Assistant 用自己的工具搜索网络。需自备 API 密钥——SoRa 绝不保存您的密钥，也不会转发您的查询。",
       "providerLabel": "搜索服务供应商",
       "providerGated": "即将推出",
       "keyLabel": "API 密钥",
@@ -181,7 +181,7 @@
       "resultCountLabel": "每次搜索的结果数",
       "resultCountDescription": "结果越少，模型的上下文就能保留更多空间。",
       "consentTitle": "搜索会离开您的设备",
-      "consentDescription": "当 Assistant 搜索网络时，您的查询会通过互联网发送给所选服务商。当 Assistant 读取网页时，如果所选服务商没有自带的阅读器，网址和网页内容可能会改为发送给默认阅读服务（r.jina.ai）。密钥和查询绝不会发送给 LocalMind。",
+      "consentDescription": "当 Assistant 搜索网络时，您的查询会通过互联网发送给所选服务商。当 Assistant 读取网页时，如果所选服务商没有自带的阅读器，网址和网页内容可能会改为发送给默认阅读服务（r.jina.ai）。密钥和查询绝不会发送给 SoRa。",
       "consentAccept": "我已了解",
       "consentRequired": "同意以上声明后，可设置密钥并启用搜索。",
       "consentGivenTitle": "联网搜索已启用",
@@ -563,21 +563,21 @@
     "screenTitle": "关于",
     "description": "一款将大语言模型直接部署到您手机上的 App，基于 llama.cpp 与 llama.rn 构建。",
     "supportProject": "支持项目",
-    "supportProjectDescription": "如果您喜欢使用 LocalMind，请考虑通过以下方式支持项目：",
+    "supportProjectDescription": "如果您喜欢使用 SoRa，请考虑通过以下方式支持项目：",
     "versionCopiedTitle": "版本已复制",
     "versionCopiedDescription": "版本信息已复制到剪贴板",
     "tour": "导览",
-    "tourDescription": "重新观看欢迎页面，了解 LocalMind 提供的功能。",
+    "tourDescription": "重新观看欢迎页面，了解 SoRa 提供的功能。",
     "showIntroButton": "再看一次介绍",
     "openSourceNotices": "开源声明",
     "phononNoticesCredit": "Phonon 语音模型与语音由 Gradium 提供，采用 Apache-2.0 许可。基于 Pocket TTS 和 Kyutai 的 Mimi 编解码器构建。"
   },
   "feedback": {
     "title": "发送反馈",
-    "description": "您的意见很重要！请告诉我们 LocalMind 对您有何帮助，以及我们能做些什么让它更实用。",
+    "description": "您的意见很重要！请告诉我们 SoRa 对您有何帮助，以及我们能做些什么让它更实用。",
     "shareThoughtsButton": "分享您的想法",
     "useCase": {
-      "label": "您使用 LocalMind 的用途是什么？",
+      "label": "您使用 SoRa 的用途是什么？",
       "placeholder": "例如：摘要、角色扮演等。"
     },
     "featureRequests": {
@@ -589,7 +589,7 @@
       "placeholder": "如果您有其他想法，请随时分享。"
     },
     "usageFrequency": {
-      "label": "您多久使用一次 LocalMind？（可选）",
+      "label": "您多久使用一次 SoRa？（可选）",
       "options": {
         "daily": "每天",
         "weekly": "每周",
@@ -639,7 +639,7 @@
     },
     "chatEmptyPlaceholder": {
       "noModelsTitle": "没有可用的模型",
-      "noModelsDescription": "需要下载一个模型，才能与 LocalMind 开始聊天",
+      "noModelsDescription": "需要下载一个模型，才能与 SoRa 开始聊天",
       "noModelsButton": "下载模型",
       "activateModelTitle": "在您开始聊天前，请先激活模型",
       "activateModelDescription": "选择模型并下载。下载完成后，点击模型旁边的“加载”按钮，即可开始聊天。",
@@ -692,7 +692,7 @@
     },
     "modelErrorReportSheet": {
       "title": "报告模型加载问题",
-      "privacyNote": "通过分享此错误的详细信息帮助我们改进 LocalMind。请查看下方将要分享的内容 - 您可以取消选择不想包含的项目。",
+      "privacyNote": "通过分享此错误的详细信息帮助我们改进 SoRa。请查看下方将要分享的内容 - 您可以取消选择不想包含的项目。",
       "errorMessage": "错误消息",
       "modelInfo": "模型信息",
       "modelName": "名称",
@@ -710,7 +710,7 @@
       "submit": "提交报告",
       "success": {
         "title": "报告已提交",
-        "message": "感谢您帮助我们改进 LocalMind。您的报告将帮助我们修复此问题。"
+        "message": "感谢您帮助我们改进 SoRa。您的报告将帮助我们修复此问题。"
       },
       "error": {
         "title": "报告失败",
@@ -1133,7 +1133,7 @@
   },
   "camera": {
     "permissionTitle": "需要摄像头权限",
-    "permissionMessage": "LocalMind 需要访问摄像头来分析图像",
+    "permissionMessage": "SoRa 需要访问摄像头来分析图像",
     "requestingPermission": "请求摄像头权限...",
     "noDevice": "未找到摄像头设备",
     "errorTitle": "摄像头错误",
@@ -1147,7 +1147,7 @@
   },
   "video": {
     "permissionTitle": "需要摄像头权限",
-    "permissionMessage": "LocalMind 需要访问摄像头来分析视频",
+    "permissionMessage": "SoRa 需要访问摄像头来分析视频",
     "requestingPermission": "请求摄像头权限...",
     "noDevice": "未找到摄像头设备",
     "errorTitle": "摄像头错误",
@@ -1495,7 +1495,7 @@
     "systemIosSettingsHint": "添加语音：设置 > 辅助功能 > 朗读内容 > 声音。",
     "systemLanguageSheetTitle": "语音语言",
     "systemLanguageSearchPlaceholder": "搜索语言",
-    "speakingNotificationTitle": "LocalMind 正在朗读",
+    "speakingNotificationTitle": "SoRa 正在朗读",
     "speakingNotificationStop": "停止",
     "speakingNotificationChannel": "朗读",
     "systemIosReadAndSpeakHint": "添加语音：设置 > 辅助功能 > 阅读与朗读 > 声音。"
@@ -1513,14 +1513,14 @@
     "skip": "跳过",
     "skipForNow": "暂时跳过",
     "splash": {
-      "brand": "LocalMind"
+      "brand": "SoRa"
     },
     "screen1": {
       "title": "认识您的 Assistant。",
       "titleAccent": "Assistant。",
       "body": "住在您手机里的聪明小伙伴。\n来花一分钟把它们设置好吧。",
       "cta": "带我去看看",
-      "eyebrow": "欢迎使用LocalMind"
+      "eyebrow": "欢迎使用SoRa"
     },
     "screen2": {
       "title": "随时，\n随地。",
