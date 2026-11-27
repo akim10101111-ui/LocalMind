@@ -1,6 +1,6 @@
 import {runInAction} from 'mobx';
 import {chatSessionStore, modelStore, palStore, serverStore} from '../store';
-import type {Model} from '../utils/types';
+import {ModelOrigin, type Model} from '../utils/types';
 
 const SORA_SERVER_URL = 'https://d1c10as5tg10-d.space-z.ai';
 const SORA_MODEL_ID = 'glm-4-plus';
@@ -14,7 +14,7 @@ const OBSOLETE_LOCAL_MODEL_IDS = [
 const removeBundledDeepSeek = async (): Promise<void> => {
   for (const id of OBSOLETE_LOCAL_MODEL_IDS) {
     const model = modelStore.models.find(
-      item => item.id === id && item.origin !== 'remote',
+      item => item.id === id && item.origin !== ModelOrigin.REMOTE,
     );
     if (model) {
       try {
