@@ -1,69 +1,49 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {View} from 'react-native';
-
 import {Snackbar} from 'react-native-paper';
-import {useNavigation} from '@react-navigation/native';
-import {DrawerNavigationProp} from '@react-navigation/drawer';
+import {observer} from 'mobx-react';
 
 import {useTheme} from '../../../hooks';
-
+import {localMindInstallState, installLocalMind} from '../../../services/localMindModel';
+import {uiStore} from '../../../store';
+import {L10nContext} from '../../../utils';
 import {styles} from './styles';
 
-import {modelStore} from '../../../store';
-
-import {L10nContext} from '../../../utils';
-import {Model, RootDrawerParamList} from '../../../utils/types';
-
-type ModelNotLoadedScreenNavigationProp =
-  DrawerNavigationProp<RootDrawerParamList>;
-
-export const ModelNotLoadedMessage: React.FC = () => {
+/** Retry/resume the one LocalMind model. Never route users to a model catalogue. */
+export const ModelNotLoadedMessage: React.FC = observer(() => {
   const l10n = React.useContext(L10nContext);
-  const navigation = useNavigation<ModelNotLoadedScreenNavigationProp>();
-  const [lastUsedModel, setLastUsedModel] = useState<Model | undefined>(
-    undefined,
-  );
-
-  useEffect(() => {
-    const model = modelStore.lastUsedModel;
-    setLastUsedModel(model);
-  }, []); // Runs on mount to check if the model is available
-
   const theme = useTheme();
+  const state = localMindInstallState;
+  const russian = uiStore.language === 'ru';
 
-  const loadModelDirectly = () => {
-    if (lastUsedModel) {
-      modelStore
-        .selectModel(lastUsedModel)
-        .then(() => {
-          console.log('initialized');
-        })
-        .catch(e => {
-          console.log(`Error: ${e}`);
-        });
-    }
-  };
+  const status =
+    state.phase === 'downloading'
+      ? russian ? `Загружаем LocalMind… ${state.percent}%` : `Downloading LocalMind… ${state.percent}%`
+      : state.phase === 'verifying'
+        ? russian ? 'Проверяем целостность модели…' : 'Verifying model…'
+        : state.phase === 'starting'
+          ? russian ? 'Запускаем LocalMind…' : 'Starting LocalMind…'
+          : state.phase === 'failed'
+            ? russian ? 'Не удалось запустить LocalMind. Нажмите «Повторить».' : 'LocalMind could not start. Tap Retry.'
+            : l10n.chat.pleaseLoadModel;
 
-  const navigateToModelsPage = () => {
-    navigation.navigate('Models');
-  };
-
-  const onDismiss = () => {
-    // TODO: Handle dismiss logic
+  const handleInstall = () => {
+    if (state.isInstalling) return;
+    installLocalMind().catch(error => console.warn('[LocalMind] model activation failed:', error));
   };
 
   return (
     <View style={styles.container}>
       <Snackbar
-        visible={true}
-        onDismiss={onDismiss}
+        visible
+        onDismiss={() => {}}
         action={{
-          label: lastUsedModel ? l10n.chat.load : l10n.chat.goToModels,
-          onPress: lastUsedModel ? loadModelDirectly : navigateToModelsPage,
+          label: state.phase === 'failed' ? (russian ? 'Повторить' : 'Retry') : l10n.chat.load,
+          onPress: handleInstall,
           labelStyle: {color: theme.colors.inverseSecondary},
         }}>
-        {lastUsedModel ? l10n.chat.readyToChat : l10n.chat.pleaseLoadModel}
+        {status}
       </Snackbar>
     </View>
   );
-};
+});

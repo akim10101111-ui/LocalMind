@@ -1,113 +1,48 @@
 import React from 'react';
 
-import {render, fireEvent, act} from '../../../../../jest/test-utils';
-
+import {render, fireEvent} from '../../../../../jest/test-utils';
 import {ModelNotLoadedMessage} from '../ModelNotLoadedMessage';
-
-import {modelStore} from '../../../../store';
-
+import {installLocalMind, localMindInstallState} from '../../../../services/localMindModel';
 import {l10n} from '../../../../locales';
-import {basicModel, modelsList} from '../../../../../jest/fixtures/models';
 
-const mockNavigate = jest.fn();
+jest.mock('../../../../services/localMindModel', () => ({
+  installLocalMind: jest.fn().mockResolvedValue(undefined),
+  localMindInstallState: {phase: 'idle', isInstalling: false, percent: 0},
+}));
 
-jest.mock('@react-navigation/native', () => {
-  const actualNav = jest.requireActual('@react-navigation/native');
-  return {
-    ...actualNav,
-    useNavigation: () => ({
-      addListener: jest.fn((_evt: string, _cb: any) => ({remove: jest.fn()})),
-      navigate: mockNavigate,
-      goBack: jest.fn(),
-      setOptions: jest.fn(),
-      dispatch: jest.fn(),
-    }),
-    useRoute: () => ({key: 'test', name: 'Test'}),
-  };
-});
-
-const customRender = (ui: React.ReactElement, options: any = {}) =>
-  render(ui, {
-    withBottomSheetProvider: true,
-    withNavigation: true,
-    withSafeArea: true,
-    ...options,
-  });
+const customRender = (ui: React.ReactElement) =>
+  render(ui, {withBottomSheetProvider: true, withNavigation: true, withSafeArea: true});
 
 describe('ModelNotLoadedMessage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    modelStore.models = modelsList;
-    modelStore.lastUsedModelId = undefined;
-    (modelStore.selectModel as jest.Mock).mockReset();
+    localMindInstallState.phase = 'idle';
+    localMindInstallState.isInstalling = false;
+    localMindInstallState.percent = 0;
   });
 
-  it('renders correctly when no last used model exists', () => {
+  it('explains that the LocalMind model must be loaded', () => {
     const {getByText} = customRender(<ModelNotLoadedMessage />);
     expect(getByText(l10n.en.chat.pleaseLoadModel)).toBeTruthy();
   });
 
-  it('renders correctly when last used model exists', () => {
-    modelStore.lastUsedModelId = modelStore.models[0].id;
+  it('starts the single LocalMind installer instead of opening the model catalogue', () => {
     const {getByText} = customRender(<ModelNotLoadedMessage />);
-
-    expect(getByText(l10n.en.chat.readyToChat)).toBeTruthy();
-    expect(getByText(l10n.en.chat.load)).toBeTruthy();
+    fireEvent.press(getByText(l10n.en.chat.load));
+    expect(installLocalMind).toHaveBeenCalledTimes(1);
   });
 
-  it('navigates to Models page when no last model exists', () => {
+  it('does not start a second install while downloading', () => {
+    localMindInstallState.phase = 'downloading';
+    localMindInstallState.isInstalling = true;
     const {getByText} = customRender(<ModelNotLoadedMessage />);
-
-    fireEvent.press(getByText(l10n.en.chat.goToModels));
-
-    expect(mockNavigate).toHaveBeenCalledWith('Models');
+    fireEvent.press(getByText(l10n.en.chat.load));
+    expect(installLocalMind).not.toHaveBeenCalled();
   });
 
-  it('loads last used model when available', async () => {
-    modelStore.lastUsedModelId = basicModel.id;
-    (modelStore.selectModel as jest.Mock).mockResolvedValue(undefined);
-
+  it('offers retry after an installation failure', () => {
+    localMindInstallState.phase = 'failed';
     const {getByText} = customRender(<ModelNotLoadedMessage />);
-
-    act(() => {
-      fireEvent.press(getByText(l10n.en.chat.load));
-    });
-
-    expect(modelStore.selectModel).toHaveBeenCalledWith(basicModel);
-  });
-
-  it('handles model loading error correctly', async () => {
-    modelStore.lastUsedModelId = basicModel.id;
-
-    const mockError = new Error('Failed to load model');
-    (modelStore.selectModel as jest.Mock).mockRejectedValue(mockError);
-
-    // TODO: is there a better way to test this that relying on console.log?
-    const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
-
-    const {getByText} = customRender(<ModelNotLoadedMessage />);
-
-    act(() => {
-      fireEvent.press(getByText(l10n.en.chat.load));
-    });
-
-    // Wait for the promise to resolve/reject
-    await new Promise(resolve => setTimeout(resolve, 0));
-
-    expect(modelStore.selectModel).toHaveBeenCalledWith(basicModel);
-    expect(consoleSpy).toHaveBeenCalledWith(`Error: ${mockError}`);
-
-    consoleSpy.mockRestore();
-  });
-
-  it('updates last used model state on mount', async () => {
-    modelStore.lastUsedModelId = basicModel.id;
-
-    const {getByText} = customRender(<ModelNotLoadedMessage />);
-
-    // Wait for the useEffect to run
-    await new Promise(resolve => setTimeout(resolve, 0));
-
-    expect(getByText(l10n.en.chat.readyToChat)).toBeTruthy();
+    expect(getByText('Retry')).toBeTruthy();
   });
 });

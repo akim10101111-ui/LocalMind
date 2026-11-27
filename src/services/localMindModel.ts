@@ -17,6 +17,7 @@ import {resolvePalForTopic} from '../store/onboarding/onboardingPals';
 import {
   LOCALMIND_MODEL_ENTRY,
   LOCALMIND_MODEL_ID,
+  LOCALMIND_MODEL_REPO,
 } from '../config/localMindModel';
 import type {Model} from '../utils/types';
 
@@ -32,6 +33,7 @@ export const LOCALMIND_ERROR = {
 /** Give ModelStore this long to register the download job before giving up. */
 const JOB_START_GRACE_MS = 5000;
 const POLL_INTERVAL_MS = 500;
+const LEGACY_LOCALMIND_MODEL_ID = `${LOCALMIND_MODEL_REPO}/DeepSeek-R1-Distill-Qwen-1.5B-Q4_K_M.gguf`;
 
 export type LocalMindInstallPhase =
   | 'idle'
@@ -167,6 +169,24 @@ export const bindLocalMindToAssistant = async (model: Model): Promise<void> => {
   }
 };
 
+const activateLocalMind = async (model: Model): Promise<void> => {
+  setPhase('starting');
+  // A verified file is not a loaded llama context. Restore it after app restart
+  // or a model switch instead of treating the file hash as runtime readiness.
+  if (modelStore.activeModelId !== model.id || !modelStore.context) {
+    await modelStore.selectModel(model);
+  }
+  await bindLocalMindToAssistant(model);
+  setPhase('ready');
+};
+
+const removePreviousLocalMindQuant = async (): Promise<void> => {
+  const previous = modelStore.models.find(m => m.id === LEGACY_LOCALMIND_MODEL_ID);
+  if (previous && previous.id !== LOCALMIND_MODEL_ID) {
+    await modelStore.deleteModel(previous).catch(() => {});
+  }
+};
+
 const runInstall = async (): Promise<void> => {
   try {
     const model: Model | undefined =
@@ -190,10 +210,8 @@ const runInstall = async (): Promise<void> => {
       await verifyLocalMindModel(model);
     }
 
-    setPhase('starting');
-    await modelStore.selectModel(model);
-    await bindLocalMindToAssistant(model);
-    setPhase('ready');
+    await activateLocalMind(model);
+    await removePreviousLocalMindQuant();
   } catch (error) {
     setPhase(
       'failed',
@@ -211,14 +229,26 @@ let inFlight: Promise<void> | null = null;
  * the same model is ever started.
  */
 export const installLocalMind = (): Promise<void> => {
-  if (isLocalMindReady()) {
-    setPhase('ready');
-    return Promise.resolve();
-  }
   if (!inFlight) {
-    inFlight = runInstall().finally(() => {
-      inFlight = null;
-    });
+    if (isLocalMindReady()) {
+      const model = findLocalMindModel();
+      if (!model) {
+        setPhase('failed', LOCALMIND_ERROR.registerFailed);
+        return Promise.reject(new Error(LOCALMIND_ERROR.registerFailed));
+      }
+      inFlight = activateLocalMind(model)
+        .catch(error => {
+          setPhase('failed', error instanceof Error ? error.message : String(error));
+          throw error;
+        })
+        .finally(() => {
+          inFlight = null;
+        });
+    } else {
+      inFlight = runInstall().finally(() => {
+        inFlight = null;
+      });
+    }
   }
   return inFlight;
 };

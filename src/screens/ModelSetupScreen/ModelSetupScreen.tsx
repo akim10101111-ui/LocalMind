@@ -16,7 +16,7 @@ import {OnboardingBottomBar} from '../OnboardingScreens/components/OnboardingBot
 import {OnboardingContent} from '../OnboardingScreens/components/OnboardingContent';
 
 /** Shown to the user, so the model name is visible only on this screen. */
-const MODEL_DISPLAY_NAME = 'DeepSeek-R1-Distill-Qwen-1.5B';
+const MODEL_DISPLAY_NAME = 'LocalMind AI';
 
 const COPY = {
   en: {
