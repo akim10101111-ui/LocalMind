@@ -271,11 +271,11 @@ class PalStore {
   }
 
   /**
-   * Seed the default "Pip" recommended pal once. After the first launch that
+   * Seed the default "SoRa" recommended assistant once. After the first launch that
    * records the seed, deletions and renames are preserved; on that launch a
    * missing Pip is created (installs that predate the key included).
    *
-   * Idempotent: a re-entry never overwrites an existing Pip record, so a
+   * Idempotent: a re-entry never overwrites an existing SoRa record, so a
    * `defaultModel` bound from a prior session (e.g. by the onboarding
    * recommended-pal picker) survives subsequent app starts.
    */
@@ -313,7 +313,7 @@ class PalStore {
       await this.addPal(palData);
       await AsyncStorage.setItem(PIP_SEEDED_KEY, 'true');
     } catch (error) {
-      console.error('Error initializing Pip pal:', error);
+      console.error('Error initializing SoRa assistant:', error);
     }
   }
 }
