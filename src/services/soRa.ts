@@ -44,6 +44,10 @@ export async function initializeSoRa(): Promise<void> {
     return;
   }
 
+  // Old LocalMind installed one bundled DeepSeek GGUF. Remove only that exact
+  // model file and its catalogue record; never touch chats or user documents.
+  await removeBundledDeepSeek();
+
   const server = serverStore.servers.find(
     item => item.url.replace(/\/+$/, '') === SORA_SERVER_URL,
   );
@@ -63,10 +67,6 @@ export async function initializeSoRa(): Promise<void> {
   if (modelStore.activeModelId !== model.id || !modelStore.engine) {
     await modelStore.selectModel(model);
   }
-
-  // Remove only the two exact bundled DeepSeek variants from older LocalMind
-  // installs. Chat history, settings, and every unrelated user file remain.
-  await removeBundledDeepSeek();
 
   let assistant =
     palStore.pals.find(
