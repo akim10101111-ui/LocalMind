@@ -1,13 +1,11 @@
 import React from 'react';
-
-import {render, fireEvent} from '../../../../../jest/test-utils';
+import {fireEvent, render} from '../../../../../jest/test-utils';
 import {ModelNotLoadedMessage} from '../ModelNotLoadedMessage';
-import {installLocalMind, localMindInstallState} from '../../../../services/localMindModel';
-import {l10n} from '../../../../locales';
+import {initializeSoRa} from '../../../../services/soRa';
+import {serverStore, uiStore} from '../../../../store';
 
-jest.mock('../../../../services/localMindModel', () => ({
-  installLocalMind: jest.fn().mockResolvedValue(undefined),
-  localMindInstallState: {phase: 'idle', get isInstalling() { return this.phase === 'downloading'; }, get percent() { return 0; }},
+jest.mock('../../../../services/soRa', () => ({
+  initializeSoRa: jest.fn().mockResolvedValue(undefined),
 }));
 
 const customRender = (ui: React.ReactElement) =>
@@ -16,30 +14,28 @@ const customRender = (ui: React.ReactElement) =>
 describe('ModelNotLoadedMessage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    localMindInstallState.phase = 'idle';
+    serverStore.error = null;
+    serverStore.isLoading = false;
   });
 
-  it('explains that the LocalMind model must be loaded', () => {
+  it('explains that SoRa is unavailable until cloud connection is ready', () => {
     const {getByText} = customRender(<ModelNotLoadedMessage />);
-    expect(getByText(l10n.en.chat.pleaseLoadModel)).toBeTruthy();
+    expect(getByText(
+      uiStore.language === 'ru'
+        ? 'SoRa пока недоступна. Проверьте подключение к интернету.'
+        : 'SoRa is unavailable. Check your internet connection.',
+    )).toBeTruthy();
   });
 
-  it('starts the single LocalMind installer instead of opening the model catalogue', () => {
+  it('retries the SoRa cloud connection instead of downloading a model', () => {
     const {getByText} = customRender(<ModelNotLoadedMessage />);
-    fireEvent.press(getByText(l10n.en.chat.load));
-    expect(installLocalMind).toHaveBeenCalledTimes(1);
+    fireEvent.press(getByText(uiStore.language === 'ru' ? 'Повторить' : 'Retry'));
+    expect(initializeSoRa).toHaveBeenCalledTimes(1);
   });
 
-  it('does not start a second install while downloading', () => {
-    localMindInstallState.phase = 'downloading';
+  it('shows cloud connection status while the server is loading', () => {
+    serverStore.isLoading = true;
     const {getByText} = customRender(<ModelNotLoadedMessage />);
-    fireEvent.press(getByText(l10n.en.chat.load));
-    expect(installLocalMind).not.toHaveBeenCalled();
-  });
-
-  it('offers retry after an installation failure', () => {
-    localMindInstallState.phase = 'failed';
-    const {getByText} = customRender(<ModelNotLoadedMessage />);
-    expect(getByText('Retry')).toBeTruthy();
+    expect(getByText(uiStore.language === 'ru' ? 'Подключаем SoRa…' : 'Connecting to SoRa…')).toBeTruthy();
   });
 });
