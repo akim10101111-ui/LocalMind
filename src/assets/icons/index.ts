@@ -1,5 +1,4 @@
 export {default as SoRaLogo} from './sora-logo.svg';
-export {default as SoRaHeadMark} from './sora-head-mark.svg';
 export {default as AlertIcon} from './alert.svg';
 export {default as AppInfoIcon} from './app-info.svg';
 export {default as InfoCircleIcon} from './info-circle.svg';
