@@ -47,7 +47,7 @@ import {ChatScreen} from './src/screens/ChatScreen/ChatScreen';
 import {SettingsScreen} from './src/screens/SettingsScreen/SettingsScreen';
 import {AboutScreen} from './src/screens/AboutScreen/AboutScreen';
 import {DevToolsScreen} from './src/screens/DevToolsScreen/DevToolsScreen';
-import {OnboardingStack} from './src/screens/OnboardingScreens';
+import {OnboardingStack} from './src/screens/OnboardingScreens/OnboardingStack';
 
 // Check if app is in debug mode
 const isDebugMode = __DEV__;
