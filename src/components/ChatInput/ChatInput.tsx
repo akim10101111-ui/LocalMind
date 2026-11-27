@@ -13,6 +13,8 @@ import {
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {useCameraPermission} from 'react-native-vision-camera';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import * as RNFS from '@dr.pogodin/react-native-fs';
+import {pick, keepLocalCopy} from '@react-native-documents/picker';
 
 import {observer} from 'mobx-react';
 import {IconButton, Text} from 'react-native-paper';
@@ -367,6 +369,77 @@ export const ChatInput = observer(
       }
     };
 
+    // Import text-based documents into the composer so the local model
+    // receives their actual contents, not only a filename or a file URI.
+    const handleSelectTextFile = async () => {
+      try {
+        setShowImageUploadMenu(false);
+        const [picked] = await pick();
+        const fileName = picked.name ?? 'attachment.txt';
+        const extension = fileName.split('.').pop()?.toLowerCase() ?? '';
+        const supportedExtensions = new Set([
+          'txt', 'md', 'markdown', 'csv', 'json', 'xml', 'html', 'log',
+          'yaml', 'yml', 'js', 'ts', 'tsx', 'jsx', 'py', 'java', 'kt',
+          'c', 'cpp', 'h', 'hpp', 'sql', 'ini', 'toml',
+        ]);
+        if (!supportedExtensions.has(extension)) {
+          Alert.alert(
+            uiStore.language === 'ru' ? 'Формат не поддерживается' : 'Unsupported file',
+            uiStore.language === 'ru'
+              ? 'Пока можно прикреплять текстовые файлы TXT, MD, CSV, JSON, XML и исходный код.'
+              : 'For now, attach text files such as TXT, MD, CSV, JSON, XML, and source code.',
+          );
+          return;
+        }
+
+        const [copy] = await keepLocalCopy({
+          files: [{uri: picked.uri, fileName}],
+          destination: 'cachesDirectory',
+        });
+        if (copy.status !== 'success') {
+          throw new Error(copy.copyError);
+        }
+
+        const localPath = decodeURIComponent(copy.localUri.replace(/^file:\/\//, ''));
+        const stat = await RNFS.stat(localPath);
+        const maxBytes = 1_500_000;
+        if (Number(stat.size) > maxBytes) {
+          throw new Error('ATTACHMENT_TOO_LARGE');
+        }
+
+        const contents = await RNFS.readFile(localPath, 'utf8');
+        if (contents.includes('\u0000')) {
+          throw new Error('ATTACHMENT_NOT_TEXT');
+        }
+        const maxChars = 40_000;
+        const excerpt = contents.slice(0, maxChars);
+        const truncated = contents.length > maxChars;
+        const block = [
+          `[Файл: ${fileName}]`,
+          excerpt,
+          truncated ? '[Текст обрезан: превышен лимит 40 000 символов.]' : '',
+          '[/Файл]',
+        ].filter(Boolean).join('\n');
+
+        setText(current => `${current.trim() ? `${current.trim()}\n\n` : ''}${block}`);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        if (/cancel/i.test(message)) {
+          return;
+        }
+        Alert.alert(
+          uiStore.language === 'ru' ? 'Не удалось прочитать файл' : 'Could not read file',
+          uiStore.language === 'ru'
+            ? message === 'ATTACHMENT_TOO_LARGE'
+              ? 'Файл слишком большой. Максимальный размер — 1,5 МБ.'
+              : 'Выберите текстовый файл размером до 1,5 МБ.'
+            : message === 'ATTACHMENT_TOO_LARGE'
+              ? 'The file is too large. Maximum size is 1.5 MB.'
+              : 'Choose a text file up to 1.5 MB.',
+        );
+      }
+    };
+
     // Remove an image from the selection
     const handleRemoveImage = (index: number) => {
       const newImages = [...selectedImages];
@@ -560,6 +633,11 @@ export const ChatInput = observer(
                       label={l10n.common?.gallery || 'Gallery'}
                       icon="image"
                       onPress={handleSelectImages}
+                    />
+                    <Menu.Item
+                      label={uiStore.language === 'ru' ? 'Выбрать файл' : 'Choose file'}
+                      icon="file-document"
+                      onPress={handleSelectTextFile}
                     />
                   </Menu>
                 )}
