@@ -14,6 +14,7 @@ import {
   palStore,
   chatSessionStore,
   modelStore,
+  uiStore,
 } from '../../../store';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
@@ -26,6 +27,8 @@ jest.mock('react-native-image-picker', () => ({
 jest.spyOn(Alert, 'alert');
 
 const renderScrollable = () => <ScrollView />;
+const attachmentButtonLabel = () =>
+  uiStore.language === 'ru' ? 'Добавить вложение' : 'Add attachment';
 
 describe('input', () => {
   it('send button', () => {
@@ -313,7 +316,7 @@ describe('input', () => {
       </UserContext.Provider>,
     );
 
-    const plusButton = getByLabelText('Add attachment');
+    const plusButton = getByLabelText(attachmentButtonLabel());
     expect(plusButton).toBeDefined();
   });
 
@@ -332,7 +335,7 @@ describe('input', () => {
       </UserContext.Provider>,
     );
 
-    const plusButton = queryByLabelText('Add attachment');
+    const plusButton = queryByLabelText(attachmentButtonLabel());
     expect(plusButton).toBeNull();
   });
 
@@ -352,7 +355,7 @@ describe('input', () => {
       </UserContext.Provider>,
     );
 
-    const plusButton = getByLabelText('Add attachment');
+    const plusButton = getByLabelText(attachmentButtonLabel());
     expect(plusButton).toBeTruthy();
     expect(plusButton.props.accessibilityState.disabled).toBe(false);
   });
@@ -398,7 +401,7 @@ describe('input', () => {
 
       const shrinkOf = (testID: string) =>
         StyleSheet.flatten(getByTestId(testID).props.style).flexShrink;
-      expect(getByLabelText('Add attachment')).toBeTruthy();
+      expect(getByLabelText(attachmentButtonLabel())).toBeTruthy();
       expect(queryByTestId('pal-selector')).toBeNull();
       expect(getByTestId('thinking-toggle-label').props.numberOfLines).toBe(1);
       expect(shrinkOf('thinking-toggle')).toBeGreaterThan(0);
@@ -560,7 +563,7 @@ describe('input', () => {
     );
 
     // Text-only models: no image button at all (it would be a dead control).
-    expect(queryByLabelText('Add attachment')).toBeNull();
+    expect(queryByLabelText(attachmentButtonLabel())).toBeNull();
   });
 
   it('enables plus button when vision is enabled', () => {
@@ -579,7 +582,7 @@ describe('input', () => {
       </UserContext.Provider>,
     );
 
-    const plusButton = getByLabelText('Add attachment');
+    const plusButton = getByLabelText(attachmentButtonLabel());
     expect(plusButton.props.accessibilityState.disabled).toBe(false);
   });
 
@@ -657,7 +660,7 @@ describe('input', () => {
         </UserContext.Provider>,
       );
 
-      const plusButton = getByLabelText('Add attachment');
+      const plusButton = getByLabelText(attachmentButtonLabel());
       fireEvent.press(plusButton);
 
       // Menu should be visible after pressing plus button
@@ -684,7 +687,7 @@ describe('input', () => {
         </UserContext.Provider>,
       );
 
-      const plusButton = getByLabelText('Add attachment');
+      const plusButton = getByLabelText(attachmentButtonLabel());
       fireEvent.press(plusButton);
 
       // Since testing the menu interaction is complex, let's test that the camera function works
@@ -714,7 +717,7 @@ describe('input', () => {
         </UserContext.Provider>,
       );
 
-      const plusButton = getByLabelText('Add attachment');
+      const plusButton = getByLabelText(attachmentButtonLabel());
       fireEvent.press(plusButton);
 
       // Test that the component renders correctly even when camera errors are configured
@@ -739,7 +742,7 @@ describe('input', () => {
     const pressCameraMenuItem = async (
       screen: ReturnType<typeof renderWithImageUpload>,
     ) => {
-      fireEvent.press(screen.getByLabelText('Add attachment'));
+      fireEvent.press(screen.getByLabelText(attachmentButtonLabel()));
       fireEvent.press(await screen.findByText(l10n.en.camera.takePhoto));
     };
 
@@ -846,7 +849,7 @@ describe('input', () => {
         </UserContext.Provider>,
       );
 
-      const plusButton = getByLabelText('Add attachment');
+      const plusButton = getByLabelText(attachmentButtonLabel());
       fireEvent.press(plusButton);
 
       // Test that the component renders correctly with image library functionality
@@ -1015,7 +1018,13 @@ describe('input', () => {
       });
 
       // Verify helper text is displayed
-      expect(getByText(l10n.en.chat.cannotSendWithoutModel)).toBeTruthy();
+      expect(
+        getByText(
+          uiStore.language === 'ru'
+            ? 'Подключаем SoRa…'
+            : 'Connecting to SoRa…',
+        ),
+      ).toBeTruthy();
 
       // Verify onSendPress was NOT called
       expect(onSendPress).not.toHaveBeenCalled();
