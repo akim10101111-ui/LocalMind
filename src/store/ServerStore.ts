@@ -175,7 +175,8 @@ class ServerStore {
         item.remoteModelId === DEFAULT_SORA_MODEL,
     );
     this.defaultServerProvisioned = true;
-    await this.fetchAllRemoteModels();
+    // Do not block store hydration or the first screen on network I/O.
+    // SoRa performs the initial model discovery in its background initializer.
   }
 
   /** Counts every list read at its start, store-wide. */
