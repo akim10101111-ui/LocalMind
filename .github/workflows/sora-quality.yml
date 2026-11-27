@@ -71,7 +71,7 @@ jobs:
             src/components/SidebarContent/styles.ts \
             src/screens/AboutScreen/AboutScreen.tsx \
             src/theme/tokens/colors.ts \
-            --rule 'prettier/prettier: off'
+            --rule '{"prettier/prettier":"off"}'
 
       - name: Focused UI tests
         run: |
