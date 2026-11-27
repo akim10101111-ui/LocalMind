@@ -74,16 +74,17 @@ type SwitchPointProps = {drawer: React.ReactNode};
 const SwitchPoint: React.FC<SwitchPointProps> = observer(({drawer}) => {
   const isReady = isHydrated(uiStore) && isHydrated(modelStore);
   const onboarded = uiStore.hasCompletedOnboarding;
+  const serverHydrated = serverStore.isHydrated;
 
   // Connect the single SoRa cloud model after persisted server settings hydrate.
   // No local GGUF model is registered or downloaded during startup.
   React.useEffect(() => {
-    if (isReady && onboarded && serverStore.isHydrated) {
+    if (isReady && onboarded && serverHydrated) {
       initializeSoRa().catch(error => {
         console.warn('[SoRa] Cloud initialization failed:', error);
       });
     }
-  }, [isReady, onboarded, serverStore.isHydrated]);
+  }, [isReady, onboarded, serverHydrated]);
 
   if (!isHydrated(uiStore)) {
     return null;
